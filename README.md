@@ -1,2 +1,2 @@
-# qubit-qutrit-sim
-Qubit Qutrit Simulator
+# qubit-qudit-sim
+Qubit Qudit Simulator
