@@ -54,9 +54,11 @@ class QuantumCircuit:
         """
         qregs = self.qregs
         size_of_register = 0
-        if type(qregs) == Tuple:
+        if type(qregs) == tuple:
+            print("Tuple")
             size_of_register = qregs[0]
-        else:
+        elif type(qregs) == list:
+            print("List")
             size_of_register = len(qregs)
 
         return size_of_register
@@ -69,11 +71,9 @@ class QuantumCircuit:
         full_config = {}
         if type(qregs) == tuple:
             for idx in range(qregs[0]):
-                print("Tuple")
                 full_config["wire_{0}".format(idx)] = qregs[1]
         elif type(qregs) == list:
             for idx in range(len(qregs)):
-                print("List")
                 full_config["wire_{0}".format(idx)] = qregs[idx]
 
         return full_config
