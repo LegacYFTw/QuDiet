@@ -34,6 +34,7 @@ class QuantumCircuit:
     This will create a QuantumCircuit with RegisterLength = len(Iterable) (here 4) with the energy levels 2,2,3,3 or in
     other words this will create a two qubits and two qutrits and one classical register.
     """
+
     def __init__(self,
                  qregs: Union[Tuple[int, int], List[int]],
                  cregs: Optional[int] = 1,
@@ -54,10 +55,25 @@ class QuantumCircuit:
         qregs = self.qregs
         size_of_register = 0
         if type(qregs) == Tuple:
-            size_of_register = qregs(1)
+            size_of_register = qregs[0]
         else:
             size_of_register = len(qregs)
 
         return size_of_register
 
+    def generate_circuit_data(self):
+        """
+                    Expands the wires into an array of dictionaries containing the wire identity and the energy level
+        """
+        qregs = self.qregs
+        full_config = {}
+        if type(qregs) == tuple:
+            for idx in range(qregs[0]):
+                print("Tuple")
+                full_config["wire_{0}".format(idx)] = qregs[1]
+        elif type(qregs) == list:
+            for idx in range(len(qregs)):
+                print("List")
+                full_config["wire_{0}".format(idx)] = qregs[idx]
 
+        return full_config
