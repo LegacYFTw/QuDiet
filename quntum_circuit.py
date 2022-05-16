@@ -1,7 +1,7 @@
 import copy
 import itertools
 import numpy as np
-import scipy
+from scipy import sparse
 import dask.array as da
 import functools
 import re
@@ -47,10 +47,12 @@ class QuantumCircuit:
         self.qregs = qregs
         self.cregs = cregs
         self.name = name
+        self.circuit_data = self.generate_circuit_data()
+        self.register_length = self.register_length()
 
     def register_length(self):
         """"
-                    Returns the size of the quantum register
+        Returns the size of the quantum register
         """
         qregs = self.qregs
         size_of_register = 0
@@ -65,7 +67,7 @@ class QuantumCircuit:
 
     def generate_circuit_data(self):
         """
-                    Expands the wires into an array of dictionaries containing the wire identity and the energy level
+        Expands the wires into an array of dictionaries containing the wire identity and the energy level
         """
         qregs = self.qregs
         full_config = {}
@@ -77,3 +79,22 @@ class QuantumCircuit:
                 full_config["wire_{0}".format(idx)] = qregs[idx]
 
         return full_config
+
+    def initialize_states(self):
+        """
+        Initializes the qudits to |0> state
+        """
+        circuit_config = self.circuit_data
+        # dim_0 = list(circuit_config.keys())[0]
+        # init_0 = sparse.eye(m=2**dim_0, n=1)
+        init_state = sparse.eye(m = (list(circuit_config.values())[0]), n = 1)
+        if len(circuit_config.keys()) > 1:
+            for idx in range(1, len(circuit_config)):
+
+                init_2_idx = sparse.eye(m=(list(circuit_config.values())[idx]), n=1)
+                init_state = sparse.kron(init_state, init_2_idx)
+        return init_state
+
+
+
+
