@@ -1,7 +1,12 @@
 import copy
 import itertools
+import math
+
 import numpy as np
 from scipy import sparse
+from scipy.linalg import circulant
+from scipy.sparse import csr_matrix, csc_matrix, coo_matrix
+
 import dask.array as da
 import functools
 import re
@@ -90,11 +95,69 @@ class QuantumCircuit:
         init_state = sparse.eye(m = (list(circuit_config.values())[0]), n = 1)
         if len(circuit_config.keys()) > 1:
             for idx in range(1, len(circuit_config)):
-
-                init_2_idx = sparse.eye(m=(list(circuit_config.values())[idx]), n=1)
+                init_2_idx = sparse.eye(m = (list(circuit_config.values())[idx]), n = 1)
                 init_state = sparse.kron(init_state, init_2_idx)
         return init_state
 
+    def h(self,
+          qudit: int,
+          ):
+        """
+        Applies the generalised Hadamard gate
+        """
+        circuit_config = self.circuit_data
+        if qudit > len(circuit_config):
+            raise IndexError('Qudit specified is out of range.')
 
+        dim = circuit_config['wire_{0}'.format(qudit)]
+        roots_of_unity_build_list = np.zeros(len(circuit_config) + 1)
+        roots_of_unity_build_list[0] = 1
+        roots_of_unity_build_list[len(circuit_config)] = -1
+        roots_of_unity = np.roots(roots_of_unity_build_list)
+        # print("============================================")
+        # print("Roots of Unity are: ", roots_of_unity)
+        # print("============================================")
+        final_roots_of_unity = np.delete(roots_of_unity, len(roots_of_unity) - 1)
+        # print("============================================")
+        # print("Final roots of Unity are: ", final_roots_of_unity)
+        # print("============================================")
+        circulant_matrix = circulant(final_roots_of_unity)
+        first_row_circ = np.ones(len(final_roots_of_unity))
+        circ_first = np.vstack([first_row_circ, circulant_matrix])
+        first_col_circ = np.ones(len(final_roots_of_unity) + 1)
+        circulant_final = np.c_[first_col_circ, circ_first]
+        # print("============================================")
+        # print("Circulant matrix is given by: ", circulant_final)
+        # print("============================================")
+        h_gate = 1 / (math.sqrt(dim)) * circulant_final
 
+        h_gate = csr_matrix(h_gate)
 
+        if qudit != 0:
+            gate_state = sparse.eye(m = (list(circuit_config.values())[0]))
+            if len(circuit_config.keys()) > 1:
+                for idx in range(1, len(circuit_config)):
+
+                    if idx == qudit:
+                        gate_state = sparse.kron(gate_state, h_gate)
+                    else:
+                        gate_2_idx = sparse.eye(m = (list(circuit_config.values())[idx]))
+                        gate_state = sparse.kron(gate_state, gate_2_idx)
+
+        else:
+            gate_state = h_gate
+            if len(circuit_config.keys()) > 1:
+                for idx in range(1, len(circuit_config)):
+                    gate_2_idx = sparse.eye(m = (list(circuit_config.values())[idx]))
+                    gate_state = sparse.kron(gate_state, gate_2_idx)
+
+        return gate_state
+
+    def x(self,
+          qubit: int,
+          dim: int,
+          ):
+        """
+        Applies the generalised X Pauli Matrix
+        """
+        pass
