@@ -6,6 +6,7 @@ import numpy as np
 from scipy import sparse
 from scipy.linalg import circulant
 from scipy.sparse import csr_matrix, csc_matrix, coo_matrix
+from opflow import Opflow
 
 import dask.array as da
 import functools
@@ -54,6 +55,7 @@ class QuantumCircuit:
         self.name = name
         self.circuit_data = self.generate_circuit_data()
         self.register_length = self.register_length()
+        self._operator_flow = Opflow()
 
     def register_length(self):
         """"
@@ -69,6 +71,7 @@ class QuantumCircuit:
             size_of_register = len(qregs)
 
         return size_of_register
+
 
     def generate_circuit_data(self):
         """
@@ -90,6 +93,7 @@ class QuantumCircuit:
         Initializes the qudits to |0> state
         """
         circuit_config = self.circuit_data
+        operator_flow = self._operator_flow
         # dim_0 = list(circuit_config.keys())[0]
         # init_0 = sparse.eye(m=2**dim_0, n=1)
         init_state = sparse.eye(m = (list(circuit_config.values())[0]), n = 1)
@@ -97,7 +101,10 @@ class QuantumCircuit:
             for idx in range(1, len(circuit_config)):
                 init_2_idx = sparse.eye(m = (list(circuit_config.values())[idx]), n = 1)
                 init_state = sparse.kron(init_state, init_2_idx)
-        return init_state
+
+        operator_flow.push(init_state)
+
+        return operator_flow
 
     def h(self,
           qudit: int,
@@ -105,6 +112,7 @@ class QuantumCircuit:
         """
         Applies the generalised Hadamard gate
         """
+        operator_flow = self._operator_flow
         circuit_config = self.circuit_data
         if qudit > len(circuit_config):
             raise IndexError('Qudit specified is out of range.')
@@ -151,7 +159,9 @@ class QuantumCircuit:
                     gate_2_idx = sparse.eye(m = (list(circuit_config.values())[idx]))
                     gate_state = sparse.kron(gate_state, gate_2_idx)
 
-        return gate_state
+        operator_flow.push(gate_state)
+
+        return operator_flow
 
     def x(self,
           qubit: int,
