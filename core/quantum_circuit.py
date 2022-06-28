@@ -1,3 +1,4 @@
+
 import numpy as np
 from scipy import sparse
 from scipy.linalg import circulant
@@ -32,7 +33,8 @@ class QuantumCircuit:
     def __init__(self,
                  qregs: Union[Tuple[int, int], List[int]],
                  cregs: Optional[int] = 1,
-                 name: Optional[str] = None
+                 name: Optional[str] = None,
+                 init_state: Optional[List[int]] = None,
                  ):
         if not isinstance(qregs, (Tuple, List)):
             raise ValueError(
@@ -41,22 +43,26 @@ class QuantumCircuit:
         self.qregs = qregs
         self.cregs = cregs
         self.name = name
-        self.register_length = self.register_length()
+        self.init_state = init_state
 
-    def initialize_states(self):
-        """
-        Initializes the qudits to |0> state
-        """
-        circuit_config = self.circuit_data
-        operator_flow = self._operator_flow
-        # dim_0 = list(circuit_config.keys())[0]
-        # init_0 = sparse.eye(m=2**dim_0, n=1)
-        init_state = sparse.eye(m=(list(circuit_config.values())[0]), n=1)
-        if len(circuit_config.keys()) > 1:
-            for idx in range(1, len(circuit_config)):
-                init_2_idx = sparse.eye(m=(list(circuit_config.values())[idx]), n=1)
-                init_state = sparse.kron(init_state, init_2_idx)
+        def get_circuit_config(self):
+            raise NotImplementedError
 
-        operator_flow.push(init_state)
+        def initialize_states(self):
+            """
+            Initializes the qudits to |0> state or |N> state depending on the dimensions of the qubits
+            """
+            circuit_config = self.circuit_data
+            if init_state is None:
+                # If init states are None, we will initialize all the qudits to |0> state
+                if type(qregs) == Tuple:
+                    for _ckt in range(qregs[0]):
 
-        return operator_flow
+                        # TODO: Add Operator flow object and push the init object into Operator Flow stack
+
+                        pass
+                pass
+
+
+
+
