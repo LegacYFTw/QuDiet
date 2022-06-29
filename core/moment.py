@@ -1,9 +1,9 @@
-from circuit_library.standard_gates import quantum_gate
+from circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
 class Moment:
     def __init__(self,
-                 *args: quantum_gate
+                 *args: QuantumGate
                  ):
         """
         This is the Moment class. This is essentially a list of quantum gates that spans across quantum registers.
@@ -27,11 +27,12 @@ class Moment:
         # TODO: Make sure the push method and the peek method works as expected
         # TODO: Run unit tests
 
-    def _push_list(self,
-                   gate : quantum_gate
-                   ) -> bool:
+    @staticmethod
+    def __push_list__(self,
+                      gate: QuantumGate
+                      ) -> bool:
         """
-
+        This function pushes the QuantumGate objects into the Moment list
         :param args: The actual gates that will be pushed into the Moment
         :return: True for success
         """
@@ -47,3 +48,35 @@ class Moment:
         # TODO: Complete this function
         return self._moment_list
 
+    @staticmethod
+    def __insert_placeholder_identity__(self,
+                                        moment_list: list,
+                                        ) -> bool:
+        """
+        Pushes a placeholder Identity Operator into the Moment list for an absent gate in order to complete a moment.
+        Let's say that a QuantumCircuit object is as follows:
+
+       qreg_0: |0> -- H -- X \n
+       qreg_1: |0> ---Z ----
+
+        We can see that the QuantumCircuit has 2 registers. qreg_0 has H gate and an X gate in sequence. ``qreg_1`` has just
+        a ``Z`` gate. This means that the Moment ``m1`` will consist of ``[H,Z]`` and Moment ``m2`` will consist of [X].
+        We would now want to insert a second gate ``I`` in position 1. This would complete the moment.
+
+        In the event we have the following circuit:
+
+        qreg_0: |0> -- H ----\n
+        qreg_1: |0> ---Z --X-
+
+        We see ``m1`` will consist of ``[H,Z]`` and ``m2`` will consist of [X]. In order to fill out the position of the identity
+        operator, we will need to access the instance variables of the quantum gate (X here) and accordingly get the
+        position on which it is acting on. So if X.acting_register() returns us 1, as in the case above, we shall,
+        accordingly fill out Identity operators before (or after) X.acting_register.
+
+        :param moment_list: This is the instance list variable into which the Identity operator need to be inserted into
+        :return: True if success
+        """
+
+        # TODO: Extremely important method, needs to be filled out carefully!
+
+        return True
