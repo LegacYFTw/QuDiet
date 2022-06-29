@@ -45,23 +45,23 @@ class QuantumCircuit:
         self.name = name
         self.init_state = init_state
 
-        def get_circuit_config(self):
-            raise NotImplementedError
+    def get_circuit_config(self):
+        raise NotImplementedError
 
-        def initialize_states(self):
-            """
-            Initializes the qudits to |0> state or |N> state depending on the dimensions of the qubits
-            """
-            circuit_config = self.circuit_data
-            if init_state is None:
-                # If init states are None, we will initialize all the qudits to |0> state
-                if type(qregs) == Tuple:
-                    for _ckt in range(qregs[0]):
+    def initialize_states(self):
+        """
+        Initializes the qudits to |0> state or |N> state depending on the dimensions of the qubits
+        """
+        circuit_config = self.circuit_data
+        if self.init_state is None:
+            # If init states are None, we will initialize all the qudits to |0> state
+            if type(self.qregs) == Tuple:
+                for _ckt in range(self.qregs[0]):
 
-                        # TODO: Add Operator flow object and push the init object into Operator Flow stack
+                    # TODO: Add Operator flow object and push the init object into Operator Flow stack
 
-                        pass
-                pass
+                    pass
+            pass
 
 
 
