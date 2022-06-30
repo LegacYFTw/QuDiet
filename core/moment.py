@@ -1,9 +1,12 @@
+import itertools as it
+from typing import Union
 from circuit_library.standard_gates.quantum_gate import QuantumGate
+from core.init_states import InitState
 
 
 class Moment:
     def __init__(self,
-                 *args: QuantumGate
+                 *args: Union(QuantumGate, InitState)
                  ):
         """
         This is the Moment class. This is essentially a list of quantum gates that spans across quantum registers.
@@ -20,32 +23,52 @@ class Moment:
 
         """
 
-        self._number_of_gates = len(args)
-        self._gates = args
+        self._number_of_operations = len(args)
+        self._operations = list(args)
         self._moment_list = []
 
         # TODO: Run unit tests
 
+    def __populate_list__(self, operations_list: list) -> bool:
+        """
+        This function takes a list of InitState and QuantumGate objects, and pushes them into the
+        Moment.
+        :param operations_list: The list of InitState and QuantumGate objects to be pushed
+        :return: True for success
+        """
+        n_ops = len(operations_list)
+        ops_iter = iter(operations_list)
+        i = 0
+        while i < n_ops:
+            current_item = next(ops_iter)
+            res = self.__push_list__(current_item)
+
     def __push_list__(self,
-                      gate: QuantumGate
+                      gate: Union(QuantumGate, InitState)
                       ) -> bool:
         """
         This function pushes the QuantumGate objects into the Moment list
-        :param args: The actual gates that will be pushed into the Moment
+        :param gate: The actual gates that will be pushed into the Moment
         :return: True for success
         """
 
         # This is the quantum register in which the gate is, like qreg_0, qreg_1 ...
-        qreg = gate.acting_register
+        qreg = gate.qreg
         
         # This is the index of the gate along the X-axis in the qreg
-        pos = gate.position
-        
+        if type(gate) == QuantumGate:
+            pos = gate.pos
+        elif type(gate) == InitState:
+            pos = 0
+
         if len(self._moment_list) < pos+1:
             self._moment_list.append([])
 
         self._moment_list[pos].insert(qreg, gate)
         
+        if gate not in self._moment_list:
+            return False
+
         return True
 
 
@@ -87,7 +110,7 @@ class Moment:
         """
 
         identity_operator = QuantumGate
-        identity_insert_locations = []
+        identity_insert_locations = iter([])
 
         for i, moment in enumerate(moment_list):
             for j, gate in enumerate(moment):
