@@ -1,9 +1,12 @@
+import itertools as it
+from typing import Union
 from circuit_library.standard_gates.quantum_gate import QuantumGate
+from core.init_states import InitState
 
 
 class Moment:
     def __init__(self,
-                 *args: QuantumGate
+                 *args: Union(QuantumGate, InitState)
                  ):
         """
         This is the Moment class. This is essentially a list of quantum gates that spans across quantum registers.
@@ -19,25 +22,55 @@ class Moment:
         functions. The lists can be peeked to allow for reading without disturbing the alignment of the elements.
 
         """
-        self._number_of_gates = len(args)
-        self._gates = args
+
+        self._number_of_operations = len(args)
+        self._operations = list(args)
         self._moment_list = []
 
-        # TODO: Initialize these values properly
-        # TODO: Make sure the push method and the peek method works as expected
         # TODO: Run unit tests
 
-    @staticmethod
+    def __populate_list__(self, operations_list: list) -> bool:
+        """
+        This function takes a list of InitState and QuantumGate objects, and pushes them into the
+        Moment.
+        :param operations_list: The list of InitState and QuantumGate objects to be pushed
+        :return: True for success
+        """
+        n_ops = len(operations_list)
+        ops_iter = iter(operations_list)
+        i = 0
+        while i < n_ops:
+            current_item = next(ops_iter)
+            res = self.__push_list__(current_item)
+
     def __push_list__(self,
-                      gate: QuantumGate
+                      gate: Union(QuantumGate, InitState)
                       ) -> bool:
         """
         This function pushes the QuantumGate objects into the Moment list
-        :param args: The actual gates that will be pushed into the Moment
+        :param gate: The actual gates that will be pushed into the Moment
         :return: True for success
         """
-        # TODO: Complete this function
+
+        # This is the quantum register in which the gate is, like qreg_0, qreg_1 ...
+        qreg = gate.qreg
+        
+        # This is the index of the gate along the X-axis in the qreg
+        if type(gate) == QuantumGate:
+            pos = gate.pos
+        elif type(gate) == InitState:
+            pos = 0
+
+        if len(self._moment_list) < pos+1:
+            self._moment_list.append([])
+
+        self._moment_list[pos].insert(qreg, gate)
+        
+        if gate not in self._moment_list:
+            return False
+
         return True
+
 
     def peek_list(self) -> list:
         """
@@ -45,10 +78,9 @@ class Moment:
         :param self: Peeks the current list
         :return: Returns the list held in the Moment object
         """
-        # TODO: Complete this function
         return self._moment_list
 
-    @staticmethod
+
     def __insert_placeholder_identity__(self,
                                         moment_list: list,
                                         ) -> bool:
@@ -56,8 +88,8 @@ class Moment:
         Pushes a placeholder Identity Operator into the Moment list for an absent gate in order to complete a moment.
         Let's say that a QuantumCircuit object is as follows:
 
-       qreg_0: |0> -- H -- X \n
-       qreg_1: |0> ---Z ----
+        qreg_0: |0> -- H -- X \n
+        qreg_1: |0> ---Z ----
 
         We can see that the QuantumCircuit has 2 registers. qreg_0 has H gate and an X gate in sequence. ``qreg_1`` has just
         a ``Z`` gate. This means that the Moment ``m1`` will consist of ``[H,Z]`` and Moment ``m2`` will consist of [X].
@@ -65,8 +97,8 @@ class Moment:
 
         In the event we have the following circuit:
 
-        qreg_0: |0> -- H ----\n
-        qreg_1: |0> ---Z --X-
+        qreg_0: |0> -- H ----  \n
+        qreg_1: |0> -- Z -- X
 
         We see ``m1`` will consist of ``[H,Z]`` and ``m2`` will consist of [X]. In order to fill out the position of the identity
         operator, we will need to access the instance variables of the quantum gate (X here) and accordingly get the
@@ -77,6 +109,18 @@ class Moment:
         :return: True if success
         """
 
-        # TODO: Extremely important method, needs to be filled out carefully!
+        identity_operator = QuantumGate
+        identity_insert_locations = iter([])
+
+        for i, moment in enumerate(moment_list):
+            for j, gate in enumerate(moment):
+                if gate.acting_register != j:
+                    identity_insert_locations.append([i, j])
+
+        for loc in identity_insert_locations:
+            moment_list[loc[0]].insert(loc[1], identity_operator)
+
+        self._moment_list = moment_list
 
         return True
+
