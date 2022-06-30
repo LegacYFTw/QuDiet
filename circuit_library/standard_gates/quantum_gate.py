@@ -36,9 +36,10 @@ class QuantumGate(ABC):
 
     @property
     @abstractmethod
-    def acting_on(self) -> Union(int, list):
+    def acting_on(self) -> Union[int, list]:
         """
         Gets the index of the acting qudit in the QuantumRegister
-        :return: Index of the QuantumRegister
+        :return: Index of the QuantumRegister if it is a single qudit gate or a list if multiqudit
         """
+        pass
 

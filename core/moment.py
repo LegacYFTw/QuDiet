@@ -30,26 +30,21 @@ class Moment:
 
         # TODO: Run unit tests
 
-
     @property
     def prev_pointer(self):
         return self._prev_pointer
-
 
     @prev_pointer.setter
     def prev_pointer(self, pointer):
         self._prev_pointer = pointer
 
-
     @property
     def next_pointer(self):
         return self._next_pointer
 
-
     @next_pointer.setter
     def next_pointer(self, pointer):
         self._next_pointer = pointer
-
 
     def __populate_list__(self, operations_list: list) -> bool:
         """
@@ -67,11 +62,10 @@ class Moment:
             if not _pushed:
                 return False
             _iteration += 1
-        return True        
-
+        return True
 
     def __push_list__(self,
-                      operation: Union(QuantumGate, InitState)
+                      operation: Union[QuantumGate, InitState]
                       ) -> bool:
         """
         This function pushes the QuantumGate objects into the Moment list
@@ -80,12 +74,11 @@ class Moment:
         """
 
         self._moment_list.append(operation)
-        
+
         if operation not in self._moment_list:
             return False
 
         return True
-
 
     def peek_list(self) -> list:
         """
@@ -95,8 +88,7 @@ class Moment:
         """
         return self._moment_list
 
-
-    def __insert_placeholder_identity__(self, 
+    def __insert_placeholder_identity__(self,
                                         qregs: int
                                         ) -> bool:
         """
@@ -137,4 +129,3 @@ class Moment:
             return False
 
         return True
-
