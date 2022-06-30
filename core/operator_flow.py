@@ -1,3 +1,4 @@
+from circuit_library.standard_gates.measurement import Measurement
 from moment import Moment
 
 
@@ -46,7 +47,11 @@ class OperatorFlow:
         :param moment: A Moment object
         :return: True if found and False if not found
         """
-        pass
+        if any(isinstance(_operator, Measurement) for _operator in moment.peek_list()):
+            return True
+        else:
+            return False
+
 
     def __placeholder_identity__(self,
                                  moment: Moment
@@ -55,8 +60,8 @@ class OperatorFlow:
         Pushes a placeholder Identity Operator into the Moment list for an absent gate in order to complete a moment.
         Let's say that a QuantumCircuit object is as follows:
 
-       qreg_0: |0> -- H -- X \n
-       qreg_1: |0> ---Z ----
+        qreg_0: |0> -- H -- X \n
+        qreg_1: |0> -- Z ----
 
         We can see that the QuantumCircuit has 2 registers. qreg_0 has H gate and an X gate in sequence. ``qreg_1`` has just
         a ``Z`` gate. This means that the Moment ``m1`` will consist of ``[H,Z]`` and Moment ``m2`` will consist of [X].
@@ -64,8 +69,8 @@ class OperatorFlow:
 
         In the event we have the following circuit:
 
-        qreg_0: |0> -- H ----\n
-        qreg_1: |0> ---Z --X-
+        qreg_0: |0> -- H ---- \n
+        qreg_1: |0> -- Z -- X
 
         We see ``m1`` will consist of ``[H,Z]`` and ``m2`` will consist of [X]. In order to fill out the position of the
         identity operator, we will need to access the instance variables of the quantum gate (X here) and accordingly get
