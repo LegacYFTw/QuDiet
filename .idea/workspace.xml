@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d4b98352-0a78-4824-95d7-9fcde701ca26" name="Changes" comment="Added IGate">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/circuit_library/standard_gates/i.py" beforeDir="false" afterPath="$PROJECT_DIR$/circuit_library/standard_gates/i.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/circuit_library/standard_gates/quantum_gate.py" beforeDir="false" afterPath="$PROJECT_DIR$/circuit_library/standard_gates/quantum_gate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/circuit_library/standard_gates/x.py" beforeDir="false" afterPath="$PROJECT_DIR$/circuit_library/standard_gates/x.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/moment.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/moment.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,6 +85,7 @@
       <workItem from="1656473163292" duration="13980000" />
       <workItem from="1656501453504" duration="2238000" />
       <workItem from="1656558776886" duration="3487000" />
+      <workItem from="1656599460670" duration="1770000" />
     </task>
     <task id="LOCAL-00001" summary="Added skeletons for a whole lot of things. More incoming.">
       <created>1656436635533</created>

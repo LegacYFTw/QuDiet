@@ -1,5 +1,5 @@
 from abc import ABC
-import typing
+from typing import Union
 from scipy import sparse
 from quantum_gate import QuantumGate
 
@@ -41,6 +41,13 @@ class IGate(QuantumGate, ABC):
         """
         return sparse.eye(n=self.dims, m=self.dims)
 
+    @property
+    def acting_on(self) -> Union[int, list]:
+        """
+        Gets the index of the acting qudit in the QuantumRegister
+        :return: Index of the QuantumRegister if it is a single qudit gate or a list if multiqudit
+        """
+        return self.qreg
 
 
 
