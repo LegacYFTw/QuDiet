@@ -36,7 +36,7 @@ class IGate(QuantumGate, ABC):
     @property
     def unitary(self) -> sparse:
         """
-        This is the gate unitary which shall be used to do any calculations
+        This is the gate unitary which shall be used to do any calculation
         :return: The gate unitary
         """
         return sparse.eye(n=self.dims, m=self.dims)
