@@ -26,7 +26,6 @@ class Moment:
 
         # TODO: Run unit tests
 
-    @staticmethod
     def __push_list__(self,
                       gate: QuantumGate
                       ) -> bool:
@@ -42,12 +41,13 @@ class Moment:
         # This is the index of the gate along the X-axis in the qreg
         pos = gate.position
         
-        if len(Moment._moment_list) < pos+1:
-            Moment._moment_list.append([])
+        if len(self._moment_list) < pos+1:
+            self._moment_list.append([])
 
-        Moment._moment_list[pos].insert(qreg, gate)
+        self._moment_list[pos].insert(qreg, gate)
         
         return True
+
 
     def peek_list(self) -> list:
         """
@@ -57,7 +57,7 @@ class Moment:
         """
         return self._moment_list
 
-    @staticmethod
+
     def __insert_placeholder_identity__(self,
                                         moment_list: list,
                                         ) -> bool:
@@ -97,6 +97,7 @@ class Moment:
         for loc in identity_insert_locations:
             moment_list[loc[0]].insert(loc[1], identity_operator)
 
-        Moment._moment_list = moment_list
+        self._moment_list = moment_list
 
         return True
+
