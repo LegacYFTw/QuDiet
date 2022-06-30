@@ -1,5 +1,5 @@
-import itertools as it
 from typing import Union
+from circuit_library.standard_gates.i import IGate
 from circuit_library.standard_gates.quantum_gate import QuantumGate
 from core.init_states import InitState
 
@@ -22,12 +22,34 @@ class Moment:
         functions. The lists can be peeked to allow for reading without disturbing the alignment of the elements.
 
         """
-
+        self._prev_pointer = None
+        self._next_pointer = None
         self._number_of_operations = len(args)
         self._operations = list(args)
         self._moment_list = []
 
         # TODO: Run unit tests
+
+
+    @property
+    def prev_pointer(self):
+        return self._prev_pointer
+
+
+    @prev_pointer.setter
+    def prev_pointer(self, pointer):
+        self._prev_pointer = pointer
+
+
+    @property
+    def next_pointer(self):
+        return self._next_pointer
+
+
+    @next_pointer.setter
+    def next_pointer(self, pointer):
+        self._next_pointer = pointer
+
 
     def __populate_list__(self, operations_list: list) -> bool:
         """
@@ -36,15 +58,20 @@ class Moment:
         :param operations_list: The list of InitState and QuantumGate objects to be pushed
         :return: True for success
         """
-        n_ops = len(operations_list)
-        ops_iter = iter(operations_list)
-        i = 0
-        while i < n_ops:
-            current_item = next(ops_iter)
-            res = self.__push_list__(current_item)
+        _n_ops = len(operations_list)
+        _ops_iter = iter(operations_list)
+        _iteration = 0
+        while _iteration < _n_ops:
+            _current_item = next(_ops_iter)
+            _pushed = self.__push_list__(_current_item)
+            if not _pushed:
+                return False
+            _iteration += 1
+        return True        
+
 
     def __push_list__(self,
-                      gate: Union(QuantumGate, InitState)
+                      operation: Union(QuantumGate, InitState)
                       ) -> bool:
         """
         This function pushes the QuantumGate objects into the Moment list
@@ -52,21 +79,9 @@ class Moment:
         :return: True for success
         """
 
-        # This is the quantum register in which the gate is, like qreg_0, qreg_1 ...
-        qreg = gate.qreg
+        self._moment_list.append(operation)
         
-        # This is the index of the gate along the X-axis in the qreg
-        if type(gate) == QuantumGate:
-            pos = gate.pos
-        elif type(gate) == InitState:
-            pos = 0
-
-        if len(self._moment_list) < pos+1:
-            self._moment_list.append([])
-
-        self._moment_list[pos].insert(qreg, gate)
-        
-        if gate not in self._moment_list:
+        if operation not in self._moment_list:
             return False
 
         return True
@@ -81,8 +96,8 @@ class Moment:
         return self._moment_list
 
 
-    def __insert_placeholder_identity__(self,
-                                        moment_list: list,
+    def __insert_placeholder_identity__(self, 
+                                        qregs: int
                                         ) -> bool:
         """
         Pushes a placeholder Identity Operator into the Moment list for an absent gate in order to complete a moment.
@@ -105,22 +120,21 @@ class Moment:
         position on which it is acting on. So if X.acting_register() returns us 1, as in the case above, we shall,
         accordingly fill out Identity operators before (or after) X.acting_register.
 
-        :param moment_list: This is the instance list variable into which the Identity operator need to be inserted into
+        :param qregs: This denotes the total number of quantum registers
         :return: True if success
         """
 
-        identity_operator = QuantumGate
-        identity_insert_locations = iter([])
+        _identity_operator = IGate
 
-        for i, moment in enumerate(moment_list):
-            for j, gate in enumerate(moment):
-                if gate.acting_register != j:
-                    identity_insert_locations.append([i, j])
-
-        for loc in identity_insert_locations:
-            moment_list[loc[0]].insert(loc[1], identity_operator)
-
-        self._moment_list = moment_list
+        if len(self._moment_list) != qregs:
+            if type(self._moment_list) == InitState:
+                return True
+            else:
+                for _index, _operator in enumerate(self._moment_list):
+                    if _operator.qreg != _index:
+                        self._moment_list.insert(_index, _identity_operator)
+        else:
+            return False
 
         return True
 

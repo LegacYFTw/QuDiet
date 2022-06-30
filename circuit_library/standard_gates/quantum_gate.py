@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Union
 from scipy import sparse
 
 
@@ -35,10 +36,9 @@ class QuantumGate(ABC):
 
     @property
     @abstractmethod
-    def acting_on(self) -> int:
+    def acting_on(self) -> Union(int, list):
         """
         Gets the index of the acting qudit in the QuantumRegister
         :return: Index of the QuantumRegister
         """
-
 
