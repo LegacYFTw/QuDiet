@@ -17,6 +17,7 @@ class OperatorFlow:
         """
         self._moments = args
         self._opflow_list = []
+        self._measurement_count = [0]
 
     def peek(self) -> list:
         """
@@ -32,14 +33,21 @@ class OperatorFlow:
         """
         Responsible for populating the Opflow list
         :param args: These are Moment objects which need to be pushed in order into the _opflow_list
-        :return: True
+        :return: True if every register has a Measurement gate acting on it, else False
         """
         for _curr_moment in args:
             if self._opflow_list:
                 _prev_moment: Moment = self._opflow_list[-1]
                 _prev_moment.next_pointer = _curr_moment
                 _curr_moment.prev_pointer = _prev_moment
+            else:
+                _curr_moment_list = _curr_moment.peek_list()
+                self._measurement_count = len(_curr_moment_list)*[0]
             self._opflow_list.append(_curr_moment)
+            
+            _has_measurement = self.__detect_measurement__(_curr_moment)
+            if all(self._measurement_count):
+                return False
 
         return True
 
@@ -52,10 +60,12 @@ class OperatorFlow:
         :param moment: A Moment object
         :return: True if found and False if not found
         """
-        if any(isinstance(_operator, Measurement) for _operator in moment.peek_list()):
-            return True
-        else:
-            return False
+        _curr_moment_list = moment.peek_list()
+        for _index, _gate in enumerate(_curr_moment_list):
+            if isinstance(_gate, Measurement):
+                self._measurement_count[_index] = 1
+                return True
+        return False
 
 
     def __placeholder_identity__(self,
