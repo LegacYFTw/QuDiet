@@ -12,7 +12,7 @@ class XGate(QuantumGate, ABC):
                  dims: int
                  ):
         """
-        This generates the Identity Gate object for a given set of dimensions and a qreg number
+        This generates the Pauli-X Gate object for a given set of dimensions and a qreg number
         :param qreg: Integer representing the id of the quantum register
         :param dims: Integer representing the dimension of the gate
         """
@@ -33,10 +33,6 @@ class XGate(QuantumGate, ABC):
         Check if the gate is a single qudit or multi-qudit
         :return: True or False, depending on the scenario
         """
-
-        _unitary_builder = np.zeros(dims=(self.dims, 1))
-        _unitary_builder[1] = 1
-
         return True
 
     @property
