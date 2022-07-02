@@ -34,8 +34,12 @@ class OperatorFlow:
         :param args: These are Moment objects which need to be pushed in order into the _opflow_list
         :return: True
         """
-        for _moment in args:
-            self._opflow_list.append(_moment)
+        for _curr_moment in args:
+            if self._opflow_list:
+                _prev_moment: Moment = self._opflow_list[-1]
+                _prev_moment.next_pointer = _curr_moment
+                _curr_moment.prev_pointer = _prev_moment
+            self._opflow_list.append(_curr_moment)
 
         return True
 
