@@ -37,6 +37,8 @@ class OperatorFlow:
         """
         for _curr_moment in args:
             if self._opflow_list:
+                if all(self._measurement_count):
+                    return False
                 _prev_moment: Moment = self._opflow_list[-1]
                 _prev_moment.next_pointer = _curr_moment
                 _curr_moment.prev_pointer = _prev_moment
@@ -46,8 +48,6 @@ class OperatorFlow:
             self._opflow_list.append(_curr_moment)
             
             _has_measurement = self.__detect_measurement__(_curr_moment)
-            if all(self._measurement_count):
-                return False
 
         return True
 
