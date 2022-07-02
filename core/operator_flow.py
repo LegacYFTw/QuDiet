@@ -1,4 +1,5 @@
 from circuit_library.standard_gates.measurement import Measurement
+from core.init_states import InitState
 from moment import Moment
 
 
@@ -15,7 +16,6 @@ class OperatorFlow:
         :param args: This constitutes the many Moments, with which the OperatorFlow would be built
         """
         self._moments = args
-        self._num_moments = len(args)
         self._opflow_list = []
 
     def peek(self) -> list:
@@ -23,10 +23,9 @@ class OperatorFlow:
         Responsible for peeking the list of Moments
         :return: The list of Moments
         """
-        # TODO: Complete this
         return self._opflow_list
 
-    @staticmethod
+
     def __populate_opflow__(self,
                          *args: Moment
                          ) -> bool:
@@ -35,7 +34,12 @@ class OperatorFlow:
         :param args: These are Moment objects which need to be pushed in order into the _opflow_list
         :return: True
         """
-        # TODO: Complete this
+        for _moment in args:
+            if any(isinstance(_operator, InitState) for _operator in _moment.peek_list()):
+                self._opflow_list.insert(0, _moment)
+            else:
+                self._opflow_list.append(_moment)
+
         return True
 
     def __detect_measurement__(self,
