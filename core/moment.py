@@ -6,7 +6,7 @@ from core.init_states import InitState
 
 class Moment:
     def __init__(self,
-                 *args: Union(QuantumGate, InitState)
+                 *args: Union(QuantumGate, InitState, IGate)
                  ):
         """
         This is the Moment class. This is essentially a list of quantum gates that spans across quantum registers.
@@ -28,6 +28,8 @@ class Moment:
         self._operations = list(args)
         self._moment_list = []
 
+        self._result = self.__populate_list__()
+
         # TODO: Run unit tests
 
     @property
@@ -46,15 +48,16 @@ class Moment:
     def next_pointer(self, pointer):
         self._next_pointer = pointer
 
-    def __populate_list__(self, operations_list: list) -> bool:
+
+    def __populate_list__(self) -> bool:
         """
         This function takes a list of InitState and QuantumGate objects, and pushes them into the
         Moment.
         :param operations_list: The list of InitState and QuantumGate objects to be pushed
         :return: True for success
         """
-        _n_ops = len(operations_list)
-        _ops_iter = iter(operations_list)
+        _n_ops = len(self._operations)
+        _ops_iter = iter(self._operations)
         _iteration = 0
         while _iteration < _n_ops:
             _current_item = next(_ops_iter)
@@ -64,21 +67,19 @@ class Moment:
             _iteration += 1
         return True
 
+
     def __push_list__(self,
-                      operation: Union[QuantumGate, InitState]
+                      operation: Union[QuantumGate, InitState, IGate]
                       ) -> bool:
         """
         This function pushes the QuantumGate objects into the Moment list
         :param gate: The actual gates that will be pushed into the Moment
         :return: True for success
         """
-
         self._moment_list.append(operation)
 
-        if operation not in self._moment_list:
-            return False
-
         return True
+
 
     def peek_list(self) -> list:
         """
@@ -87,6 +88,7 @@ class Moment:
         :return: Returns the list held in the Moment object
         """
         return self._moment_list
+
 
     def __insert_placeholder_identity__(self,
                                         qregs: int
