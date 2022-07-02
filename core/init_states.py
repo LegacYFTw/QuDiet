@@ -1,4 +1,4 @@
-from scipy.sparse import csr_matrix, csc_matrix, coo_matrix
+from scipy.sparse import csr_matrix, dok_matrix
 from scipy import sparse
 
 
@@ -10,7 +10,7 @@ class InitState:
         :param dim:   Represents the dimension of the current wire. Takes integer values. Eg.: 3 represents a qutrit
                       and 4 represents a ququart state.
         :param state: Represents the state in which it is to be initialized.
-        :param qreg:  Represents the position of the init state in the circuit.
+        :param qreg:   Represents the position of the init state in the circuit.
         """
         if dim < state or dim < 2:
             raise Exception('Please check values of dim and state')
@@ -18,10 +18,11 @@ class InitState:
             self.dim = dim
             self.state = state
             self.qreg = qreg
-            self.init_state = sparse.eye(m=dim, n=1)
+            self.init_state = dok_matrix(sparse.eye(dim, n=1))
             self.init_state[state] = 1
+            self.init_state = csr_matrix(self.init_state)
 
-    def get_init_state(self) -> sparse:
+    def get_init_states(self) -> sparse:
         return self.init_state
 
 
