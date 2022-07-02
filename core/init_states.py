@@ -13,7 +13,7 @@ class InitState:
         :param qreg:   Represents the position of the init state in the circuit.
         """
         if dim < state or dim < 2:
-            raise Exception('Please check values of dim and state')
+            raise ValueError('Please check values of dim and state')
         else:
             self.dim = dim
             self.state = state
