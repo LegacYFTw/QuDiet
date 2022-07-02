@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d4b98352-0a78-4824-95d7-9fcde701ca26" name="Changes" comment="Added IGate">
+    <list default="true" id="d4b98352-0a78-4824-95d7-9fcde701ca26" name="Changes" comment="XGate Added but Unitary not defined">
+      <change afterPath="$PROJECT_DIR$/optimization/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/circuit_library/standard_gates/i.py" beforeDir="false" afterPath="$PROJECT_DIR$/circuit_library/standard_gates/i.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/circuit_library/standard_gates/quantum_gate.py" beforeDir="false" afterPath="$PROJECT_DIR$/circuit_library/standard_gates/quantum_gate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/circuit_library/standard_gates/measurement.py" beforeDir="false" afterPath="$PROJECT_DIR$/circuit_library/standard_gates/measurement.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/circuit_library/standard_gates/x.py" beforeDir="false" afterPath="$PROJECT_DIR$/circuit_library/standard_gates/x.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/moment.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/moment.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +38,8 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/turbasu-workspaces/qubit-qudit-sim&quot;
+    &quot;last_opened_file_path&quot;: &quot;E:/turbasu-workspaces/qubit-qudit-sim&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
 }</component>
   <component name="RunManager">
@@ -85,7 +85,14 @@
       <workItem from="1656473163292" duration="13980000" />
       <workItem from="1656501453504" duration="2238000" />
       <workItem from="1656558776886" duration="3487000" />
-      <workItem from="1656599460670" duration="1770000" />
+      <workItem from="1656599460670" duration="1951000" />
+      <workItem from="1656660876594" duration="323000" />
+      <workItem from="1656661230739" duration="365000" />
+      <workItem from="1656661618127" duration="163000" />
+      <workItem from="1656661800005" duration="1141000" />
+      <workItem from="1656662972020" duration="37000" />
+      <workItem from="1656663024401" duration="4788000" />
+      <workItem from="1656735304301" duration="2131000" />
     </task>
     <task id="LOCAL-00001" summary="Added skeletons for a whole lot of things. More incoming.">
       <created>1656436635533</created>
@@ -115,7 +122,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656569696483</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="XGate Added but Unitary not defined">
+      <created>1656602712401</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1656602712401</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -137,7 +151,8 @@
     <MESSAGE value="Added TODO's in moment.py alongwith skeleton methods." />
     <MESSAGE value="Added TODO's and skeletons in moment.py and operator_flow.py along with skeleton methods." />
     <MESSAGE value="Added IGate" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added IGate" />
+    <MESSAGE value="XGate Added but Unitary not defined" />
+    <option name="LAST_COMMIT_MESSAGE" value="XGate Added but Unitary not defined" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/qubit_qudit_sim$moment.coverage" NAME="moment Coverage Results" MODIFIED="1656571313988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />

@@ -1,7 +1,8 @@
 from abc import ABC
 from typing import Union
-from scipy import sparse
+from scipy.sparse import csr_matrix
 from scipy.linalg import circulant
+import numpy as np
 from quantum_gate import QuantumGate
 
 
@@ -32,16 +33,23 @@ class XGate(QuantumGate, ABC):
         Check if the gate is a single qudit or multi-qudit
         :return: True or False, depending on the scenario
         """
+
+        _unitary_builder = np.zeros(dims=(self.dims, 1))
+        _unitary_builder[1] = 1
+
         return True
 
     @property
-    def unitary(self) -> sparse:
+    def unitary(self) -> csr_matrix:
         """
         This is the gate unitary which shall be used to do any calculation
         :return: The gate unitary
         """
+        _unitary_builder = np.zeros(shape=(self.dims, 1))
+        _unitary_builder[1] = 1
+        _unitary = csr_matrix(circulant(_unitary_builder))
 
-        return sparse.eye(n=self.dims, m=self.dims)
+        return _unitary
 
     @property
     def acting_on(self) -> Union[int, list]:

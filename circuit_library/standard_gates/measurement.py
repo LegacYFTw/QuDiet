@@ -3,5 +3,5 @@ from scipy.sparse import csr_matrix, coo_matrix, csc_matrix
 import numpy as np
 
 
-class Measurement():
+class Measurement:
     pass
