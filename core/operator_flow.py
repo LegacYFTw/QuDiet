@@ -26,7 +26,7 @@ class OperatorFlow:
         return self._opflow_list
 
 
-    def __populate_opflow__(self,
+    def populate_opflow(self,
                          *args: Moment
                          ) -> bool:
         """
@@ -35,10 +35,7 @@ class OperatorFlow:
         :return: True
         """
         for _moment in args:
-            if any(isinstance(_operator, InitState) for _operator in _moment.peek_list()):
-                self._opflow_list.insert(0, _moment)
-            else:
-                self._opflow_list.append(_moment)
+            self._opflow_list.append(_moment)
 
         return True
 

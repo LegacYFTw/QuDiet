@@ -6,7 +6,7 @@ from core.init_states import InitState
 
 class Moment:
     def __init__(self,
-                 *args: Union(QuantumGate, InitState, IGate)
+                 *args: Union[QuantumGate, InitState, IGate]
                  ):
         """
         This is the Moment class. This is essentially a list of quantum gates that spans across quantum registers.
