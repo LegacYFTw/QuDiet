@@ -2,6 +2,10 @@ import numpy as np
 from scipy import sparse
 from scipy.linalg import circulant
 from scipy.sparse import csr_matrix, csc_matrix, coo_matrix
+from circuit_library.standard_gates.h import HGate
+from circuit_library.standard_gates.i import IGate
+from circuit_library.standard_gates.x import XGate
+from circuit_library.standard_gates.z import ZGate
 from core.moment import Moment
 from core.operator_flow import OperatorFlow
 from init_states import InitState
@@ -38,12 +42,12 @@ class QuantumCircuit:
         This will create a QuantumCircuit with RegisterLength = len(Iterable) (here 4) with the energy levels 2,2,3,3 or in
         other words this will create a two qubits and two qutrits and one classical register.
         
-        :params qregs: This can either be a tuple of two integers, where the first one is the register length and the send
-                       one is their dimension or a list of multiple integers each denoting their dimension.
+        :params qregs: This can either be a tuple of two integers, where the first one is the register length and the second
+                       one is their dimension, or a list of multiple integers each denoting their dimension.
         :params cregs: 
         :params name: 
-        :params init_states: This is a list of integers, where their values correspond to the dimension and the index of each
-                             number is their qreg number
+        :params init_states: This is a list of integers, where their values correspond to the dimension and the index of
+                             each number is their qreg number
         """
 
         if not isinstance(qregs, (tuple, list)):
@@ -62,18 +66,94 @@ class QuantumCircuit:
 
         if self._is_qregs_tuple:
             self._reg_length = self.qregs[0]
+            self._reg_dims = self._reg_length * self.qregs[1]
         
         elif self._is_qregs_list:
             self._reg_length = len(self.qregs[0])
+            self._reg_dims = self.qregs[1]
 
         if self._reg_length > len(self.init_states):
             self.init_states.extend((self._reg_length - len(self.init_states)) * [0])
 
+        self.__initialize_states__()
 
+    
     def get_circuit_config(self):
         raise NotImplementedError
 
-    def initialize_states(self):
+
+    def __validate_gate_inputs__(self, qreg: int, dims: Optional[int]):
+        """
+        Responsible for checking if the register number or the dimension of the gates are in the correct bounds.
+        
+        :params qreg: The quantum register number for putting the gate
+        :params dims: The dimension of the gate
+        """
+        if dims > self._reg_dims:
+            raise ValueError("Input dimension is greater than the register dimension.")
+        if qreg > self._reg_length:
+            raise ValueError("Illegal placement of gate. Register specified is out of circuit bounds.")
+
+    
+    def __add_moment_to_opflow__(self, qreg: int, gate_obj: Union[HGate, XGate, ZGate]) -> bool:
+        """
+        Creates Moment objects for the given QuantumGate object and pushes it into the OperatorFlow object created earlier
+
+        :params qreg: The quantum register number for putting the gate
+        :params gate_obj: Object of one of QuantumGate's child classes, e.g. HGate, XGate, etc.
+        :return: True if everything goes well, else False
+        """
+        _moment_data = self._reg_length*[IGate]
+        _moment_data[qreg] = gate_obj
+        
+        _curr_moment = Moment(*_moment_data)        
+        _result = self.op_flow.populate_opflow(_curr_moment)
+        return _result
+
+
+    def h(self, qreg: int, dims: Optional[int] = None) -> bool:
+        """
+        Responsible for creating the HGate and adding it to OperatorFlow through another function call
+
+        :params qreg: The quantum register number for putting the gate
+        :params dims: The dimension of the gate
+        :return: True if everything goes well, else False
+        """
+        self.__validate_gate_inputs__(qreg, dims)
+        _hgate = HGate(qreg=qreg, dims=dims or self._reg_dims)
+        _result = self.__add_moment_to_opflow__(qreg, _hgate)
+        return _result
+
+
+    def x(self, qreg: int, dims: Optional[int] = None) -> bool:
+        """
+        Responsible for creating the XGate and adding it to OperatorFlow through another function call
+
+        :params qreg: The quantum register number for putting the gate
+        :params dims: The dimension of the gate
+        :return: True if everything goes well, else False
+        """
+        self.__validate_gate_inputs__(qreg, dims)
+        _xgate = XGate(qreg=qreg, dims=dims or self._reg_dims)
+        _result = self.__add_moment_to_opflow__(qreg, _xgate)
+        return _result
+
+
+    def z(self, qreg: int, dims: Optional[int] = None) -> bool:
+        """
+        Responsible for creating the ZGate and adding it to OperatorFlow through another function call
+
+        :params qreg: The quantum register number for putting the gate
+        :params dims: The dimension of the gate
+        :return: True if everything goes well, else False
+        """
+        self.__validate_gate_inputs__(qreg, dims)
+        _zgate = ZGate(qreg=qreg, dims=dims or self._reg_dims)
+        _result = self.__add_moment_to_opflow__(qreg, _zgate)
+        return _result
+
+
+    def __initialize_states__(self):
         """
         Initializes the qudits to |0> state or |N> state depending on the dimensions of the qubits
         """
@@ -85,4 +165,4 @@ class QuantumCircuit:
                 _init_moment.append(_init_state)
 
         m = Moment(*_init_moment)
-        self.op_flow.__populate_opflow__(m)
+        self.op_flow.populate_opflow(m)
