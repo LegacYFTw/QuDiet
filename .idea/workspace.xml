@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d4b98352-0a78-4824-95d7-9fcde701ca26" name="Changes" comment="Pushed HGate and fixed typos">
-      <change afterPath="$PROJECT_DIR$/circuit_library/standard_gates/z.py" afterDir="false" />
+    <list default="true" id="d4b98352-0a78-4824-95d7-9fcde701ca26" name="Changes" comment="Fixed Errors and Added ZGate, unitary definition pending.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/circuit_library/standard_gates/h.py" beforeDir="false" afterPath="$PROJECT_DIR$/circuit_library/standard_gates/h.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/init_states.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/init_states.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/circuit_library/standard_gates/z.py" beforeDir="false" afterPath="$PROJECT_DIR$/circuit_library/standard_gates/z.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +92,7 @@
       <workItem from="1656662972020" duration="37000" />
       <workItem from="1656663024401" duration="4788000" />
       <workItem from="1656735304301" duration="5122000" />
-      <workItem from="1656753055259" duration="2526000" />
+      <workItem from="1656753055259" duration="4660000" />
     </task>
     <task id="LOCAL-00001" summary="Added skeletons for a whole lot of things. More incoming.">
       <created>1656436635533</created>
@@ -144,7 +143,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656740208204</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Fixed Errors and Added ZGate, unitary definition pending.">
+      <created>1656758278287</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1656758278287</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -169,7 +175,8 @@
     <MESSAGE value="XGate Added but Unitary not defined" />
     <MESSAGE value="XGate Added with Unitary" />
     <MESSAGE value="Pushed HGate and fixed typos" />
-    <option name="LAST_COMMIT_MESSAGE" value="Pushed HGate and fixed typos" />
+    <MESSAGE value="Fixed Errors and Added ZGate, unitary definition pending." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed Errors and Added ZGate, unitary definition pending." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/qubit_qudit_sim$moment.coverage" NAME="moment Coverage Results" MODIFIED="1656571313988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />

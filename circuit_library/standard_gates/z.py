@@ -45,12 +45,14 @@ class HGate(QuantumGate, ABC):
         This is the gate unitary which shall be used to do any calculation
         :return: The gate unitary
         """
-        # _roots_of_unity_build_list = np.zeros(self.dims)
-        # _roots_of_unity_build_list[0] = 1
-        # _roots_of_unity_build_list[self.dims - 1] = -1
-        # _roots_of_unity = np.roots(_roots_of_unity_build_list)
+        _roots_of_unity_build_list = np.zeros(self.dims + 1)
+        _roots_of_unity_build_list[0] = 1
+        _roots_of_unity_build_list[self.dims] = -1
+        _roots_of_unity = np.roots(_roots_of_unity_build_list)
+        _roots_of_unity = np.flipud(_roots_of_unity)
+        _unitary = np.diag(np.flipud(_roots_of_unity))
 
-        return 1
+        return csr_matrix(_unitary)
 
     @property
     def acting_on(self) -> Union[int, list]:

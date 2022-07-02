@@ -45,9 +45,9 @@ class HGate(QuantumGate, ABC):
         This is the gate unitary which shall be used to do any calculation
         :return: The gate unitary
         """
-        _roots_of_unity_build_list = np.zeros(self.dims)
+        _roots_of_unity_build_list = np.zeros(self.dims + 1)
         _roots_of_unity_build_list[0] = 1
-        _roots_of_unity_build_list[self.dims - 1] = -1
+        _roots_of_unity_build_list[self.dims] = -1
         _roots_of_unity = np.roots(_roots_of_unity_build_list)
         _usable_roots_of_unity = np.delete(_roots_of_unity, len(_roots_of_unity) - 1)
         _unitary_builder = circulant(_usable_roots_of_unity)
