@@ -9,7 +9,7 @@ import numpy as np
 from circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
-class HGate(QuantumGate, ABC):
+class ZGate(QuantumGate, ABC):
     def __init__(self,
                  qreg: int,
                  dims: int
