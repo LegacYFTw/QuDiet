@@ -34,7 +34,7 @@ class QuantumCircuit:
                  name: Optional[str] = None,
                  init_states: 'Optional[list[int]]' = None,
                  ):
-        """"
+        """
         x = QuantumCircuit((3,3))
         This will basically create a QuantumCircuit with RegisterLength = 3, meaning there shall be 3 qudits, with energy
         level 3 or in essence a 3 qutrit register and one classical register.
@@ -84,7 +84,7 @@ class QuantumCircuit:
     def __validate_gate_inputs(self, qreg: int, dims: Optional[int]):
         """
         Responsible for checking if the register number or the dimension of the gates are in the correct bounds.
-        
+
         :param qreg: The quantum register number for putting the gate
         :param dims: The dimension of the gate
         """
@@ -101,7 +101,10 @@ class QuantumCircuit:
         :param gate_obj: Object of one of QuantumGate's child classes, e.g. HGate, XGate, etc.
         :return: True if everything goes well, else False
         """
-        _moment_data = self._reg_length * [IGate]
+        _moment_data = []
+        for _reg in range(self._reg_length):
+            _igate = IGate(qreg=_reg, dims=gate_obj.dims)
+            _moment_data.append(_igate)
         _moment_data[qreg] = gate_obj
 
         _curr_moment = Moment(*_moment_data)

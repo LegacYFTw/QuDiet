@@ -1,3 +1,6 @@
+from circuit_library.standard_gates.h import HGate
+from circuit_library.standard_gates.x import XGate
+from circuit_library.standard_gates.z import ZGate
 from circuit_library.standard_gates.measurement import Measurement
 from core.init_states import InitState
 from moment import Moment
@@ -32,25 +35,50 @@ class OperatorFlow:
         """
         Responsible for populating the Opflow list
         :param args: These are Moment objects which need to be pushed in order into the _opflow_list
-        :return: True if every register has a Measurement gate acting on it, else False
+        :return: True if every register doesn't have a Measurement gate acting on it, else False
         """
         for _curr_moment in args:
+            _curr_moment_list = _curr_moment.peek_list()
             if self._opflow_list:
+                # Checks if all the registers have a measurement
                 if all(self._measurement_count):
                     return False
-                _prev_moment: Moment = self._opflow_list[-1]
-                _prev_moment.next_pointer = _curr_moment
-                _curr_moment.prev_pointer = _prev_moment
+                
+                # Finds the register number of either of HGate, Xgate or ZGate present in the current moment
+                _qreg = _curr_moment_list.index(
+                    next(
+                        _gate
+                        for _gate in _curr_moment_list
+                        if isinstance(_gate, (HGate, XGate, ZGate))
+                    )
+                )
+                
+                # Loops through the OperatorFlow list, checks if any of the earlier Moment(s) have an IGate.
+                # If yes, replaces it with HGate, XGate or ZGate of the current Moment.
+                for _earlier_moment in self._opflow_list[1:]:
+                    _added_gate_to_earlier_moment = _earlier_moment.replace_igate(_curr_moment_list[_qreg])
+                    if _added_gate_to_earlier_moment:
+                        break
+                
+                # Checks if the current Moment's HGate, XGate or ZGate has been added to any earlier Moment.
+                # If no, takes the last Moment in OperatorFlow list and points it to the current Moment, thereby
+                # adding it to the OperatorFlow list.
+                if not _added_gate_to_earlier_moment:
+                    _prev_moment: Moment = self._opflow_list[-1]
+                    _prev_moment.next_pointer = _curr_moment
+                    _curr_moment.prev_pointer = _prev_moment
+                    self._opflow_list.append(_curr_moment)
+            
             else:
-                _curr_moment_list = _curr_moment.peek_list()
                 self._measurement_count = len(_curr_moment_list) * [0]
-            self._opflow_list.append(_curr_moment)
+                self._opflow_list.append(_curr_moment)
 
-            _has_measurement = self.__detect_measurement(_curr_moment)
+            _has_measurement = self.__detect_measurement_and_add_count(_curr_moment)
 
         return True
 
-    def __detect_measurement(self,
+
+    def __detect_measurement_and_add_count(self,
                              moment: Moment
                              ) -> bool:
         """
