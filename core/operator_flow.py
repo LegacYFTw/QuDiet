@@ -1,9 +1,14 @@
 from circuit_library.standard_gates.h import HGate
+from circuit_library.standard_gates.quantum_gate import QuantumGate
 from circuit_library.standard_gates.x import XGate
 from circuit_library.standard_gates.z import ZGate
 from circuit_library.standard_gates.measurement import Measurement
 from core.init_states import InitState
 from moment import Moment
+import numpy as np
+
+# Can be used to find dot product of more than two matrices
+from numpy.linalg import multi_dot
 
 
 class OperatorFlow:
@@ -93,6 +98,63 @@ class OperatorFlow:
                 self._measurement_count[_index] = 1
                 return True
         return False
+
+
+    def __exec(self, *args: Moment):
+        """
+        This function takes multiple Moment objects, traverses them from last to first, performing kronecker product
+        on each of the Gates of every Moment, then performs dot product on the resultant kronecker products of all 
+        the Moments and finally returns it.
+
+        :param *args: Accepts multiple Moment objects
+        :return: ndarray
+        """
+        
+        # Creates a list _all_moments from all the passed Moments from args
+        _all_moments = list(args)
+        
+        # Pops out the last Moment and stores it in _moment
+        _moment = _all_moments.pop()
+
+        # Sets _dot_product as None
+        _dot_product = None
+        
+        # Run a loop while there is a Moment present in the _all_moments list
+        while _all_moments:
+            
+            # Get the moment list from the current Moment (_moment) and reverse it for FIFO operation. 
+            _moment_list = _moment.peek_list()
+            _moment_list = _moment_list[::-1]
+            
+            # Pops out the first Gate from the _moment_list and get it's Unitary property to _kron_product
+            _kron_product = _moment_list.pop()
+            _kron_product = _kron_product.unitary
+
+            # Run a loop while there is a Gate present in the _moment_list
+            while _moment_list:
+                
+                # Pops a Gate from _moment_list and stores it's Unitary property to _curr_gate
+                _curr_gate = _moment_list.pop()
+                _curr_gate = _curr_gate.unitary
+
+                # Computes the kronecker product of the current _kron_product and _curr_gate, and store 
+                # the kronecker product of the two in _kron_product
+                _kron_product = np.kron(_kron_product, _curr_gate)
+            
+            # If _dot_product does not have a value, assigns the value of _kron_product to _dot_product
+            # else, calculates the dot product of _dot_product and _kron_product and assigns it to _dot_product.
+            # NOTE: The if condition evaluates to True only for the first run of the parent while loop.
+            if not _dot_product:
+                _dot_product = _kron_product
+            else:
+                _dot_product = np.dot(_dot_product, _kron_product)
+
+            # Pops a Moment from _all_moments and assigns it to _moment
+            _moment = _all_moments.pop()
+        
+        # Once the parent while loop ends, returns the final _dot_product
+        return _dot_product
+
 
     def __placeholder_identity(self,
                                moment: Moment

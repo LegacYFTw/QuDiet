@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Union
 from scipy import sparse
-from quantum_gate import QuantumGate
+from circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
 class IGate(QuantumGate, ABC):
