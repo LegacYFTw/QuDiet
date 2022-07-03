@@ -48,8 +48,7 @@ class Moment:
     def next_pointer(self, pointer):
         self._next_pointer = pointer
 
-
-    def __populate_list__(self) -> bool:
+    def __populate_list(self) -> bool:
         """
         This function takes a list of InitState and QuantumGate objects, and pushes them into the
         Moment.
@@ -67,8 +66,7 @@ class Moment:
             _iteration += 1
         return True
 
-
-    def __push_list__(self,
+    def __push_list(self,
                       operation: Union[QuantumGate, InitState, IGate]
                       ) -> bool:
         """
@@ -80,7 +78,6 @@ class Moment:
 
         return True
 
-
     def peek_list(self) -> list:
         """
         Function used to peek the list
@@ -89,8 +86,7 @@ class Moment:
         """
         return self._moment_list
 
-
-    def __insert_placeholder_identity__(self,
+    def __insert_placeholder_identity(self,
                                         qregs: int
                                         ) -> bool:
         """

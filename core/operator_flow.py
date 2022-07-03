@@ -26,10 +26,9 @@ class OperatorFlow:
         """
         return self._opflow_list
 
-
     def populate_opflow(self,
-                         *args: Moment
-                         ) -> bool:
+                        *args: Moment
+                        ) -> bool:
         """
         Responsible for populating the Opflow list
         :param args: These are Moment objects which need to be pushed in order into the _opflow_list
@@ -44,16 +43,16 @@ class OperatorFlow:
                 _curr_moment.prev_pointer = _prev_moment
             else:
                 _curr_moment_list = _curr_moment.peek_list()
-                self._measurement_count = len(_curr_moment_list)*[0]
+                self._measurement_count = len(_curr_moment_list) * [0]
             self._opflow_list.append(_curr_moment)
-            
-            _has_measurement = self.__detect_measurement__(_curr_moment)
+
+            _has_measurement = self.__detect_measurement(_curr_moment)
 
         return True
 
-    def __detect_measurement__(self,
-                               moment: Moment
-                               ) -> bool:
+    def __detect_measurement(self,
+                             moment: Moment
+                             ) -> bool:
         """
         Responsible for detecting whether a Moment object has a measurement gate in it. This function is used for the
         __exec__()
@@ -67,10 +66,9 @@ class OperatorFlow:
                 return True
         return False
 
-
-    def __placeholder_identity__(self,
-                                 moment: Moment
-                                 ) -> bool:
+    def __placeholder_identity(self,
+                               moment: Moment
+                               ) -> bool:
         """
         Pushes a placeholder Identity Operator into the Moment list for an absent gate in order to complete a moment.
         Let's say that a QuantumCircuit object is as follows:
