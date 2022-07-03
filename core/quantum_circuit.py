@@ -167,13 +167,13 @@ class QuantumCircuit:
         """
         if self._is_qregs_tuple:
             _measurement_moment = []
-            for _index, in len(self.init_states):
+            for _index, _state in enumerate(self.init_states):
                 # Adds Operator flow object and push the Measurement object into Operator Flow stack
                 _measurement = Measurement(qreg=_index)
                 _measurement_moment.append(_measurement)
 
-        m = Moment(*_measurement_moment)
-        self.op_flow.populate_opflow(m)
+        _m = Moment(*_measurement_moment)
+        self.op_flow.populate_opflow(_m)
 
 
     def __initialize_states__(self):
@@ -187,5 +187,5 @@ class QuantumCircuit:
                 _init_state = InitState(dim=_element, state=0, qreg=_index)
                 _init_moment.append(_init_state)
 
-        m = Moment(*_init_moment)
-        self.op_flow.populate_opflow(m)
+        _m = Moment(*_init_moment)
+        self.op_flow.populate_opflow(_m)
