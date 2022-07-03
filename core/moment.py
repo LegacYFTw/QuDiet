@@ -28,7 +28,7 @@ class Moment:
         self._operations = list(args)
         self._moment_list = []
 
-        self._result = self.__populate_list__()
+        self._result = self.__populate_list()
 
         # TODO: Run unit tests
 
@@ -60,7 +60,7 @@ class Moment:
         _iteration = 0
         while _iteration < _n_ops:
             _current_item = next(_ops_iter)
-            _pushed = self.__push_list__(_current_item)
+            _pushed = self.__push_list(_current_item)
             if not _pushed:
                 return False
             _iteration += 1

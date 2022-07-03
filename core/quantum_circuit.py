@@ -76,7 +76,7 @@ class QuantumCircuit:
         if self._reg_length > len(self.init_states):
             self.init_states.extend((self._reg_length - len(self.init_states)) * [0])
 
-        self.__initialize_states__()
+        self.__initialize_states()
 
     def get_circuit_config(self):
         raise NotImplementedError
