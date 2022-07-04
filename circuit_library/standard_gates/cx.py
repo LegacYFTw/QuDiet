@@ -1,25 +1,22 @@
 from abc import ABC
 from typing import Union
 
-import numpy as np
-from scipy.linalg import circulant
-from scipy.sparse import csr_matrix
+from scipy import sparse
 
-from quantum_gate import QuantumGate
+from circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
-class XGate(QuantumGate, ABC):
+class CXGate(QuantumGate, ABC):
     def __init__(self,
-                 qreg: int,
+                 qreg: tuple[int, int],
                  dims: int
                  ):
         """
-        This generates the Pauli-X Gate object for a given set of dimensions and a qreg number
-        :param qreg: Integer representing the id of the quantum register
-        :param dims: Integer representing the dimension of the gate
+        :param qreg:
+        :param dims:
+
+
         """
-        self.qreg = qreg
-        self.dims = dims
 
     @property
     def is_controlled(self) -> bool:
@@ -27,7 +24,7 @@ class XGate(QuantumGate, ABC):
         Check if the gate is controlled or not
         :return: True or False, depending on the scenario
         """
-        return False
+        return True
 
     @property
     def is_single_qudit(self) -> bool:
@@ -35,19 +32,15 @@ class XGate(QuantumGate, ABC):
         Check if the gate is a single qudit or multi-qudit
         :return: True or False, depending on the scenario
         """
-        return True
+        return False
 
     @property
-    def unitary(self) -> csr_matrix:
+    def unitary(self) -> sparse:
         """
-        This is the gate unitary which shall be used to do any calculation
+        This is the gate unitary which shall be used to do any calculations
         :return: The gate unitary
         """
-        _unitary_builder = np.zeros(shape=(self.dims, 1))
-        _unitary_builder[1] = 1
-        _unitary = csr_matrix(circulant(_unitary_builder))
-
-        return _unitary
+        return None
 
     @property
     def acting_on(self) -> Union[int, list]:
@@ -55,4 +48,4 @@ class XGate(QuantumGate, ABC):
         Gets the index of the acting qudit in the QuantumRegister
         :return: Index of the QuantumRegister if it is a single qudit gate or a list if multiqudit
         """
-        return self.qreg
+        return 0

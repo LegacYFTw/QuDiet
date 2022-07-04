@@ -1,5 +1,4 @@
 from circuit_library.standard_gates.measurement import Measurement
-from core.init_states import InitState
 from moment import Moment
 
 

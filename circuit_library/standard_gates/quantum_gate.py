@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Union
+
 from scipy import sparse
 
 
@@ -7,6 +8,7 @@ class QuantumGate(ABC):
     """
     The QuantumGate abstract class presents a template of all quantum gates to be constructed.
     """
+
     @property
     @abstractmethod
     def is_controlled(self) -> bool:
@@ -42,4 +44,3 @@ class QuantumGate(ABC):
         :return: Index of the QuantumRegister if it is a single qudit gate or a list if multiqudit
         """
         pass
-

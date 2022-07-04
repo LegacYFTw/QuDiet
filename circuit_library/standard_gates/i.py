@@ -1,6 +1,8 @@
 from abc import ABC
 from typing import Union
+
 from scipy import sparse
+
 from quantum_gate import QuantumGate
 
 
@@ -48,6 +50,3 @@ class IGate(QuantumGate, ABC):
         :return: Index of the QuantumRegister if it is a single qudit gate or a list if multiqudit
         """
         return self.qreg
-
-
-

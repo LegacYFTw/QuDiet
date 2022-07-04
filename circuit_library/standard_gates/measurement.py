@@ -40,6 +40,3 @@ class Measurement(QuantumGate, ABC):
         :return: Index of the QuantumRegister if it is a single qudit gate or a list if multiqudit
         """
         return self._qreg
-
-
-
