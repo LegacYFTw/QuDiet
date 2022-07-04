@@ -1,4 +1,5 @@
 from typing import Union
+
 from circuit_library.standard_gates.i import IGate
 from circuit_library.standard_gates.h import HGate
 from circuit_library.standard_gates.x import XGate
@@ -70,8 +71,8 @@ class Moment:
         return True
 
     def __push_list(self,
-                      operation: Union[QuantumGate, InitState, IGate]
-                      ) -> bool:
+                    operation: Union[QuantumGate, InitState, IGate]
+                    ) -> bool:
         """
         This function pushes the QuantumGate objects into the Moment list
         :param gate: The actual gates that will be pushed into the Moment
@@ -104,8 +105,8 @@ class Moment:
         return self._moment_list
 
     def __insert_placeholder_identity(self,
-                                        qregs: int
-                                        ) -> bool:
+                                      qregs: int
+                                      ) -> bool:
         """
         Pushes a placeholder Identity Operator into the Moment list for an absent gate in order to complete a moment.
         Let's say that a QuantumCircuit object is as follows:

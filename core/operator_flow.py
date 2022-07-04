@@ -3,7 +3,6 @@ from circuit_library.standard_gates.quantum_gate import QuantumGate
 from circuit_library.standard_gates.x import XGate
 from circuit_library.standard_gates.z import ZGate
 from circuit_library.standard_gates.measurement import Measurement
-from core.init_states import InitState
 from moment import Moment
 import numpy as np
 

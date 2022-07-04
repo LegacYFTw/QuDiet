@@ -1,5 +1,5 @@
-from scipy.sparse import csr_matrix, dok_matrix
 from scipy import sparse
+from scipy.sparse import csr_matrix, dok_matrix
 
 
 class InitState:
@@ -24,6 +24,3 @@ class InitState:
 
     def get_init_states(self) -> sparse:
         return self.init_state
-
-
-

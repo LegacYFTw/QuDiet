@@ -1,7 +1,9 @@
-import numpy as np
-from scipy import sparse
-from scipy.linalg import circulant
-from scipy.sparse import csr_matrix, csc_matrix, coo_matrix
+from circuit_library.standard_gates.h import HGate
+from typing import (
+    Union,
+    Optional,
+)
+
 from circuit_library.standard_gates.h import HGate
 from circuit_library.standard_gates.i import IGate
 from circuit_library.standard_gates.measurement import Measurement
@@ -10,21 +12,6 @@ from circuit_library.standard_gates.z import ZGate
 from core.moment import Moment
 from core.operator_flow import OperatorFlow
 from init_states import InitState
-
-from typing import (
-    Union,
-    Optional,
-    List,
-    Dict,
-    Tuple,
-    Type,
-    TypeVar,
-    Sequence,
-    Callable,
-    Mapping,
-    Set,
-    Iterable,
-)
 
 
 class QuantumCircuit:
@@ -177,7 +164,6 @@ class QuantumCircuit:
 
         _m = Moment(*_measurement_moment)
         self.op_flow.populate_opflow(_m)
-
 
     def __initialize_states(self):
         """
