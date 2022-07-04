@@ -1,6 +1,9 @@
 from typing import Union
 
 from circuit_library.standard_gates.i import IGate
+from circuit_library.standard_gates.h import HGate
+from circuit_library.standard_gates.x import XGate
+from circuit_library.standard_gates.z import ZGate
 from circuit_library.standard_gates.quantum_gate import QuantumGate
 from core.init_states import InitState
 
@@ -76,8 +79,22 @@ class Moment:
         :return: True for success
         """
         self._moment_list.append(operation)
-
         return True
+
+    def replace_igate(self, gate_obj: Union(HGate, XGate, ZGate)) -> bool:
+        """
+        Checks if _moment_list has an IGate at qreg position. If yes, replaces it with the 
+        gate object provided in the parameter
+
+        :param gate_obj: Gate object of either HGate, XGate or ZGate
+        :return: True if replacement occurs, else False
+        """
+        _qreg = gate_obj.qreg
+        if isinstance(self._moment_list[_qreg], IGate):
+            self._moment_list[_qreg] = gate_obj
+            return True
+        else:
+            return False
 
     def peek_list(self) -> list:
         """

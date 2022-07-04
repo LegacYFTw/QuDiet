@@ -1,11 +1,9 @@
 from abc import ABC
 from typing import Union
-
 import numpy as np
 from scipy.linalg import circulant
 from scipy.sparse import csr_matrix
-
-from quantum_gate import QuantumGate
+from circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
 class XGate(QuantumGate, ABC):

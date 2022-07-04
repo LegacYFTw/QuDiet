@@ -1,5 +1,13 @@
+from circuit_library.standard_gates.h import HGate
+from circuit_library.standard_gates.quantum_gate import QuantumGate
+from circuit_library.standard_gates.x import XGate
+from circuit_library.standard_gates.z import ZGate
 from circuit_library.standard_gates.measurement import Measurement
 from moment import Moment
+import numpy as np
+
+# Can be used to find dot product of more than two matrices
+from numpy.linalg import multi_dot
 
 
 class OperatorFlow:
@@ -31,25 +39,50 @@ class OperatorFlow:
         """
         Responsible for populating the Opflow list
         :param args: These are Moment objects which need to be pushed in order into the _opflow_list
-        :return: True if every register has a Measurement gate acting on it, else False
+        :return: True if every register doesn't have a Measurement gate acting on it, else False
         """
         for _curr_moment in args:
+            _curr_moment_list = _curr_moment.peek_list()
             if self._opflow_list:
+                # Checks if all the registers have a measurement
                 if all(self._measurement_count):
                     return False
-                _prev_moment: Moment = self._opflow_list[-1]
-                _prev_moment.next_pointer = _curr_moment
-                _curr_moment.prev_pointer = _prev_moment
+                
+                # Finds the register number of either of HGate, Xgate or ZGate present in the current moment
+                _qreg = _curr_moment_list.index(
+                    next(
+                        _gate
+                        for _gate in _curr_moment_list
+                        if isinstance(_gate, (HGate, XGate, ZGate))
+                    )
+                )
+                
+                # Loops through the OperatorFlow list, checks if any of the earlier Moment(s) have an IGate.
+                # If yes, replaces it with HGate, XGate or ZGate of the current Moment.
+                for _earlier_moment in self._opflow_list[1:]:
+                    _added_gate_to_earlier_moment = _earlier_moment.replace_igate(_curr_moment_list[_qreg])
+                    if _added_gate_to_earlier_moment:
+                        break
+                
+                # Checks if the current Moment's HGate, XGate or ZGate has been added to any earlier Moment.
+                # If no, takes the last Moment in OperatorFlow list and points it to the current Moment, thereby
+                # adding it to the OperatorFlow list.
+                if not _added_gate_to_earlier_moment:
+                    _prev_moment: Moment = self._opflow_list[-1]
+                    _prev_moment.next_pointer = _curr_moment
+                    _curr_moment.prev_pointer = _prev_moment
+                    self._opflow_list.append(_curr_moment)
+            
             else:
-                _curr_moment_list = _curr_moment.peek_list()
                 self._measurement_count = len(_curr_moment_list) * [0]
-            self._opflow_list.append(_curr_moment)
+                self._opflow_list.append(_curr_moment)
 
-            _has_measurement = self.__detect_measurement(_curr_moment)
+            _has_measurement = self.__detect_measurement_and_add_count(_curr_moment)
 
         return True
 
-    def __detect_measurement(self,
+
+    def __detect_measurement_and_add_count(self,
                              moment: Moment
                              ) -> bool:
         """
@@ -64,6 +97,63 @@ class OperatorFlow:
                 self._measurement_count[_index] = 1
                 return True
         return False
+
+
+    def __exec(self, *args: Moment):
+        """
+        This function takes multiple Moment objects, traverses them from last to first, performing kronecker product
+        on each of the Gates of every Moment, then performs dot product on the resultant kronecker products of all 
+        the Moments and finally returns it.
+
+        :param *args: Accepts multiple Moment objects
+        :return: ndarray
+        """
+        
+        # Creates a list _all_moments from all the passed Moments from args
+        _all_moments = list(args)
+        
+        # Pops out the last Moment and stores it in _moment
+        _moment = _all_moments.pop()
+
+        # Sets _dot_product as None
+        _dot_product = None
+        
+        # Run a loop while there is a Moment present in the _all_moments list
+        while _all_moments:
+            
+            # Get the moment list from the current Moment (_moment) and reverse it for FIFO operation. 
+            _moment_list = _moment.peek_list()
+            _moment_list = _moment_list[::-1]
+            
+            # Pops out the first Gate from the _moment_list and get it's Unitary property to _kron_product
+            _kron_product = _moment_list.pop()
+            _kron_product = _kron_product.unitary
+
+            # Run a loop while there is a Gate present in the _moment_list
+            while _moment_list:
+                
+                # Pops a Gate from _moment_list and stores it's Unitary property to _curr_gate
+                _curr_gate = _moment_list.pop()
+                _curr_gate = _curr_gate.unitary
+
+                # Computes the kronecker product of the current _kron_product and _curr_gate, and store 
+                # the kronecker product of the two in _kron_product
+                _kron_product = np.kron(_kron_product, _curr_gate)
+            
+            # If _dot_product does not have a value, assigns the value of _kron_product to _dot_product
+            # else, calculates the dot product of _dot_product and _kron_product and assigns it to _dot_product.
+            # NOTE: The if condition evaluates to True only for the first run of the parent while loop.
+            if not _dot_product:
+                _dot_product = _kron_product
+            else:
+                _dot_product = np.dot(_dot_product, _kron_product)
+
+            # Pops a Moment from _all_moments and assigns it to _moment
+            _moment = _all_moments.pop()
+        
+        # Once the parent while loop ends, returns the final _dot_product
+        return _dot_product
+
 
     def __placeholder_identity(self,
                                moment: Moment
