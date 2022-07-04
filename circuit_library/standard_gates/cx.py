@@ -8,7 +8,7 @@ from circuit_library.standard_gates.quantum_gate import QuantumGate
 
 class CXGate(QuantumGate, ABC):
     def __init__(self,
-                 qreg: tuple[int, int],
+                 qreg: "tuple[int, int]",
                  dims: int
                  ):
         """
