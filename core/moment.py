@@ -81,6 +81,21 @@ class Moment:
         self._moment_list.append(operation)
         return True
 
+
+    def check_igate_at_qreg(self, gate_obj: Union(HGate, XGate, ZGate)) -> bool:
+        """
+        Checks if _moment_list has an IGate at gate_obj.qreg position. If yes, returns True, else False
+
+        :param gate_obj: Gate object of either HGate, XGate or ZGate
+        :return: True if replacement occurs, else False
+        """
+        _qreg = gate_obj.qreg
+        if isinstance(self._moment_list[_qreg], IGate):
+            return True
+        else:
+            return False
+
+
     def replace_igate(self, gate_obj: Union(HGate, XGate, ZGate)) -> bool:
         """
         Checks if _moment_list has an IGate at qreg position. If yes, replaces it with the 
