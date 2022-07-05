@@ -9,9 +9,11 @@ from circuit_library.standard_gates.i import IGate
 from circuit_library.standard_gates.measurement import Measurement
 from circuit_library.standard_gates.x import XGate
 from circuit_library.standard_gates.z import ZGate
+from circuit_library.standard_gates.cx import CXGate
 from core.moment import Moment
 from core.operator_flow import OperatorFlow
 from init_states import InitState
+from utils.numpy import clip
 
 
 class QuantumCircuit:
@@ -136,6 +138,22 @@ class QuantumCircuit:
         _zgate = ZGate(qreg=qreg, dims=dims or self._reg_dims)
         _result = self.__add_moment_to_opflow(qreg, _zgate)
         return _result
+    
+    def cx(self, acting_on:Tuple[int, int], plus:int) -> bool:
+        """
+        Responsible for creating the CXGate and adding it to OperatorFlow through another function call
+
+        :param qreg: The quantum register number for putting the gate
+        :param dims: The dimension of the gate
+        :return: True if everything goes well, else False
+        """
+        
+        active_qregs, acting_on = clip(self.qregs, acting_on)
+        _cxgate = CXGate(active_qregs, acting_on=acting_on, plus=plus)
+
+        _result = self.__add_moment_to_opflow(qreg, _cxgate)
+        return _result
+    
 
     def measure(self, qreg: int) -> NotImplementedError:
         """
