@@ -1,13 +1,14 @@
-from circuit_library.standard_gates.h import HGate
-from circuit_library.standard_gates.quantum_gate import QuantumGate
-from circuit_library.standard_gates.x import XGate
-from circuit_library.standard_gates.z import ZGate
-from circuit_library.standard_gates.measurement import Measurement
-from moment import Moment
 import numpy as np
 
+from circuit_library.standard_gates.h import HGate
+from circuit_library.standard_gates.measurement import Measurement
+from circuit_library.standard_gates.x import XGate
+from circuit_library.standard_gates.z import ZGate
+
+from core.moment import Moment
+
+
 # Can be used to find dot product of more than two matrices
-from numpy.linalg import multi_dot
 
 
 class OperatorFlow:

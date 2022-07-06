@@ -1,6 +1,8 @@
 from abc import ABC
 from typing import Union
+
 from scipy import sparse
+
 from circuit_library.standard_gates.quantum_gate import QuantumGate
 
 

@@ -3,7 +3,6 @@ from typing import Union, Tuple
 
 import numpy as np
 from scipy import sparse
-from scipy.linalg import circulant
 from scipy.sparse import csr_matrix
 
 from circuit_library.standard_gates.quantum_gate import QuantumGate
@@ -15,7 +14,7 @@ class CXGate(QuantumGate, ABC):
     def __init__(self,
                  qreg: "tuple[int, int]",
                  dims: int,
-                 acting_on: Tuple[int, int],
+                 acting_on: tuple[int, int],
                  plus: int
                  ):
         """
@@ -75,23 +74,22 @@ class CXGate(QuantumGate, ABC):
         # This creates the Truth Table that is used to index the rows & cols 
         index = ttg(self._qreg)
 
-        _slice = rows[::dim//source]
-        _slice = np.array( [*_slice, rows[-1]] )
+        _slice = rows[::dim // source]
+        _slice = np.array([*_slice, rows[-1]])
 
-        _from, _to = _slice[_from], _slice[_from+1]
+        _from, _to = _slice[_from], _slice[_from + 1]
 
         # This will act as a base matrix for our gate
         I = np.eye(dim)
 
-
-        for x in range(_from, _to+1):
+        for x in range(_from, _to + 1):
             I[x] = self.update(index, I[x], self._plus, target, target_i)
 
         return csr_matrix(I)
-    
+
     @staticmethod
     def update(index, row, plus, target, target_i):
-        src_index = np.where(row==1)[0]
+        src_index = np.where(row == 1)[0]
         src_in_truth_table = index[src_index][0]
 
         # apply transform

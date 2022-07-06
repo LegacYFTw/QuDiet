@@ -1,19 +1,18 @@
-from circuit_library.standard_gates.h import HGate
 from typing import (
     Union,
-    Optional,
+    Optional, Tuple,
 )
 
+from circuit_library.standard_gates.cx import CXGate
 from circuit_library.standard_gates.h import HGate
 from circuit_library.standard_gates.i import IGate
 from circuit_library.standard_gates.measurement import Measurement
 from circuit_library.standard_gates.x import XGate
 from circuit_library.standard_gates.z import ZGate
-from circuit_library.standard_gates.cx import CXGate
 from core.moment import Moment
 from core.operator_flow import OperatorFlow
-from init_states import InitState
-from utils.numpy import clip
+from core.init_states import InitState
+from utils.linalg import clip
 
 
 class QuantumCircuit:
@@ -139,10 +138,11 @@ class QuantumCircuit:
         _result = self.__add_moment_to_opflow(qreg, _zgate)
         return _result
     
-    def cx(self, acting_on:Tuple[int, int], plus:int) -> bool:
+    def cx(self, acting_on: Tuple[int, int], plus:int) -> bool:
         """
         Responsible for creating the CXGate and adding it to OperatorFlow through another function call
 
+        :param acting_on:
         :param qreg: The quantum register number for putting the gate
         :param dims: The dimension of the gate
         :return: True if everything goes well, else False
