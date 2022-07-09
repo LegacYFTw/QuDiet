@@ -73,7 +73,7 @@ class OperatorFlow:
                         if _is_igate_in_earlier_moment:
                             _pos_of_first_moment_with_igate = _pos_of_first_moment_with_igate - 1
                         else:
-                            _first_moment_with_igate: Moment = self._opflow_list[_pos_of_first_moment_with_igate + 1]
+                            _first_moment_with_igate: Moment = self._opflow_list[_pos_of_first_moment_with_igate]
                             _added_gate_to_earlier_moment = _first_moment_with_igate.replace_igate(_curr_moment_list[_qreg])
                             if _added_gate_to_earlier_moment:
                                 break
@@ -116,7 +116,7 @@ class OperatorFlow:
         return False
 
 
-    def __exec(self, *args: Moment):
+    def exec(self):
         """
         This function takes multiple Moment objects, traverses them from last to first, performing kronecker product
         on each of the Gates of every Moment, then performs dot product on the resultant kronecker products of all 
@@ -127,13 +127,13 @@ class OperatorFlow:
         """
         
         # Creates a list _all_moments from all the passed Moments from args
-        _all_moments = list(args)
+        _all_moments = self._opflow_list
         
         # Pops out the last Moment and stores it in _moment
         _moment = _all_moments.pop()
 
         # Sets _dot_product as None
-        _dot_product = None
+        _dot_product = np.array([])
         
         # Run a loop while there is a Moment present in the _all_moments list
         while _all_moments:
@@ -165,7 +165,7 @@ class OperatorFlow:
             # If _dot_product does not have a value, assigns the value of _kron_product to _dot_product
             # else, calculates the dot product of _dot_product and _kron_product and assigns it to _dot_product.
             # NOTE: The if condition evaluates to True only for the first run of the parent while loop.
-            if not _dot_product:
+            if not list(_dot_product):
                 _dot_product = _kron_product
             else:
                 _dot_product = np.dot(_dot_product, _kron_product)

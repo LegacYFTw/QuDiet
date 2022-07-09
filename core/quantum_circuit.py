@@ -12,7 +12,7 @@ from circuit_library.standard_gates.z import ZGate
 from circuit_library.standard_gates.cx import CXGate
 from core.moment import Moment
 from core.operator_flow import OperatorFlow
-from init_states import InitState
+from core.init_states import InitState
 
 
 class QuantumCircuit:
@@ -58,8 +58,8 @@ class QuantumCircuit:
             self._reg_dims = self._reg_length * [self.qregs[1]]
 
         elif self._is_qregs_list:
-            self._reg_length = len(self.qregs[0])
-            self._reg_dims = self.qregs[1]
+            self._reg_length = len(self.qregs)
+            self._reg_dims = self.qregs
 
         if self._reg_length > len(self.init_states):
             self.init_states.extend((self._reg_length - len(self.init_states)) * [0])
@@ -76,10 +76,10 @@ class QuantumCircuit:
         :param qreg: The quantum register number for putting the gate
         :param dims: The dimension of the gate
         """
-        if dims > self._reg_dims:
-            raise ValueError("Input dimension is greater than the register dimension.")
-        if qreg > self._reg_length:
+        if qreg > self._reg_length-1:
             raise ValueError("Illegal placement of gate. Register specified is out of circuit bounds.")
+        if dims > self._reg_dims[qreg]:
+            raise ValueError("Input dimension is greater than the register dimension.")
 
     def __add_moment_to_opflow(self, qreg: 'Union[int, tuple[int, int]]', gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
         """
@@ -96,13 +96,13 @@ class QuantumCircuit:
             else:
                 _igate = IGate(qreg=_reg, dims=gate_obj.dims)
                 _moment_data.append(_igate)
-        _moment_data[qreg] = gate_obj
+                _moment_data[_reg] = gate_obj
 
         _curr_moment = Moment(*_moment_data)
         _result = self.op_flow.populate_opflow(_curr_moment)
         return _result
 
-    def h(self, qreg: int, dims: Optional[int] = None) -> bool:
+    def h(self, qreg: int, dims: int) -> bool:
         """
         Responsible for creating the HGate and adding it to OperatorFlow through another function call
 
@@ -141,7 +141,7 @@ class QuantumCircuit:
         _result = self.__add_moment_to_opflow(qreg, _zgate)
         return _result
     
-    def cx(self, acting_on:'tuple[int, int]', plus:int) -> bool:
+    def cx(self, acting_on:'tuple[int, int]', plus:int, dims: Optional[int] = None) -> bool:
         """
         Responsible for creating the CXGate and adding it to OperatorFlow through another function call
 
@@ -150,8 +150,8 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
         
-        active_qregs = self.qregs[acting_on[0]:acting_on[1]+1]
-        _cxgate = CXGate(active_qregs, acting_on=acting_on, plus=plus)
+        active_qregs = [ qreg for qreg in range(acting_on[0], acting_on[1]+1) ]
+        _cxgate = CXGate(qreg=active_qregs, dims=dims, acting_on=acting_on, plus=plus)
 
         _result = self.__add_moment_to_opflow(acting_on, _cxgate)
         return _result
@@ -198,3 +198,6 @@ class QuantumCircuit:
 
         _m = Moment(*_init_moment)
         self.op_flow.populate_opflow(_m)
+
+    def exec(self):
+        return self.op_flow.exec()
