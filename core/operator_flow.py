@@ -144,6 +144,7 @@ class OperatorFlow:
             
             # Pops out the first Gate from the _moment_list and get it's Unitary property to _kron_product
             _kron_product = _moment_list.pop()
+            _last_gate = _kron_product
             _kron_product = _kron_product.unitary
 
             # Run a loop while there is a Gate present in the _moment_list
@@ -151,6 +152,10 @@ class OperatorFlow:
                 
                 # Pops a Gate from _moment_list and stores it's Unitary property to _curr_gate
                 _curr_gate = _moment_list.pop()
+                if isinstance(_last_gate, CXGate) and isinstance(_curr_gate, CXGate):
+                    _last_gate = _curr_gate
+                    continue
+                _last_gate = _curr_gate
                 _curr_gate = _curr_gate.unitary
 
                 # Computes the kronecker product of the current _kron_product and _curr_gate, and store 
