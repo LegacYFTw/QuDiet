@@ -1,8 +1,8 @@
 import numpy as np
 
 
-def clip(qreg, i, f):
-    return qreg[i:f + 1]
+def clip(qreg: list, start: int, end: int):
+    return qreg[start:end+1]
 
 
 def ttg(qreg):

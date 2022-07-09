@@ -12,9 +12,9 @@ from utils.numpy import get_index
 
 class CXGate(QuantumGate, ABC):
     def __init__(self,
-                 qreg: "tuple[int, int]",
+                 qreg: 'tuple[int, int]',
                  dims: int,
-                 acting_on: tuple[int, int],
+                 acting_on: 'tuple[int, int]',
                  plus: int
                  ):
         """

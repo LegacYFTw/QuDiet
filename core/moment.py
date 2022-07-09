@@ -1,4 +1,5 @@
 from typing import Union
+from circuit_library.standard_gates.cx import CXGate
 
 from circuit_library.standard_gates.h import HGate
 from circuit_library.standard_gates.i import IGate
@@ -81,7 +82,7 @@ class Moment:
         self._moment_list.append(operation)
         return True
 
-    def check_igate_at_qreg(self, gate_obj: Union[HGate, XGate, ZGate]) -> bool:
+    def check_igate_at_qreg(self, gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
         """
         Checks if _moment_list has an IGate at gate_obj.qreg position. If yes, returns True, else False
 
@@ -94,7 +95,7 @@ class Moment:
         else:
             return False
 
-    def replace_igate(self, gate_obj: Union[HGate, XGate, ZGate]) -> bool:
+    def replace_igate(self, gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
         """
         Checks if _moment_list has an IGate at qreg position. If yes, replaces it with the 
         gate object provided in the parameter

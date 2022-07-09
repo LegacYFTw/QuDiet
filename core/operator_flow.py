@@ -1,9 +1,10 @@
 import numpy as np
 
+from circuit_library.standard_gates.cx import CXGate
 from circuit_library.standard_gates.h import HGate
-from circuit_library.standard_gates.measurement import Measurement
 from circuit_library.standard_gates.x import XGate
 from circuit_library.standard_gates.z import ZGate
+from circuit_library.standard_gates.measurement import Measurement
 
 from core.moment import Moment
 
@@ -50,29 +51,33 @@ class OperatorFlow:
                     return False
                 
                 # Finds the register number of either of HGate, Xgate or ZGate present in the current moment
-                _qreg = _curr_moment_list.index(
-                    next(
-                        _gate
-                        for _gate in _curr_moment_list
-                        if isinstance(_gate, (HGate, XGate, ZGate))
+                try:
+                    _qreg = _curr_moment_list.index(
+                        next(
+                            _gate
+                            for _gate in _curr_moment_list
+                            if isinstance(_gate, (HGate, XGate, ZGate))
+                        )
                     )
-                )
+                except StopIteration:
+                    _qreg = None
                 
                 # Loops through the OperatorFlow list, checks if any of the earlier Moment(s) have an IGate.
                 # If yes, replaces it with HGate, XGate or ZGate of the current Moment.
-                _pos_of_first_moment_with_igate = len(self._opflow_list) - 1
-                for _index, _curr_earlier_moment in enumerate(self._opflow_list[:0:-1]):
-                    _curr_earlier_moment: Moment = _curr_earlier_moment
-                    _is_igate_in_earlier_moment = _curr_earlier_moment.check_igate_at_qreg(_curr_moment_list[_qreg])
+                if _qreg != None:
+                    _pos_of_first_moment_with_igate = len(self._opflow_list) - 1
+                    for _index, _curr_earlier_moment in enumerate(self._opflow_list[:0:-1]):
+                        _curr_earlier_moment: Moment = _curr_earlier_moment
+                        _is_igate_in_earlier_moment = _curr_earlier_moment.check_igate_at_qreg(_curr_moment_list[_qreg])
 
-                    if _is_igate_in_earlier_moment:
-                        _pos_of_first_moment_with_igate = _pos_of_first_moment_with_igate - 1
-                    else:
-                        _first_moment_with_igate: Moment = self._opflow_list[_pos_of_first_moment_with_igate + 1]
-                        _added_gate_to_earlier_moment = _first_moment_with_igate.replace_igate(_curr_moment_list[_qreg])
-                        if _added_gate_to_earlier_moment:
-                            break
-                    _added_gate_to_earlier_moment = False
+                        if _is_igate_in_earlier_moment:
+                            _pos_of_first_moment_with_igate = _pos_of_first_moment_with_igate - 1
+                        else:
+                            _first_moment_with_igate: Moment = self._opflow_list[_pos_of_first_moment_with_igate + 1]
+                            _added_gate_to_earlier_moment = _first_moment_with_igate.replace_igate(_curr_moment_list[_qreg])
+                            if _added_gate_to_earlier_moment:
+                                break
+                _added_gate_to_earlier_moment = False
                 
                 # Checks if the current Moment's HGate, XGate or ZGate has been added to any earlier Moment.
                 # If no, takes the last Moment in OperatorFlow list and points it to the current Moment, thereby
