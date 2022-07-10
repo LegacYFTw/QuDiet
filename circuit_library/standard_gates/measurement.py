@@ -5,8 +5,7 @@ from circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
 class Measurement(QuantumGate, ABC):
-    def __init__(self, qreg: 'Union[tuple[int, int], list[int]]'):
-        super().__init__(qreg)
+    def __init__(self, qreg: int):
         self._qreg = qreg
 
     @property
@@ -34,7 +33,7 @@ class Measurement(QuantumGate, ABC):
         return None
 
     @property
-    def acting_on(self) -> Union[int, list]:
+    def acting_on(self) -> int:
         """
         Gets the index of the acting qudit in the QuantumRegister
         :return: Index of the QuantumRegister if it is a single qudit gate or a list if multiqudit

@@ -96,8 +96,8 @@ class QuantumCircuit:
             else:
                 _igate = IGate(qreg=_reg, dims=gate_obj.dims)
                 _moment_data.append(_igate)
-                _moment_data[_reg] = gate_obj
-
+                if _reg == qreg:
+                    _moment_data[_reg] = gate_obj
         _curr_moment = Moment(*_moment_data)
         _result = self.op_flow.populate_opflow(_curr_moment)
         return _result
@@ -167,7 +167,7 @@ class QuantumCircuit:
         """
         raise NotImplementedError
 
-    def measure_all(self) -> bool:
+    def measure_all(self) -> True:
         """
         Responsible for creating the Measurement Gate and adding it to OperatorFlow through another function call.
         Contrary to the measure function, this method applies a Measurement Gate across all gates in a single Moment.
@@ -175,29 +175,23 @@ class QuantumCircuit:
 
         :return: True if everything goes well, else False
         """
-        if self._is_qregs_tuple:
-            _measurement_moment = []
-            for _index, _state in enumerate(self.init_states):
-                # Adds Operator flow object and push the Measurement object into Operator Flow stack
-                _measurement = Measurement(qreg=_index)
-                _measurement_moment.append(_measurement)
-
+        # Adds Operator flow object and push the Measurement object into Operator Flow stack
+        _measurement_moment = [ Measurement(qreg=_index) for _index in range(self._reg_length) ]
         _m = Moment(*_measurement_moment)
         self.op_flow.populate_opflow(_m)
+        
+        return True
 
     def __initialize_states(self):
         """
         Initializes the qudits to |0> state or |N> state depending on the dimensions of the qubits
         """
-        if self._is_qregs_tuple:
-            _init_moment = []
-            for _index, _element in enumerate(self.init_states):
-                # Adds Operator flow object and push the init object into Operator Flow stack
-                _init_state = InitState(dim=_element, state=0, qreg=_index)
-                _init_moment.append(_init_state)
+        # Adds Operator flow object and push the init object into Operator Flow stack
+        _init_gates = [ InitState(dim=_element, state=0, qreg=_index) for _index, _element in enumerate(self.init_states) ]
 
-        _m = Moment(*_init_moment)
-        self.op_flow.populate_opflow(_m)
+        init_moment = Moment(*_init_gates)
+        self.op_flow.populate_opflow(init_moment)
 
-    def exec(self):
+
+    def run(self):
         return self.op_flow.exec()

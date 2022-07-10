@@ -94,7 +94,7 @@ class OperatorFlow:
                 self._measurement_count = len(_curr_moment_list) * [0]
                 self._opflow_list.append(_curr_moment)
 
-            _has_measurement = self.__detect_measurement_and_add_count(_curr_moment)
+            self.__detect_measurement_and_add_count(_curr_moment)
 
         return True
 
@@ -112,8 +112,6 @@ class OperatorFlow:
         for _index, _gate in enumerate(_curr_moment_list):
             if isinstance(_gate, Measurement):
                 self._measurement_count[_index] = 1
-                return True
-        return False
 
 
     def exec(self):
@@ -125,7 +123,12 @@ class OperatorFlow:
         :param *args: Accepts multiple Moment objects
         :return: ndarray
         """
-        
+
+        if all(self._measurement_count):
+            last_moment = self._opflow_list.pop()
+        else:
+            raise AssertionError("Measurement not present in all registers!")
+
         # Creates a list _all_moments from all the passed Moments from args
         _all_moments = self._opflow_list
         
