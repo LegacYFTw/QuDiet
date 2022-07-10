@@ -1,9 +1,11 @@
+from numba import njit
 from scipy import sparse
 from scipy.sparse import csr_matrix, dok_matrix
 
 
 class InitState:
 
+    @njit
     def __init__(self, dim: int, state: int, qreg: int):
         """
         This is the InitState class which initializes the lines on the QuantumRegister object.
@@ -22,5 +24,6 @@ class InitState:
             self.init_state[state] = 1
             self.init_state = csr_matrix(self.init_state)
 
+    @njit
     def get_init_states(self) -> sparse:
         return self.init_state

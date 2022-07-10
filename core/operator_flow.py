@@ -1,4 +1,5 @@
 import numpy as np
+from numba import njit
 
 from circuit_library.standard_gates.cx import CXGate
 from circuit_library.standard_gates.h import HGate
@@ -13,6 +14,7 @@ from core.moment import Moment
 
 
 class OperatorFlow:
+    @njit
     def __init__(self,
                  *args: Moment
                  ):
@@ -28,6 +30,7 @@ class OperatorFlow:
         self._opflow_list = []
         self._measurement_count = [0]
 
+    @njit
     def peek(self) -> list:
         """
         Responsible for peeking the list of Moments
@@ -35,6 +38,7 @@ class OperatorFlow:
         """
         return self._opflow_list
 
+    @njit
     def populate_opflow(self,
                         *args: Moment
                         ) -> bool:
@@ -95,6 +99,7 @@ class OperatorFlow:
         return True
 
 
+    @njit
     def __detect_measurement_and_add_count(self,
                              moment: Moment
                              ) -> bool:
@@ -110,6 +115,7 @@ class OperatorFlow:
                 self._measurement_count[_index] = 1
 
 
+    @njit
     def exec(self):
         """
         This function takes multiple Moment objects, traverses them from last to first, performing kronecker product
@@ -176,6 +182,7 @@ class OperatorFlow:
         return _dot_product
 
 
+    @njit
     def __placeholder_identity(self,
                                moment: Moment
                                ) -> bool:

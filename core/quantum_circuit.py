@@ -1,4 +1,5 @@
 from circuit_library.standard_gates.h import HGate
+from numba import njit
 from typing import (
     Union,
     Optional,
@@ -16,6 +17,7 @@ from core.init_states import InitState
 
 
 class QuantumCircuit:
+    @njit
     def __init__(self,
                  qregs: 'Union[tuple[int, int], list[int]]',
                  cregs: Optional[int] = None,
@@ -66,9 +68,11 @@ class QuantumCircuit:
 
         self.__initialize_states()
 
+    @njit
     def get_circuit_config(self):
         raise NotImplementedError
 
+    @njit
     def __validate_gate_inputs(self, qreg: int, dims: Optional[int]):
         """
         Responsible for checking if the register number or the dimension of the gates are in the correct bounds.
@@ -81,6 +85,7 @@ class QuantumCircuit:
         if dims > self._reg_dims[qreg]:
             raise ValueError("Input dimension is greater than the register dimension.")
 
+    @njit
     def __add_moment_to_opflow(self, qreg: 'Union[int, tuple[int, int]]', gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
         """
         Creates Moment objects for the given QuantumGate object and pushes it into the OperatorFlow object created earlier
@@ -102,6 +107,7 @@ class QuantumCircuit:
         _result = self.op_flow.populate_opflow(_curr_moment)
         return _result
 
+    @njit
     def h(self, qreg: int, dims: int) -> bool:
         """
         Responsible for creating the HGate and adding it to OperatorFlow through another function call
@@ -115,6 +121,7 @@ class QuantumCircuit:
         _result = self.__add_moment_to_opflow(qreg, _hgate)
         return _result
 
+    @njit
     def x(self, qreg: int, dims: Optional[int] = None) -> bool:
         """
         Responsible for creating the XGate and adding it to OperatorFlow through another function call
@@ -128,6 +135,7 @@ class QuantumCircuit:
         _result = self.__add_moment_to_opflow(qreg, _xgate)
         return _result
 
+    @njit
     def z(self, qreg: int, dims: Optional[int] = None) -> bool:
         """
         Responsible for creating the ZGate and adding it to OperatorFlow through another function call
@@ -141,6 +149,7 @@ class QuantumCircuit:
         _result = self.__add_moment_to_opflow(qreg, _zgate)
         return _result
     
+    @njit
     def cx(self, acting_on:'tuple[int, int]', plus:int, dims: Optional[int] = None) -> bool:
         """
         Responsible for creating the CXGate and adding it to OperatorFlow through another function call
@@ -157,6 +166,7 @@ class QuantumCircuit:
         return _result
     
 
+    @njit
     def measure(self, qreg: int) -> NotImplementedError:
         """
         Responsible for creating the Measurement Gate and adding it to OperatorFlow through another function call
@@ -167,6 +177,7 @@ class QuantumCircuit:
         """
         raise NotImplementedError
 
+    @njit
     def measure_all(self) -> True:
         """
         Responsible for creating the Measurement Gate and adding it to OperatorFlow through another function call.
@@ -182,6 +193,7 @@ class QuantumCircuit:
         
         return True
 
+    @njit
     def __initialize_states(self):
         """
         Initializes the qudits to |0> state or |N> state depending on the dimensions of the qubits
@@ -193,10 +205,12 @@ class QuantumCircuit:
         self.op_flow.populate_opflow(init_moment)
 
 
+    @njit
     def run(self):
         return self.op_flow.exec()
 
     
+    @njit
     def print_opflow_list(self):
         for i in self.op_flow.peek():
             i : Moment = i
