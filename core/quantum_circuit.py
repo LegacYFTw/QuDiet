@@ -195,3 +195,9 @@ class QuantumCircuit:
 
     def run(self):
         return self.op_flow.exec()
+
+    
+    def print_opflow_list(self):
+        for i in self.op_flow.peek():
+            i : Moment = i
+            print(i.peek_list(),"\n")

@@ -95,7 +95,7 @@ class Moment:
         else:
             return False
 
-    def replace_igate(self, gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
+    def replace_igate(self, gate_obj: Union[HGate, XGate, ZGate]) -> bool:
         """
         Checks if _moment_list has an IGate at qreg position. If yes, replaces it with the 
         gate object provided in the parameter

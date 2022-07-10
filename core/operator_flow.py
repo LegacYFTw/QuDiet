@@ -61,24 +61,20 @@ class OperatorFlow:
                     )
                 except StopIteration:
                     _qreg = None
-                
+
                 # Loops through the OperatorFlow list, checks if any of the earlier Moment(s) have an IGate.
                 # If yes, replaces it with HGate, XGate or ZGate of the current Moment.
-                if _qreg != None:
-                    _pos_of_first_moment_with_igate = len(self._opflow_list) - 1
-                    for _index, _curr_earlier_moment in enumerate(self._opflow_list[:0:-1]):
-                        _curr_earlier_moment: Moment = _curr_earlier_moment
-                        _is_igate_in_earlier_moment = _curr_earlier_moment.check_igate_at_qreg(_curr_moment_list[_qreg])
-
-                        if _is_igate_in_earlier_moment:
-                            _pos_of_first_moment_with_igate = _pos_of_first_moment_with_igate - 1
-                        else:
-                            _first_moment_with_igate: Moment = self._opflow_list[_pos_of_first_moment_with_igate]
-                            _added_gate_to_earlier_moment = _first_moment_with_igate.replace_igate(_curr_moment_list[_qreg])
-                            if _added_gate_to_earlier_moment:
-                                break
                 _added_gate_to_earlier_moment = False
-                
+                if _qreg != None:
+                    for _index, _curr_earlier_moment in enumerate(self._opflow_list[1:]):
+                        _curr_earlier_moment: Moment = _curr_earlier_moment
+                        _added_gate_to_earlier_moment = _curr_earlier_moment.replace_igate(_curr_moment_list[_qreg])
+                        if _added_gate_to_earlier_moment:
+                            break
+
+                if _added_gate_to_earlier_moment:
+                    self._opflow_list[_index+1] = _curr_earlier_moment
+
                 # Checks if the current Moment's HGate, XGate or ZGate has been added to any earlier Moment.
                 # If no, takes the last Moment in OperatorFlow list and points it to the current Moment, thereby
                 # adding it to the OperatorFlow list.
@@ -125,7 +121,7 @@ class OperatorFlow:
         """
 
         if all(self._measurement_count):
-            last_moment = self._opflow_list.pop()
+            _last_moment = self._opflow_list.pop()
         else:
             raise AssertionError("Measurement not present in all registers!")
 
