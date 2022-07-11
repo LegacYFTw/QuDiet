@@ -1,5 +1,6 @@
 from circuit_library.standard_gates.h import HGate
 from typing import (
+    Literal,
     Union,
     Optional,
 )
@@ -69,7 +70,7 @@ class QuantumCircuit:
     def get_circuit_config(self):
         raise NotImplementedError
 
-    def __validate_gate_inputs(self, qreg: int, dims: Optional[int]):
+    def __validate_gate_inputs(self, qreg: int, dims: int):
         """
         Responsible for checking if the register number or the dimension of the gates are in the correct bounds.
 
@@ -78,7 +79,7 @@ class QuantumCircuit:
         """
         if qreg > self._reg_length-1:
             raise ValueError("Illegal placement of gate. Register specified is out of circuit bounds.")
-        if dims > self._reg_dims[qreg]:
+        if dims and dims > self._reg_dims[qreg]:
             raise ValueError("Input dimension is greater than the register dimension.")
 
     def __add_moment_to_opflow(self, qreg: 'Union[int, tuple[int, int]]', gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
@@ -94,7 +95,7 @@ class QuantumCircuit:
             if isinstance(qreg, tuple) and _reg in range(qreg[0], qreg[1]+1):
                 _moment_data.append(gate_obj)
             else:
-                _igate = IGate(qreg=_reg, dims=gate_obj.dims)
+                _igate = IGate(qreg=_reg, dims=self._reg_dims[_reg])
                 _moment_data.append(_igate)
                 if _reg == qreg:
                     _moment_data[_reg] = gate_obj
@@ -102,7 +103,7 @@ class QuantumCircuit:
         _result = self.op_flow.populate_opflow(_curr_moment)
         return _result
 
-    def h(self, qreg: int, dims: int) -> bool:
+    def h(self, qreg: int, dims: Optional[int] = None) -> bool:
         """
         Responsible for creating the HGate and adding it to OperatorFlow through another function call
 
@@ -111,7 +112,7 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
         self.__validate_gate_inputs(qreg, dims)
-        _hgate = HGate(qreg=qreg, dims=dims or self._reg_dims)
+        _hgate = HGate(qreg=qreg, dims=dims or self._reg_dims[qreg])
         _result = self.__add_moment_to_opflow(qreg, _hgate)
         return _result
 
@@ -124,7 +125,7 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
         self.__validate_gate_inputs(qreg, dims)
-        _xgate = XGate(qreg=qreg, dims=dims or self._reg_dims)
+        _xgate = XGate(qreg=qreg, dims=dims or self._reg_dims[qreg])
         _result = self.__add_moment_to_opflow(qreg, _xgate)
         return _result
 
@@ -137,11 +138,11 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
         self.__validate_gate_inputs(qreg, dims)
-        _zgate = ZGate(qreg=qreg, dims=dims or self._reg_dims)
+        _zgate = ZGate(qreg=qreg, dims=dims or self._reg_dims[qreg])
         _result = self.__add_moment_to_opflow(qreg, _zgate)
         return _result
     
-    def cx(self, acting_on:'tuple[int, int]', plus:int, dims: Optional[int] = None) -> bool:
+    def cx(self, acting_on:'tuple[int, int]', plus:int) -> bool:
         """
         Responsible for creating the CXGate and adding it to OperatorFlow through another function call
 
@@ -150,8 +151,8 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
         
-        active_qregs = [ qreg for qreg in range(acting_on[0], acting_on[1]+1) ]
-        _cxgate = CXGate(qreg=active_qregs, dims=dims, acting_on=acting_on, plus=plus)
+        active_qregs = [ self._reg_dims[qreg] for qreg in range(acting_on[0], acting_on[1]+1) ]
+        _cxgate = CXGate(qreg=active_qregs, acting_on=acting_on, plus=plus)
 
         _result = self.__add_moment_to_opflow(acting_on, _cxgate)
         return _result
@@ -167,7 +168,7 @@ class QuantumCircuit:
         """
         raise NotImplementedError
 
-    def measure_all(self) -> True:
+    def measure_all(self) -> Literal[True]:
         """
         Responsible for creating the Measurement Gate and adding it to OperatorFlow through another function call.
         Contrary to the measure function, this method applies a Measurement Gate across all gates in a single Moment.
@@ -187,7 +188,7 @@ class QuantumCircuit:
         Initializes the qudits to |0> state or |N> state depending on the dimensions of the qubits
         """
         # Adds Operator flow object and push the init object into Operator Flow stack
-        _init_gates = [ InitState(dim=_element, state=0, qreg=_index) for _index, _element in enumerate(self.init_states) ]
+        _init_gates = [ InitState(dim=self._reg_dims[_index], state=_element, qreg=_index) for _index, _element in enumerate(self.init_states) ]
 
         init_moment = Moment(*_init_gates)
         self.op_flow.populate_opflow(init_moment)
