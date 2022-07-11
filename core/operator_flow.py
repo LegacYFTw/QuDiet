@@ -145,6 +145,7 @@ class OperatorFlow:
             _kron_product = _moment_list.pop()
             _last_gate = _kron_product
             _kron_product = _kron_product.unitary
+            _kron_product = _kron_product.toarray()
 
             # Run a loop while there is a Gate present in the _moment_list
             while _moment_list:
@@ -156,11 +157,13 @@ class OperatorFlow:
                     continue
                 _last_gate = _curr_gate
                 _curr_gate = _curr_gate.unitary
+                _curr_gate = _curr_gate.toarray()
 
                 # Computes the kronecker product of the current _kron_product and _curr_gate, and store 
                 # the kronecker product of the two in _kron_product
+                _kron_product = _kron_product
                 _kron_product = np.kron(_kron_product, _curr_gate)
-            
+
             # If _dot_product does not have a value, assigns the value of _kron_product to _dot_product
             # else, calculates the dot product of _dot_product and _kron_product and assigns it to _dot_product.
             # NOTE: The if condition evaluates to True only for the first run of the parent while loop.
