@@ -70,7 +70,7 @@ class QuantumCircuit:
     def get_circuit_config(self):
         raise NotImplementedError
 
-    def __validate_gate_inputs(self, qreg: int, dims: int):
+    def __validate_gate_inputs(self, qreg: int):
         """
         Responsible for checking if the register number or the dimension of the gates are in the correct bounds.
 
@@ -79,8 +79,8 @@ class QuantumCircuit:
         """
         if qreg > self._reg_length-1:
             raise ValueError("Illegal placement of gate. Register specified is out of circuit bounds.")
-        if dims and dims > self._reg_dims[qreg]:
-            raise ValueError("Input dimension is greater than the register dimension.")
+        # if dims and dims > self._reg_dims[qreg]:
+        #     raise ValueError("Input dimension is greater than the register dimension.")
 
     def __add_moment_to_opflow(self, qreg: 'Union[int, tuple[int, int]]', gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
         """
@@ -103,7 +103,7 @@ class QuantumCircuit:
         _result = self.op_flow.populate_opflow(_curr_moment)
         return _result
 
-    def h(self, qreg: int, dims: Optional[int] = None) -> bool:
+    def h(self, qreg: int) -> bool:
         """
         Responsible for creating the HGate and adding it to OperatorFlow through another function call
 
@@ -111,12 +111,12 @@ class QuantumCircuit:
         :param dims: The dimension of the gate
         :return: True if everything goes well, else False
         """
-        self.__validate_gate_inputs(qreg, dims)
-        _hgate = HGate(qreg=qreg, dims=dims or self._reg_dims[qreg])
+        self.__validate_gate_inputs(qreg)
+        _hgate = HGate(qreg=qreg, dims=self._reg_dims[qreg])
         _result = self.__add_moment_to_opflow(qreg, _hgate)
         return _result
 
-    def x(self, qreg: int, dims: Optional[int] = None) -> bool:
+    def x(self, qreg: int) -> bool:
         """
         Responsible for creating the XGate and adding it to OperatorFlow through another function call
 
@@ -124,12 +124,12 @@ class QuantumCircuit:
         :param dims: The dimension of the gate
         :return: True if everything goes well, else False
         """
-        self.__validate_gate_inputs(qreg, dims)
-        _xgate = XGate(qreg=qreg, dims=dims or self._reg_dims[qreg])
+        self.__validate_gate_inputs(qreg)
+        _xgate = XGate(qreg=qreg, dims=self._reg_dims[qreg])
         _result = self.__add_moment_to_opflow(qreg, _xgate)
         return _result
 
-    def z(self, qreg: int, dims: Optional[int] = None) -> bool:
+    def z(self, qreg: int) -> bool:
         """
         Responsible for creating the ZGate and adding it to OperatorFlow through another function call
 
@@ -137,8 +137,8 @@ class QuantumCircuit:
         :param dims: The dimension of the gate
         :return: True if everything goes well, else False
         """
-        self.__validate_gate_inputs(qreg, dims)
-        _zgate = ZGate(qreg=qreg, dims=dims or self._reg_dims[qreg])
+        self.__validate_gate_inputs(qreg)
+        _zgate = ZGate(qreg=qreg, dims=self._reg_dims[qreg])
         _result = self.__add_moment_to_opflow(qreg, _zgate)
         return _result
     
