@@ -13,7 +13,6 @@ from utils.numpy import get_index
 class CXGate(QuantumGate, ABC):
     def __init__(self,
                  qreg: 'tuple[int, int]',
-                 dims: int,
                  acting_on: 'tuple[int, int]',
                  plus: int
                  ):
@@ -27,9 +26,15 @@ class CXGate(QuantumGate, ABC):
         :param plus: This represents the value by which the target qudit changes
         """
         self._qreg = qreg
-        self._dims = dims
+        # self._dims = dims
         self._plus = plus
         self._acting_on = acting_on
+
+
+    @property
+    def dims(self) -> int:
+        return np.prod(self._qreg)
+
 
     @property
     def is_controlled(self) -> bool:
@@ -57,7 +62,13 @@ class CXGate(QuantumGate, ABC):
         :return: The gate unitary
         """
 
-        (source_i, target_i) = self.acting_on
+        source_i, target_i = self.acting_on
+        # When self.acting on = (1, 4) and self._qreg = [3, 4, 3, 3], 
+        # self._qreg[source_i] gets the value 4 and self._qreg[target_i] gives IndexError 
+        # as there is no value at index 4
+        # So, resetting target_i to 4 - 1 = 3 and source_i = 0
+        target_i = target_i - source_i
+        source_i = 0
         # source denotes the dim of control qudit, source_i is the index of the control qudit
         source = self._qreg[source_i]
         # target denotes the dim of target qudit, target_i is the index of the target qudit
@@ -107,7 +118,7 @@ class CXGate(QuantumGate, ABC):
         return res
 
     @property
-    def acting_on(self) -> Union[int, list]:
+    def acting_on(self) -> Tuple[int, int]:
         """
         Gets the index of the acting qudit in the QuantumRegister
 
