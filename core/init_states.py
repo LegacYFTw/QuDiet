@@ -6,7 +6,7 @@ import numpy as np
 
 class InitState:
 
-    @njit
+    
     def __init__(self, dim: int, state: int, qreg: int):
         """
         This is the InitState class which initializes the lines on the QuantumRegister object.
@@ -31,6 +31,6 @@ class InitState:
         print(self.get_init_states().todense())
 
 
-    @njit
+    
     def get_init_states(self) -> sparse:
         return self.init_state

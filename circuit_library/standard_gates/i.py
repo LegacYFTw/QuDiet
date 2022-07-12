@@ -7,7 +7,7 @@ from circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
 class IGate(QuantumGate, ABC):
-    @njit
+    
     def __init__(self,
                  qreg: int,
                  dims: int
@@ -21,7 +21,7 @@ class IGate(QuantumGate, ABC):
         self.dims = dims
 
     @property
-    @njit
+    
     def is_controlled(self) -> bool:
         """
         Check if the gate is controlled or not
@@ -30,7 +30,7 @@ class IGate(QuantumGate, ABC):
         return False
 
     @property
-    @njit
+    
     def is_single_qudit(self) -> bool:
         """
         Check if the gate is a single qudit or multi-qudit
@@ -39,7 +39,7 @@ class IGate(QuantumGate, ABC):
         return True
 
     @property
-    @njit
+    
     def unitary(self) -> sparse:
         """
         This is the gate unitary which shall be used to do any calculation
@@ -48,7 +48,7 @@ class IGate(QuantumGate, ABC):
         return sparse.eye(n=self.dims, m=self.dims)
 
     @property
-    @njit
+    
     def acting_on(self) -> Union[int, list]:
         """
         Gets the index of the acting qudit in the QuantumRegister

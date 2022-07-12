@@ -11,7 +11,7 @@ class QuantumGate(ABC):
 
     @property
     @abstractmethod
-    @njit
+    
     def is_controlled(self) -> bool:
         """
         Check if the gate is controlled or not
@@ -21,7 +21,7 @@ class QuantumGate(ABC):
 
     @property
     @abstractmethod
-    @njit
+    
     def is_single_qudit(self) -> bool:
         """
         Check if the gate is a single qudit or multi-qudit
@@ -31,7 +31,7 @@ class QuantumGate(ABC):
 
     @property
     @abstractmethod
-    @njit
+    
     def unitary(self) -> sparse:
         """
         This is the gate unitary which shall be used to do any calculations
@@ -41,7 +41,7 @@ class QuantumGate(ABC):
 
     @property
     @abstractmethod
-    @njit
+    
     def acting_on(self) -> Union[int, list]:
         """
         Gets the index of the acting qudit in the QuantumRegister

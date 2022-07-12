@@ -1,11 +1,11 @@
 import numpy as np
 from numba import njit
 
-@njit
+
 def clip(qreg: list, start: int, end: int):
     return qreg[start:end+1]
 
-@njit
+
 def ttg(qreg):
     '''
     qreg = [2, 3, 4]

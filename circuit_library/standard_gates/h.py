@@ -11,7 +11,7 @@ from circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
 class HGate(QuantumGate, ABC):
-    @njit
+    
     def __init__(self,
                  qreg: int,
                  dims: int
@@ -25,7 +25,7 @@ class HGate(QuantumGate, ABC):
         self.dims = dims
 
     @property
-    @njit
+    
     def is_controlled(self) -> bool:
         """
         Check if the gate is controlled or not
@@ -34,7 +34,7 @@ class HGate(QuantumGate, ABC):
         return False
 
     @property
-    @njit
+    
     def is_single_qudit(self) -> bool:
         """
         Check if the gate is a single qudit or multi-qudit
@@ -44,7 +44,7 @@ class HGate(QuantumGate, ABC):
         return True
 
     @property
-    @njit
+    
     def unitary(self) -> csr_matrix:
         """
         This is the gate unitary which shall be used to do any calculation
@@ -65,7 +65,7 @@ class HGate(QuantumGate, ABC):
         return csr_matrix(_unitary)
 
     @property
-    @njit
+    
     def acting_on(self) -> Union[int, list]:
         """
         Gets the index of the acting qudit in the QuantumRegister
