@@ -2,6 +2,7 @@ from abc import ABC
 from typing import Union
 
 import numpy as np
+from numba import njit
 from scipy.linalg import circulant
 from scipy.sparse import csr_matrix
 
@@ -9,6 +10,7 @@ from circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
 class XGate(QuantumGate, ABC):
+    @njit
     def __init__(self,
                  qreg: int,
                  dims: int
@@ -22,6 +24,7 @@ class XGate(QuantumGate, ABC):
         self.dims = dims
 
     @property
+    @njit
     def is_controlled(self) -> bool:
         """
         Check if the gate is controlled or not
@@ -30,6 +33,7 @@ class XGate(QuantumGate, ABC):
         return False
 
     @property
+    @njit
     def is_single_qudit(self) -> bool:
         """
         Check if the gate is a single qudit or multi-qudit
@@ -38,6 +42,7 @@ class XGate(QuantumGate, ABC):
         return True
 
     @property
+    @njit
     def unitary(self) -> csr_matrix:
         """
         This is the gate unitary which shall be used to do any calculation
@@ -50,6 +55,7 @@ class XGate(QuantumGate, ABC):
         return _unitary
 
     @property
+    @njit
     def acting_on(self) -> Union[int, list]:
         """
         Gets the index of the acting qudit in the QuantumRegister

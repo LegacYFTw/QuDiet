@@ -2,6 +2,7 @@ from abc import ABC
 from typing import Union, Tuple
 
 import numpy as np
+from numba import njit
 from scipy import sparse
 from scipy.sparse import csr_matrix
 
@@ -11,6 +12,7 @@ from utils.numpy import get_index
 
 
 class CXGate(QuantumGate, ABC):
+    @njit
     def __init__(self,
                  qreg: 'tuple[int, int]',
                  acting_on: 'tuple[int, int]',
@@ -37,6 +39,7 @@ class CXGate(QuantumGate, ABC):
 
 
     @property
+    @njit
     def is_controlled(self) -> bool:
         """
         Check if the gate is controlled or not
@@ -46,6 +49,7 @@ class CXGate(QuantumGate, ABC):
         return True
 
     @property
+    @njit
     def is_single_qudit(self) -> bool:
         """
         Check if the gate is a single qudit or multi-qudit
@@ -55,6 +59,7 @@ class CXGate(QuantumGate, ABC):
         return False
 
     @property
+    @njit
     def unitary(self) -> sparse:
         """
         This is the gate unitary which shall be used to do any calculations
@@ -99,6 +104,7 @@ class CXGate(QuantumGate, ABC):
         return csr_matrix(I)
 
     @staticmethod
+    @njit
     def update(index, row, plus, target, target_i):
         src_index = np.where(row == 1)[0]
         src_in_truth_table = index[src_index][0]
@@ -118,6 +124,8 @@ class CXGate(QuantumGate, ABC):
         return res
 
     @property
+
+    @njit
     def acting_on(self) -> Tuple[int, int]:
         """
         Gets the index of the acting qudit in the QuantumRegister

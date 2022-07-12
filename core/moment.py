@@ -1,4 +1,5 @@
 from typing import Union
+from numba import njit
 from circuit_library.standard_gates.cx import CXGate
 
 from circuit_library.standard_gates.h import HGate
@@ -10,6 +11,7 @@ from core.init_states import InitState
 
 
 class Moment:
+    @njit
     def __init__(self,
                  *args: Union[QuantumGate, InitState, IGate]
                  ):
@@ -38,21 +40,26 @@ class Moment:
         # TODO: Run unit tests
 
     @property
+    @njit
     def prev_pointer(self):
         return self._prev_pointer
 
     @prev_pointer.setter
+    @njit
     def prev_pointer(self, pointer):
         self._prev_pointer = pointer
 
     @property
+    @njit
     def next_pointer(self):
         return self._next_pointer
 
     @next_pointer.setter
+    @njit
     def next_pointer(self, pointer):
         self._next_pointer = pointer
 
+    @njit
     def __populate_list(self) -> bool:
         """
         This function takes a list of InitState and QuantumGate objects, and pushes them into the
@@ -71,6 +78,7 @@ class Moment:
             _iteration += 1
         return True
 
+    @njit
     def __push_list(self,
                     operation: Union[QuantumGate, InitState, IGate]
                     ) -> bool:
@@ -82,6 +90,7 @@ class Moment:
         self._moment_list.append(operation)
         return True
 
+    @njit
     def check_igate_at_qreg(self, gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
         """
         Checks if _moment_list has an IGate at gate_obj.qreg position. If yes, returns True, else False
@@ -95,6 +104,7 @@ class Moment:
         else:
             return False
 
+    @njit
     def replace_igate(self, gate_obj: Union[HGate, XGate, ZGate]) -> bool:
         """
         Checks if _moment_list has an IGate at qreg position. If yes, replaces it with the 
@@ -110,6 +120,7 @@ class Moment:
         else:
             return False
 
+    @njit
     def peek_list(self) -> list:
         """
         Function used to peek the list
@@ -118,6 +129,7 @@ class Moment:
         """
         return self._moment_list
 
+    @njit
     def __insert_placeholder_identity(self,
                                       qregs: int
                                       ) -> bool:

@@ -1,7 +1,9 @@
+import time
 from core.quantum_circuit import QuantumCircuit
 import time
 
-start = time.time()
+start_time = time.time()
+
 qc = QuantumCircuit([2, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2], init_states=[1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0])
 
 qc.cx(acting_on=(0, 3), plus=1)
@@ -40,5 +42,6 @@ qc.measure_all()
 qc.print_opflow_list()
 print(qc.run())
 
-stop = time.time()
-print(stop-start)
+
+end_time = time.time()
+print(f"Time elapsed: {end_time - start_time}s")
