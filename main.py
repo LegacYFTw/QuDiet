@@ -1,6 +1,6 @@
 from core.quantum_circuit import QuantumCircuit
 
-qc = QuantumCircuit(qregs=[4, 4, 3, 2], init_states=[0, 0, 0, 0])
+qc = QuantumCircuit([2,2,3,3,3,2,2,2,2,2,2,2,2], init_states=[1,1,1,0,1,0,0,0,0,0,0,0,0])
 
 qc.h(qreg=0)
 qc.z(qreg=1)

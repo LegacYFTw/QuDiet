@@ -1,5 +1,6 @@
 from scipy import sparse
 from scipy.sparse import csr_matrix, dok_matrix
+import numpy as np
 
 
 class InitState:
@@ -18,9 +19,14 @@ class InitState:
             self.dim = dim
             self.state = state
             self.qreg = qreg
-            self.init_state = dok_matrix(sparse.eye(dim, n=1))
+            self.init_state = dok_matrix(np.zeros((dim, 1)))
             self.init_state[state] = 1
             self.init_state = csr_matrix(self.init_state)
+
+        print("------------------------------------------------")
+        print("State {0} initialized \n".format(self.state))
+        print("Statevector given by: ")
+        print(self.get_init_states().todense())
 
     def get_init_states(self) -> sparse:
         return self.init_state

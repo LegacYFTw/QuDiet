@@ -77,12 +77,13 @@ class QuantumCircuit:
         :param qreg: The quantum register number for putting the gate
         :param dims: The dimension of the gate
         """
-        if qreg > self._reg_length-1:
+        if qreg > self._reg_length - 1:
             raise ValueError("Illegal placement of gate. Register specified is out of circuit bounds.")
         if dims and dims > self._reg_dims[qreg]:
             raise ValueError("Input dimension is greater than the register dimension.")
 
-    def __add_moment_to_opflow(self, qreg: 'Union[int, tuple[int, int]]', gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
+    def __add_moment_to_opflow(self, qreg: 'Union[int, tuple[int, int]]',
+                               gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
         """
         Creates Moment objects for the given QuantumGate object and pushes it into the OperatorFlow object created earlier
 
@@ -92,7 +93,7 @@ class QuantumCircuit:
         """
         _moment_data = []
         for _reg in range(self._reg_length):
-            if isinstance(qreg, tuple) and _reg in range(qreg[0], qreg[1]+1):
+            if isinstance(qreg, tuple) and _reg in range(qreg[0], qreg[1] + 1):
                 _moment_data.append(gate_obj)
             else:
                 _igate = IGate(qreg=_reg, dims=self._reg_dims[_reg])
@@ -141,8 +142,8 @@ class QuantumCircuit:
         _zgate = ZGate(qreg=qreg, dims=dims or self._reg_dims[qreg])
         _result = self.__add_moment_to_opflow(qreg, _zgate)
         return _result
-    
-    def cx(self, acting_on:'tuple[int, int]', plus:int) -> bool:
+
+    def cx(self, acting_on: 'tuple[int, int]', plus: int) -> bool:
         """
         Responsible for creating the CXGate and adding it to OperatorFlow through another function call
 
@@ -150,13 +151,12 @@ class QuantumCircuit:
         :param dims: The dimension of the gate
         :return: True if everything goes well, else False
         """
-        
-        active_qregs = [ self._reg_dims[qreg] for qreg in range(acting_on[0], acting_on[1]+1) ]
+
+        active_qregs = [self._reg_dims[qreg] for qreg in range(acting_on[0], acting_on[1] + 1)]
         _cxgate = CXGate(qreg=active_qregs, acting_on=acting_on, plus=plus)
 
         _result = self.__add_moment_to_opflow(acting_on, _cxgate)
         return _result
-    
 
     def measure(self, qreg: int) -> NotImplementedError:
         """
@@ -177,10 +177,10 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
         # Adds Operator flow object and push the Measurement object into Operator Flow stack
-        _measurement_moment = [ Measurement(qreg=_index) for _index in range(self._reg_length) ]
+        _measurement_moment = [Measurement(qreg=_index) for _index in range(self._reg_length)]
         _m = Moment(*_measurement_moment)
         self.op_flow.populate_opflow(_m)
-        
+
         return True
 
     def __initialize_states(self):
@@ -188,17 +188,16 @@ class QuantumCircuit:
         Initializes the qudits to |0> state or |N> state depending on the dimensions of the qubits
         """
         # Adds Operator flow object and push the init object into Operator Flow stack
-        _init_gates = [ InitState(dim=self._reg_dims[_index], state=_element, qreg=_index) for _index, _element in enumerate(self.init_states) ]
+        _init_gates = [InitState(dim=self._reg_dims[_index], state=_element, qreg=_index) for _index, _element in
+                       enumerate(self.init_states)]
 
         init_moment = Moment(*_init_gates)
         self.op_flow.populate_opflow(init_moment)
 
-
     def run(self):
         return self.op_flow.exec()
 
-    
     def print_opflow_list(self):
         for i in self.op_flow.peek():
-            i : Moment = i
-            print(i.peek_list(),"\n")
+            i: Moment = i
+            print(i.peek_list(), "\n")
