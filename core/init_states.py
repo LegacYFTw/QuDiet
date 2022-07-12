@@ -24,7 +24,7 @@ class InitState:
             self.init_state = csr_matrix(self.init_state)
 
         print("------------------------------------------------")
-        print("State {0} initialized \n".format(self.state))
+        print(f"State {self.state} initialized \n")
         print("Statevector given by: ")
         print(self.get_init_states().todense())
 
