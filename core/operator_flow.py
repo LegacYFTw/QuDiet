@@ -135,15 +135,18 @@ class OperatorFlow:
 
         # Creates a list _all_moments from all the passed Moments from args
         _all_moments = self._opflow_list
-        
+                  
         # Pops out the last Moment and stores it in _moment
-        _moment = _all_moments.pop()
+        # _moment = _all_moments.pop()
 
         # Sets _dot_product as None
         _dot_product = None
+
+        # TODO: This function needs cleaning...
         
         # Run a loop while there is a Moment present in the _all_moments list
-        while _all_moments:
+        # while _all_moments:
+        for _moment in reversed(_all_moments):
             
             # Get the moment list from the current Moment (_moment) and reverse it for FIFO operation. 
             _moment_list = _moment.peek_list()
@@ -179,7 +182,7 @@ class OperatorFlow:
                 _dot_product = sparse.csr_array.dot(_dot_product, _kron_product)
 
             # Pops a Moment from _all_moments and assigns it to _moment
-            _moment = _all_moments.pop()
+            # _moment = _all_moments.pop()
         
         # Once the parent while loop ends, returns the final _dot_product
         return _dot_product
