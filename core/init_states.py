@@ -34,3 +34,7 @@ class InitState:
     
     def get_init_states(self) -> sparse:
         return self.init_state
+    
+    @property
+    def unitary(self) -> sparse:
+        return self.init_state
