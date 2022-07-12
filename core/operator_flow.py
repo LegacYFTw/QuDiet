@@ -1,5 +1,5 @@
 import numpy as np
-
+from scipy import sparse
 from circuit_library.standard_gates.cx import CXGate
 from circuit_library.standard_gates.h import HGate
 from circuit_library.standard_gates.x import XGate
@@ -132,7 +132,7 @@ class OperatorFlow:
         _moment = _all_moments.pop()
 
         # Sets _dot_product as None
-        _dot_product = np.array([])
+        _dot_product = None
         
         # Run a loop while there is a Moment present in the _all_moments list
         while _all_moments:
@@ -145,7 +145,6 @@ class OperatorFlow:
             _kron_product = _moment_list.pop()
             _last_gate = _kron_product
             _kron_product = _kron_product.unitary
-            _kron_product = _kron_product.toarray()
 
             # Run a loop while there is a Gate present in the _moment_list
             while _moment_list:
@@ -157,20 +156,19 @@ class OperatorFlow:
                     continue
                 _last_gate = _curr_gate
                 _curr_gate = _curr_gate.unitary
-                _curr_gate = _curr_gate.toarray()
 
                 # Computes the kronecker product of the current _kron_product and _curr_gate, and store 
                 # the kronecker product of the two in _kron_product
                 _kron_product = _kron_product
-                _kron_product = np.kron(_kron_product, _curr_gate)
+                _kron_product = sparse.kron(_kron_product, _curr_gate)
 
             # If _dot_product does not have a value, assigns the value of _kron_product to _dot_product
             # else, calculates the dot product of _dot_product and _kron_product and assigns it to _dot_product.
             # NOTE: The if condition evaluates to True only for the first run of the parent while loop.
-            if not list(_dot_product):
+            if _dot_product is None:
                 _dot_product = _kron_product
             else:
-                _dot_product = np.dot(_dot_product, _kron_product)
+                _dot_product = sparse.csr_array.dot(_dot_product, _kron_product)
 
             # Pops a Moment from _all_moments and assigns it to _moment
             _moment = _all_moments.pop()
