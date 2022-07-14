@@ -9,6 +9,7 @@ from circuit_library.standard_gates.x import XGate
 from circuit_library.standard_gates.z import ZGate
 from core.init_states import InitState
 
+from scipy import sparse
 
 class Moment:
     
@@ -40,25 +41,20 @@ class Moment:
         # TODO: Run unit tests
 
     @property
-    
     def prev_pointer(self):
         return self._prev_pointer
 
     @prev_pointer.setter
-    
     def prev_pointer(self, pointer):
         self._prev_pointer = pointer
 
     @property
-    
     def next_pointer(self):
         return self._next_pointer
 
     @next_pointer.setter
-    
     def next_pointer(self, pointer):
         self._next_pointer = pointer
-
     
     def __populate_list(self) -> bool:
         """
@@ -77,7 +73,6 @@ class Moment:
                 return False
             _iteration += 1
         return True
-
     
     def __push_list(self,
                     operation: Union[QuantumGate, InitState, IGate]
@@ -90,7 +85,6 @@ class Moment:
         self._moment_list.append(operation)
         return True
 
-    
     def check_igate_at_qreg(self, gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
         """
         Checks if _moment_list has an IGate at gate_obj.qreg position. If yes, returns True, else False
@@ -103,7 +97,6 @@ class Moment:
             return True
         else:
             return False
-
     
     def replace_igate(self, gate_obj: Union[HGate, XGate, ZGate]) -> bool:
         """
@@ -119,7 +112,6 @@ class Moment:
             return True
         else:
             return False
-
     
     def peek_list(self) -> list:
         """
@@ -128,7 +120,6 @@ class Moment:
         :return: Returns the list held in the Moment object
         """
         return self._moment_list
-
     
     def __insert_placeholder_identity(self,
                                       qregs: int
@@ -171,3 +162,20 @@ class Moment:
             return False
 
         return True
+
+    def exec(self, ):
+        """
+        Executes the gates (kronecker product) and returns the result
+    
+        :return: Returns the resultant layer state
+        """
+        _kron_product = self._moment_list[0].unitary
+
+        for i, gate in enumerate(self._moment_list[1:]):
+            # TODO : What is this ? Why this if statement ?
+            
+            # gate is self._moment_list[i+1], i denotes the index of the previous gate...
+            # Thus, self._moment_list[i] is the previous gate
+            if not (isinstance(self._moment_list[i], CXGate) and isinstance(gate, CXGate)):
+                _kron_product = sparse.kron(_kron_product, gate.unitary)
+        return _kron_product
