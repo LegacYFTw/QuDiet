@@ -110,7 +110,7 @@ class CXGate(QuantumGate, ABC):
         src_in_truth_table = index[src_index][0]
 
         # apply transform
-        target_change_to = (src_in_truth_table[target_i] + plus) % target
+        target_change_to = (src_in_truth_table[target_i] + abs(target-plus)) % target
 
         trgt_in_truth_table = src_in_truth_table.copy()
         trgt_in_truth_table[target_i] = target_change_to
