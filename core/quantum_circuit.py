@@ -99,6 +99,8 @@ class QuantumCircuit:
         _moment_data = []
         for _reg in range(self._reg_length):
             if isinstance(qreg, tuple) and _reg in range(qreg[0], qreg[1] + 1):
+                if _moment_data and isinstance(_moment_data[-1], CXGate):
+                    continue
                 _moment_data.append(gate_obj)
             else:
                 _igate = IGate(qreg=_reg, dims=self._reg_dims[_reg])

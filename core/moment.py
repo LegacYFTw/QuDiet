@@ -107,7 +107,7 @@ class Moment:
         :return: True if replacement occurs, else False
         """
         _qreg = gate_obj.qreg
-        if isinstance(self._moment_list[_qreg], IGate):
+        if isinstance(self._moment_list[_qreg], IGate) and self._moment_list[_qreg].acting_on == _qreg:
             self._moment_list[_qreg] = gate_obj
             return True
         else:
@@ -176,6 +176,7 @@ class Moment:
             
             # gate is self._moment_list[i+1], i denotes the index of the previous gate...
             # Thus, self._moment_list[i] is the previous gate
-            if not (isinstance(self._moment_list[i], CXGate) and isinstance(gate, CXGate)):
-                _kron_product = sparse.kron(_kron_product, gate.unitary)
+            
+            _kron_product = sparse.kron(_kron_product, gate.unitary)
+        
         return _kron_product
