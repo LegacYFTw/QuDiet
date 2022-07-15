@@ -1,13 +1,13 @@
 from typing import Union
 from numba import njit
-from circuit_library.standard_gates.cx import CXGate
+from framework.circuit_library.standard_gates.cx import CXGate
 
-from circuit_library.standard_gates.h import HGate
-from circuit_library.standard_gates.i import IGate
-from circuit_library.standard_gates.quantum_gate import QuantumGate
-from circuit_library.standard_gates.x import XGate
-from circuit_library.standard_gates.z import ZGate
-from core.init_states import InitState
+from framework.circuit_library.standard_gates.h import HGate
+from framework.circuit_library.standard_gates.i import IGate
+from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
+from framework.circuit_library.standard_gates.x import XGate
+from framework.circuit_library.standard_gates.z import ZGate
+from framework.core.init_states import InitState
 
 from scipy import sparse
 

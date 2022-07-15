@@ -1,4 +1,4 @@
-from circuit_library.standard_gates.h import HGate
+from framework.circuit_library.standard_gates.h import HGate
 from numba import njit
 from typing import (
     Literal,
@@ -6,15 +6,15 @@ from typing import (
     Optional,
 )
 
-from circuit_library.standard_gates.h import HGate
-from circuit_library.standard_gates.i import IGate
-from circuit_library.standard_gates.measurement import Measurement
-from circuit_library.standard_gates.x import XGate
-from circuit_library.standard_gates.z import ZGate
-from circuit_library.standard_gates.cx import CXGate
-from core.moment import Moment
-from core.operator_flow import OperatorFlow
-from core.init_states import InitState
+from framework.circuit_library.standard_gates.h import HGate
+from framework.circuit_library.standard_gates.i import IGate
+from framework.circuit_library.standard_gates.measurement import Measurement
+from framework.circuit_library.standard_gates.x import XGate
+from framework.circuit_library.standard_gates.z import ZGate
+from framework.circuit_library.standard_gates.cx import CXGate
+from framework.core.moment import Moment
+from framework.core.operator_flow import OperatorFlow
+from framework.core.init_states import InitState
 
 
 class QuantumCircuit:

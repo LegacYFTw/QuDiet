@@ -1,7 +1,7 @@
 from abc import ABC
 from numba import njit
 from typing import Union
-from circuit_library.standard_gates.quantum_gate import QuantumGate
+from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
 class Measurement(QuantumGate, ABC):

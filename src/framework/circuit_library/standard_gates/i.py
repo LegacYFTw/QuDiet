@@ -1,22 +1,19 @@
 from abc import ABC
 from typing import Union
-
-import numpy as np
 from numba import njit
-from scipy.linalg import circulant
-from scipy.sparse import csr_matrix
+from scipy import sparse
 
-from circuit_library.standard_gates.quantum_gate import QuantumGate
+from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
-class XGate(QuantumGate, ABC):
+class IGate(QuantumGate, ABC):
     
     def __init__(self,
                  qreg: int,
                  dims: int
                  ):
         """
-        This generates the Pauli-X Gate object for a given set of dimensions and a qreg number
+        This generates the Identity Gate object for a given set of dimensions and a qreg number
         :param qreg: Integer representing the id of the quantum register
         :param dims: Integer representing the dimension of the gate
         """
@@ -43,16 +40,12 @@ class XGate(QuantumGate, ABC):
 
     @property
     
-    def unitary(self) -> csr_matrix:
+    def unitary(self) -> sparse:
         """
         This is the gate unitary which shall be used to do any calculation
         :return: The gate unitary
         """
-        _unitary_builder = np.zeros(shape=(self.dims, 1))
-        _unitary_builder[1] = 1
-        _unitary = csr_matrix(circulant(_unitary_builder))
-
-        return _unitary
+        return sparse.eye(n=self.dims, m=self.dims)
 
     @property
     

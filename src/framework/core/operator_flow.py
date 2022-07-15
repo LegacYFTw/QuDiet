@@ -3,13 +3,13 @@ from numba import njit
 
 from scipy import sparse
 
-from circuit_library.standard_gates.cx import CXGate
-from circuit_library.standard_gates.h import HGate
-from circuit_library.standard_gates.x import XGate
-from circuit_library.standard_gates.z import ZGate
-from circuit_library.standard_gates.measurement import Measurement
+from framework.circuit_library.standard_gates.cx import CXGate
+from framework.circuit_library.standard_gates.h import HGate
+from framework.circuit_library.standard_gates.x import XGate
+from framework.circuit_library.standard_gates.z import ZGate
+from framework.circuit_library.standard_gates.measurement import Measurement
 
-from core.moment import Moment
+from framework.core.moment import Moment
 
 
 # Can be used to find dot product of more than two matrices
