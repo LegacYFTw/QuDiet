@@ -1,3 +1,3 @@
-# qubit-qudit-sim
+# quDiet
 
-Qubit Qudit Simulator
+A high performance simulator that scales and eats qudits for lunch.
