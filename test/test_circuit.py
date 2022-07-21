@@ -24,7 +24,7 @@
 #
 
 from framework.core.quantum_circuit import QuantumCircuit
-
+from framework.utils.numpy import Nbase_to_bin
 
 def test_qudit_init():
     qc = QuantumCircuit(
@@ -35,3 +35,37 @@ def test_qudit_init():
     result = qc.run()
 
     assert result.nonzero() == ([23296], [0])
+
+def test_qudit_cx():
+    qc = QuantumCircuit(
+        qregs=[2, 3, 3, 3, 2],
+        init_states=[1, 1, 1, 2, 1],
+    )
+    qc.cx([0, 3], 1)
+    qc.measure_all()
+    result = qc.run()
+
+    assert result.nonzero() == ([79], [0])
+
+def test_qudit_reverse_cx():
+    qc = QuantumCircuit(
+        qregs=[2, 3, 3, 3, 2],
+        init_states=[1, 1, 1, 2, 1],
+    )
+    qc.cx([3, 1], 1)
+    qc.measure_all()
+    result = qc.run()
+
+    in_base = Nbase_to_bin(result.nonzero()[0][0], [2, 3, 3, 3, 2])
+
+    assert result.nonzero() == ([101], [0])
+
+# def test_qudit_width_depth():
+#     qc = QuantumCircuit(
+#         qregs=[2, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2],
+#         init_states=[1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+#     )
+#     qc.cx([1, 3], 2)
+#     qc.measure_all()
+#     result = qc.run()
+#     qc.get_circuit_config()

@@ -34,7 +34,7 @@ from framework.circuit_library.standard_gates.z import ZGate
 from framework.core.init_states import InitState
 from framework.core.moment import Moment
 from framework.core.operator_flow import OperatorFlow
-
+from framework.utils.linalg import isiterable
 
 class QuantumCircuit:
     def __init__(
@@ -89,6 +89,10 @@ class QuantumCircuit:
         self.__initialize_states()
 
     def get_circuit_config(self):
+        # return {
+        #     "width": len(self.qregs) if isinstance(self.qregs, list) else self.qregs + len(self.cregs) if isinstance(self.cregs, list) else self.qregs,
+        #     "depth": len(self.op_flow._opflow_list),
+        # }
         raise NotImplementedError
 
     def __validate_gate_inputs(self, qreg: int, dims: Optional[int]):
@@ -118,8 +122,12 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
         _moment_data = []
+        if isiterable(qreg):
+            operation_action_space = list(range(qreg[0], qreg[1] + 1) if qreg[0] < qreg[1] else range(qreg[1], qreg[0] + 1))
+        else:
+            operation_action_space = []
         for _reg in range(self._reg_length):
-            if isinstance(qreg, tuple) and _reg in range(qreg[0], qreg[1] + 1):
+            if _reg in operation_action_space:
                 _moment_data.append(gate_obj)
             else:
                 _igate = IGate(qreg=_reg, dims=self._reg_dims[_reg])
@@ -180,12 +188,19 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
 
-        active_qregs = [
-            self._reg_dims[qreg] for qreg in range(acting_on[0], acting_on[1] + 1)
-        ]
+        # active_qregs = [
+        #     self._reg_dims[qreg] for qreg in [range(acting_on[0], acting_on[1] + 1) if acting_on[0] < acting_on[1] else range(acting_on[1], acting_on[0] + 1)]
+        # ]
+        if acting_on[0] < acting_on[1]:
+            active_qregs = self._reg_dims[acting_on[0]:acting_on[1] + 1]
+        else:
+            active_qregs = self._reg_dims[acting_on[1]:acting_on[0] + 1]
+
         _cxgate = CXGate(qreg=active_qregs, acting_on=acting_on, plus=plus)
 
+
         _result = self.__add_moment_to_opflow(acting_on, _cxgate)
+        print(_cxgate.unitary)
         return _result
 
     def measure(self, qreg: int) -> NotImplementedError:

@@ -88,8 +88,13 @@ class CXGate(QuantumGate, ABC):
         # self._qreg[source_i] gets the value 4 and self._qreg[target_i] gives IndexError
         # as there is no value at index 4
         # So, resetting target_i to 4 - 1 = 3 and source_i = 0
-        target_i = target_i - source_i
-        source_i = 0
+        if source_i < target_i:
+            target_i = target_i - source_i
+            source_i = 0
+        else:
+            source_i = source_i - target_i
+            target_i = 0
+            
         # source denotes the dim of control qudit, source_i is the index of the
         # control qudit
         source = self._qreg[source_i]
@@ -116,10 +121,16 @@ class CXGate(QuantumGate, ABC):
         # This will act as a base matrix for our gate
         I = np.eye(dim)
 
-        for x in range(_from, _to + 1):
-            I[x] = self.update(index, I[x], self._plus, target, target_i)
+        for i, x in enumerate(index):
+            if x[source_i] == self._qreg[source_i] - 1:
+                I[i] = self.update(index, I[i], self._plus, target, target_i)
 
-        return csr_matrix(I)
+        # for x in range(_from, _to + 1):
+        #     I[x] = self.update(index, I[x], self._plus, target, target_i)
+
+        # Transpose because the previous the actions were row 
+        # based weher as we needed column based approch.
+        return csr_matrix(I).transpose()
 
     @staticmethod
     def update(index, row, plus, target, target_i):
@@ -127,7 +138,8 @@ class CXGate(QuantumGate, ABC):
         src_in_truth_table = index[src_index][0]
 
         # apply transform
-        target_change_to = (src_in_truth_table[target_i] + abs(target - plus)) % target
+        # target_change_to = (src_in_truth_table[target_i] + abs(target - plus)) # % target
+        target_change_to = (src_in_truth_table[target_i] + plus) % target
 
         trgt_in_truth_table = src_in_truth_table.copy()
         trgt_in_truth_table[target_i] = target_change_to
