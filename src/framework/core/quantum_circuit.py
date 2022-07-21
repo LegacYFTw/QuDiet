@@ -1,30 +1,49 @@
-from framework.circuit_library.standard_gates.h import HGate
-from numba import njit
-from typing import (
-    Literal,
-    Union,
-    Optional,
-)
+#               This file is part of the Framework package.
+#              https://github.com/LegacYFTw/qubit-qudit-sim
+#
+#                      Copyright (c) 2022.
+#                      --.- ..- -.. .. . -
+#
+# Turbasu Chatterjee, Subhayu Kumar Bala, Arnav Das
+# Dr. Amit Saha, Prof. Anupam Chattopadhyay, Prof. Amlan Chakrabarti
+#
+#
+# SPDX-License-Identifier: AGPL-3.0
+#
+#  This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
 
+from typing import Literal, Optional, Union
+
+from framework.circuit_library.standard_gates.cx import CXGate
 from framework.circuit_library.standard_gates.h import HGate
 from framework.circuit_library.standard_gates.i import IGate
 from framework.circuit_library.standard_gates.measurement import Measurement
 from framework.circuit_library.standard_gates.x import XGate
 from framework.circuit_library.standard_gates.z import ZGate
-from framework.circuit_library.standard_gates.cx import CXGate
+from framework.core.init_states import InitState
 from framework.core.moment import Moment
 from framework.core.operator_flow import OperatorFlow
-from framework.core.init_states import InitState
 
 
 class QuantumCircuit:
-
-    def __init__(self,
-                 qregs: 'Union[tuple[int, int], list[int]]',
-                 cregs: Optional[int] = None,
-                 name: Optional[str] = None,
-                 init_states: 'Optional[list[int]]' = None,
-                 ):
+    def __init__(
+        self,
+        qregs: "Union[tuple[int, int], list[int]]",
+        cregs: Optional[int] = None,
+        name: Optional[str] = None,
+        init_states: "Optional[list[int]]" = None,
+    ):
         """
         x = QuantumCircuit((3,3))
         This will basically create a QuantumCircuit with RegisterLength = 3, meaning there shall be 3 qudits, with energy
@@ -65,8 +84,7 @@ class QuantumCircuit:
             self._reg_dims = self.qregs
 
         if self._reg_length > len(self.init_states):
-            self.init_states.extend(
-                (self._reg_length - len(self.init_states)) * [0])
+            self.init_states.extend((self._reg_length - len(self.init_states)) * [0])
 
         self.__initialize_states()
 
@@ -82,17 +100,16 @@ class QuantumCircuit:
         """
         if qreg > self._reg_length - 1:
             raise ValueError(
-                "Illegal placement of gate. Register specified is out of circuit bounds.")
+                "Illegal placement of gate. Register specified is out of circuit bounds."
+            )
         if dims and dims > self._reg_dims[qreg]:
-            raise ValueError(
-                "Input dimension is greater than the register dimension.")
+            raise ValueError("Input dimension is greater than the register dimension.")
 
-    def __add_moment_to_opflow(self,
-                               qreg: 'Union[int, tuple[int, int]]',
-                               gate_obj: Union[HGate,
-                                               XGate,
-                                               ZGate,
-                                               CXGate]) -> bool:
+    def __add_moment_to_opflow(
+        self,
+        qreg: "Union[int, tuple[int, int]]",
+        gate_obj: Union[HGate, XGate, ZGate, CXGate],
+    ) -> bool:
         """
         Creates Moment objects for the given QuantumGate object and pushes it into the OperatorFlow object created earlier
 
@@ -153,10 +170,8 @@ class QuantumCircuit:
         return _result
 
     def cx(
-            self,
-            acting_on: 'tuple[int, int]',
-            plus: int,
-            dims: Optional[int] = None) -> bool:
+        self, acting_on: "tuple[int, int]", plus: int, dims: Optional[int] = None
+    ) -> bool:
         """
         Responsible for creating the CXGate and adding it to OperatorFlow through another function call
 
@@ -165,8 +180,9 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
 
-        active_qregs = [self._reg_dims[qreg]
-                        for qreg in range(acting_on[0], acting_on[1] + 1)]
+        active_qregs = [
+            self._reg_dims[qreg] for qreg in range(acting_on[0], acting_on[1] + 1)
+        ]
         _cxgate = CXGate(qreg=active_qregs, acting_on=acting_on, plus=plus)
 
         _result = self.__add_moment_to_opflow(acting_on, _cxgate)
@@ -193,9 +209,8 @@ class QuantumCircuit:
         # Adds Operator flow object and push the Measurement object into
         # Operator Flow stack
         _measurement_moment = [
-            Measurement(
-                qreg=_index) for _index in range(
-                self._reg_length)]
+            Measurement(qreg=_index) for _index in range(self._reg_length)
+        ]
         _m = Moment(*_measurement_moment)
         self.op_flow.populate_opflow(_m)
 
@@ -208,12 +223,9 @@ class QuantumCircuit:
         # Adds Operator flow object and push the init object into Operator Flow
         # stack
         _init_gates = [
-            InitState(
-                dim=self._reg_dims[_index],
-                state=_element,
-                qreg=_index) for _index,
-            _element in enumerate(
-                self.init_states)]
+            InitState(dim=self._reg_dims[_index], state=_element, qreg=_index)
+            for _index, _element in enumerate(self.init_states)
+        ]
 
         init_moment = Moment(*_init_gates)
         self.op_flow.populate_opflow(init_moment)

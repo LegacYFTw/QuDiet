@@ -1,7 +1,33 @@
-from typing import Union
-from numba import njit
-from framework.circuit_library.standard_gates.cx import CXGate
+#               This file is part of the Framework package.
+#              https://github.com/LegacYFTw/qubit-qudit-sim
+#
+#                      Copyright (c) 2022.
+#                      --.- ..- -.. .. . -
+#
+# Turbasu Chatterjee, Subhayu Kumar Bala, Arnav Das
+# Dr. Amit Saha, Prof. Anupam Chattopadhyay, Prof. Amlan Chakrabarti
+#
+#
+# SPDX-License-Identifier: AGPL-3.0
+#
+#  This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
 
+from typing import Union
+
+from scipy import sparse
+
+from framework.circuit_library.standard_gates.cx import CXGate
 from framework.circuit_library.standard_gates.h import HGate
 from framework.circuit_library.standard_gates.i import IGate
 from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
@@ -9,14 +35,9 @@ from framework.circuit_library.standard_gates.x import XGate
 from framework.circuit_library.standard_gates.z import ZGate
 from framework.core.init_states import InitState
 
-from scipy import sparse
-
 
 class Moment:
-
-    def __init__(self,
-                 *args: Union[QuantumGate, InitState, IGate]
-                 ):
+    def __init__(self, *args: Union[QuantumGate, InitState, IGate]):
         """
         This is the Moment class. This is essentially a list of quantum gates that spans across quantum registers.
         For eg., consider the following poorly drawn quantum circuit
@@ -61,6 +82,7 @@ class Moment:
         """
         This function takes a list of InitState and QuantumGate objects, and pushes them into the
         Moment.
+
         :param operations_list: The list of InitState and QuantumGate objects to be pushed
         :return: True for success
         """
@@ -75,9 +97,7 @@ class Moment:
             _iteration += 1
         return True
 
-    def __push_list(self,
-                    operation: Union[QuantumGate, InitState, IGate]
-                    ) -> bool:
+    def __push_list(self, operation: Union[QuantumGate, InitState, IGate]) -> bool:
         """
         This function pushes the QuantumGate objects into the Moment list
         :param gate: The actual gates that will be pushed into the Moment
@@ -86,8 +106,7 @@ class Moment:
         self._moment_list.append(operation)
         return True
 
-    def check_igate_at_qreg(
-            self, gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
+    def check_igate_at_qreg(self, gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
         """
         Checks if _moment_list has an IGate at gate_obj.qreg position. If yes, returns True, else False
 
@@ -123,9 +142,7 @@ class Moment:
         """
         return self._moment_list
 
-    def __insert_placeholder_identity(self,
-                                      qregs: int
-                                      ) -> bool:
+    def __insert_placeholder_identity(self, qregs: int) -> bool:
         """
         Pushes a placeholder Identity Operator into the Moment list for an absent gate in order to complete a moment.
         Let's say that a QuantumCircuit object is as follows:
@@ -165,7 +182,9 @@ class Moment:
 
         return True
 
-    def exec(self, ):
+    def exec(
+        self,
+    ):
         """
         Executes the gates (kronecker product) and returns the result
 
@@ -179,10 +198,7 @@ class Moment:
             # gate is self._moment_list[i+1], i denotes the index of the previous gate...
             # Thus, self._moment_list[i] is the previous gate
             if not (
-                isinstance(
-                    self._moment_list[i],
-                    CXGate) and isinstance(
-                    gate,
-                    CXGate)):
+                isinstance(self._moment_list[i], CXGate) and isinstance(gate, CXGate)
+            ):
                 _kron_product = sparse.kron(_kron_product, gate.unitary)
         return _kron_product

@@ -1,8 +1,32 @@
+#               This file is part of the Framework package.
+#              https://github.com/LegacYFTw/qubit-qudit-sim
+#
+#                      Copyright (c) 2022.
+#                      --.- ..- -.. .. . -
+#
+# Turbasu Chatterjee, Subhayu Kumar Bala, Arnav Das
+# Dr. Amit Saha, Prof. Anupam Chattopadhyay, Prof. Amlan Chakrabarti
+#
+#
+# SPDX-License-Identifier: AGPL-3.0
+#
+#  This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+
 from abc import ABC
-from typing import Union, Tuple
+from typing import Tuple, Union
 
 import numpy as np
-from numba import njit
 from scipy import sparse
 from scipy.sparse import csr_matrix
 
@@ -12,12 +36,9 @@ from framework.utils.numpy import get_index
 
 
 class CXGate(QuantumGate, ABC):
-
-    def __init__(self,
-                 qreg: 'tuple[int, int]',
-                 acting_on: 'tuple[int, int]',
-                 plus: int
-                 ):
+    def __init__(
+        self, qreg: "tuple[int, int]", acting_on: "tuple[int, int]", plus: int
+    ):
         """
         This generates the CX Gate object for a given set of dimension and a qreg tuple representing control and target.
 
@@ -87,7 +108,7 @@ class CXGate(QuantumGate, ABC):
         # This creates the Truth Table that is used to index the rows & cols
         index = ttg(self._qreg)
 
-        _slice = rows[::dim // source]
+        _slice = rows[:: dim // source]
         _slice = np.array([*_slice, rows[-1]])
 
         _from, _to = _slice[_from], _slice[_from + 1]
@@ -106,8 +127,7 @@ class CXGate(QuantumGate, ABC):
         src_in_truth_table = index[src_index][0]
 
         # apply transform
-        target_change_to = (
-            src_in_truth_table[target_i] + abs(target - plus)) % target
+        target_change_to = (src_in_truth_table[target_i] + abs(target - plus)) % target
 
         trgt_in_truth_table = src_in_truth_table.copy()
         trgt_in_truth_table[target_i] = target_change_to

@@ -1,25 +1,43 @@
-import numpy as np
-from numba import njit
+#               This file is part of the Framework package.
+#              https://github.com/LegacYFTw/qubit-qudit-sim
+#
+#                      Copyright (c) 2022.
+#                      --.- ..- -.. .. . -
+#
+# Turbasu Chatterjee, Subhayu Kumar Bala, Arnav Das
+# Dr. Amit Saha, Prof. Anupam Chattopadhyay, Prof. Amlan Chakrabarti
+#
+#
+# SPDX-License-Identifier: AGPL-3.0
+#
+#  This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
 
+import numpy as np
 from scipy import sparse
 
 from framework.circuit_library.standard_gates.cx import CXGate
 from framework.circuit_library.standard_gates.h import HGate
+from framework.circuit_library.standard_gates.measurement import Measurement
 from framework.circuit_library.standard_gates.x import XGate
 from framework.circuit_library.standard_gates.z import ZGate
-from framework.circuit_library.standard_gates.measurement import Measurement
-
 from framework.core.moment import Moment
-
 
 # Can be used to find dot product of more than two matrices
 
 
 class OperatorFlow:
-
-    def __init__(self,
-                 *args: Moment
-                 ):
+    def __init__(self, *args: Moment):
         """
         This creates the OperatorFlow object. Each OperatorFlow object is a collection of Moments. The OperatorFlow
         maintains the order of the Moments and is responsible for any changes and optimization to the gate sequence in
@@ -43,9 +61,7 @@ class OperatorFlow:
         """
         return self._opflow_list
 
-    def populate_opflow(self,
-                        *args: Moment
-                        ) -> bool:
+    def populate_opflow(self, *args: Moment) -> bool:
         """
         Responsible for populating the Opflow list
         :param args: These are Moment objects which need to be pushed in order into the _opflow_list
@@ -80,10 +96,12 @@ class OperatorFlow:
                 _added_gate_to_earlier_moment = False
                 if _qreg is not None:
                     for _index, _curr_earlier_moment in enumerate(
-                            self._opflow_list[1:]):
+                        self._opflow_list[1:]
+                    ):
                         _curr_earlier_moment: Moment = _curr_earlier_moment
-                        _added_gate_to_earlier_moment = _curr_earlier_moment.replace_igate(
-                            _curr_moment_list[_qreg])
+                        _added_gate_to_earlier_moment = (
+                            _curr_earlier_moment.replace_igate(_curr_moment_list[_qreg])
+                        )
                         if _added_gate_to_earlier_moment:
                             break
 
@@ -109,9 +127,7 @@ class OperatorFlow:
 
         return True
 
-    def __detect_measurement_and_add_count(self,
-                                           moment: Moment
-                                           ) -> bool:
+    def __detect_measurement_and_add_count(self, moment: Moment) -> bool:
         """
         Responsible for detecting whether a Moment object has a measurement gate in it. This function is used for the
         __exec__()
@@ -160,15 +176,12 @@ class OperatorFlow:
             if _dot_product is None:
                 _dot_product = _kron_product
             else:
-                _dot_product = sparse.csr_array.dot(
-                    _dot_product, _kron_product)
+                _dot_product = sparse.csr_array.dot(_dot_product, _kron_product)
 
         # Once the parent while loop ends, returns the final _dot_product
         return _dot_product
 
-    def __placeholder_identity(self,
-                               moment: Moment
-                               ) -> bool:
+    def __placeholder_identity(self, moment: Moment) -> bool:
         """
         Pushes a placeholder Identity Operator into the Moment list for an absent gate in order to complete a moment.
         Let's say that a QuantumCircuit object is as follows:
