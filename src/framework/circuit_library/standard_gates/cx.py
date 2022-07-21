@@ -6,9 +6,9 @@ from numba import njit
 from scipy import sparse
 from scipy.sparse import csr_matrix
 
-from circuit_library.standard_gates.quantum_gate import QuantumGate
-from utils.linalg import ttg
-from utils.numpy import get_index
+from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
+from framework.utils.linalg import ttg
+from framework.utils.numpy import get_index
 
 
 class CXGate(QuantumGate, ABC):

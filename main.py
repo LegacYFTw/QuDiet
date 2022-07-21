@@ -1,5 +1,5 @@
 import time
-from core.quantum_circuit import QuantumCircuit
+from framework.core.quantum_circuit import QuantumCircuit
 import time
 
 start_time = time.time()
