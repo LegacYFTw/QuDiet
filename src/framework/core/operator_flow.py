@@ -16,7 +16,7 @@ from framework.core.moment import Moment
 
 
 class OperatorFlow:
-    
+
     def __init__(self,
                  *args: Moment
                  ):
@@ -35,7 +35,7 @@ class OperatorFlow:
         # Debugger
         self.debug = True
         self.debugger = []
- 
+
     def peek(self) -> list:
         """
         Responsible for peeking the list of Moments
@@ -56,11 +56,13 @@ class OperatorFlow:
                 self.debugger += [(_curr_moment, _curr_moment.exec())]
             _curr_moment_list = _curr_moment.peek_list()
             if self._opflow_list:
-                # Checks if all the registers have a measurement. If yes, returns False
+                # Checks if all the registers have a measurement. If yes,
+                # returns False
                 if all(self._measurement_count):
                     return False
-                
-                # Finds the register number of either of HGate, Xgate or ZGate present in the current moment
+
+                # Finds the register number of either of HGate, Xgate or ZGate
+                # present in the current moment
                 try:
                     _qreg = _curr_moment_list.index(
                         next(
@@ -73,17 +75,20 @@ class OperatorFlow:
                     _qreg = None
 
                 # Loops through the OperatorFlow list, checks if any of the earlier Moment(s) have an IGate.
-                # If yes, replaces it with HGate, XGate or ZGate of the current Moment.
+                # If yes, replaces it with HGate, XGate or ZGate of the current
+                # Moment.
                 _added_gate_to_earlier_moment = False
-                if _qreg != None:
-                    for _index, _curr_earlier_moment in enumerate(self._opflow_list[1:]):
+                if _qreg is not None:
+                    for _index, _curr_earlier_moment in enumerate(
+                            self._opflow_list[1:]):
                         _curr_earlier_moment: Moment = _curr_earlier_moment
-                        _added_gate_to_earlier_moment = _curr_earlier_moment.replace_igate(_curr_moment_list[_qreg])
+                        _added_gate_to_earlier_moment = _curr_earlier_moment.replace_igate(
+                            _curr_moment_list[_qreg])
                         if _added_gate_to_earlier_moment:
                             break
 
                 if _added_gate_to_earlier_moment:
-                    self._opflow_list[_index+1] = _curr_earlier_moment
+                    self._opflow_list[_index + 1] = _curr_earlier_moment
 
                 # Checks if the current Moment's HGate, XGate or ZGate has been added to any earlier Moment.
                 # If no, takes the last Moment in OperatorFlow list and points it to the current Moment, thereby
@@ -93,7 +98,7 @@ class OperatorFlow:
                     _prev_moment.next_pointer = _curr_moment
                     _curr_moment.prev_pointer = _prev_moment
                     self._opflow_list.append(_curr_moment)
-            
+
             else:
                 # If OperatorFlow list is empty, initiate _measurement_count list with register length times 0.
                 # Also, append the current moment to OperatorFlow list.
@@ -103,10 +108,10 @@ class OperatorFlow:
             self.__detect_measurement_and_add_count(_curr_moment)
 
         return True
-    
+
     def __detect_measurement_and_add_count(self,
-                             moment: Moment
-                             ) -> bool:
+                                           moment: Moment
+                                           ) -> bool:
         """
         Responsible for detecting whether a Moment object has a measurement gate in it. This function is used for the
         __exec__()
@@ -117,11 +122,11 @@ class OperatorFlow:
         for _index, _gate in enumerate(_curr_moment_list):
             if isinstance(_gate, Measurement):
                 self._measurement_count[_index] = 1
-    
+
     def exec(self):
         """
         This function takes multiple Moment objects, traverses them from last to first, performing kronecker product
-        on each of the Gates of every Moment, then performs dot product on the resultant kronecker products of all 
+        on each of the Gates of every Moment, then performs dot product on the resultant kronecker products of all
         the Moments and finally returns it.
 
         :param *args: Accepts multiple Moment objects
@@ -135,7 +140,7 @@ class OperatorFlow:
 
         # Creates a list _all_moments from all the passed Moments from args
         _all_moments = self._opflow_list
-                  
+
         # Pops out the last Moment and stores it in _moment
         # _moment = _all_moments.pop()
 
@@ -149,12 +154,14 @@ class OperatorFlow:
 
             # If _dot_product does not have a value, assigns the value of _kron_product to _dot_product
             # else, calculates the dot product of _dot_product and _kron_product and assigns it to _dot_product.
-            # NOTE: The if condition evaluates to True only for the first run of the parent while loop.
-            
+            # NOTE: The if condition evaluates to True only for the first run
+            # of the parent while loop.
+
             if _dot_product is None:
                 _dot_product = _kron_product
             else:
-                _dot_product = sparse.csr_array.dot(_dot_product, _kron_product)
+                _dot_product = sparse.csr_array.dot(
+                    _dot_product, _kron_product)
 
         # Once the parent while loop ends, returns the final _dot_product
         return _dot_product

@@ -11,7 +11,7 @@ from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
 
 
 class HGate(QuantumGate, ABC):
-    
+
     def __init__(self,
                  qreg: int,
                  dims: int
@@ -25,7 +25,6 @@ class HGate(QuantumGate, ABC):
         self.dims = dims
 
     @property
-    
     def is_controlled(self) -> bool:
         """
         Check if the gate is controlled or not
@@ -34,7 +33,6 @@ class HGate(QuantumGate, ABC):
         return False
 
     @property
-    
     def is_single_qudit(self) -> bool:
         """
         Check if the gate is a single qudit or multi-qudit
@@ -44,7 +42,6 @@ class HGate(QuantumGate, ABC):
         return True
 
     @property
-    
     def unitary(self) -> csr_matrix:
         """
         This is the gate unitary which shall be used to do any calculation
@@ -54,10 +51,12 @@ class HGate(QuantumGate, ABC):
         _roots_of_unity_build_list[0] = 1
         _roots_of_unity_build_list[self.dims] = -1
         _roots_of_unity = np.roots(_roots_of_unity_build_list)
-        _usable_roots_of_unity = np.delete(_roots_of_unity, len(_roots_of_unity) - 1)
+        _usable_roots_of_unity = np.delete(
+            _roots_of_unity, len(_roots_of_unity) - 1)
         _unitary_builder = circulant(_usable_roots_of_unity)
         _unitary_builder_first_row = np.ones(len(_usable_roots_of_unity))
-        _unitary_first = np.vstack([_unitary_builder_first_row, _unitary_builder])
+        _unitary_first = np.vstack(
+            [_unitary_builder_first_row, _unitary_builder])
         _unitary_first_column = np.ones(len(_usable_roots_of_unity) + 1)
         _unitary_unnormalized = np.c_[_unitary_first_column, _unitary_first]
         _unitary = 1 / (math.sqrt(self.dims)) * _unitary_unnormalized
@@ -65,7 +64,6 @@ class HGate(QuantumGate, ABC):
         return csr_matrix(_unitary)
 
     @property
-    
     def acting_on(self) -> Union[int, list]:
         """
         Gets the index of the acting qudit in the QuantumRegister

@@ -6,7 +6,6 @@ import numpy as np
 
 class InitState:
 
-    
     def __init__(self, dim: int, state: int, qreg: int):
         """
         This is the InitState class which initializes the lines on the QuantumRegister object.
@@ -30,11 +29,9 @@ class InitState:
         print("Statevector given by: ")
         print(self.get_init_states().todense())
 
-
-    
     def get_init_states(self) -> sparse:
         return self.init_state
-    
+
     @property
     def unitary(self) -> sparse:
         return self.init_state

@@ -12,7 +12,7 @@ from framework.utils.numpy import get_index
 
 
 class CXGate(QuantumGate, ABC):
-    
+
     def __init__(self,
                  qreg: 'tuple[int, int]',
                  acting_on: 'tuple[int, int]',
@@ -32,14 +32,11 @@ class CXGate(QuantumGate, ABC):
         self._plus = plus
         self._acting_on = acting_on
 
-
     @property
     def dims(self) -> int:
         return np.prod(self._qreg)
 
-
     @property
-    
     def is_controlled(self) -> bool:
         """
         Check if the gate is controlled or not
@@ -49,7 +46,6 @@ class CXGate(QuantumGate, ABC):
         return True
 
     @property
-    
     def is_single_qudit(self) -> bool:
         """
         Check if the gate is a single qudit or multi-qudit
@@ -59,7 +55,6 @@ class CXGate(QuantumGate, ABC):
         return False
 
     @property
-    
     def unitary(self) -> sparse:
         """
         This is the gate unitary which shall be used to do any calculations
@@ -68,15 +63,17 @@ class CXGate(QuantumGate, ABC):
         """
 
         source_i, target_i = self.acting_on
-        # When self.acting on = (1, 4) and self._qreg = [3, 4, 3, 3], 
-        # self._qreg[source_i] gets the value 4 and self._qreg[target_i] gives IndexError 
+        # When self.acting on = (1, 4) and self._qreg = [3, 4, 3, 3],
+        # self._qreg[source_i] gets the value 4 and self._qreg[target_i] gives IndexError
         # as there is no value at index 4
         # So, resetting target_i to 4 - 1 = 3 and source_i = 0
         target_i = target_i - source_i
         source_i = 0
-        # source denotes the dim of control qudit, source_i is the index of the control qudit
+        # source denotes the dim of control qudit, source_i is the index of the
+        # control qudit
         source = self._qreg[source_i]
-        # target denotes the dim of target qudit, target_i is the index of the target qudit
+        # target denotes the dim of target qudit, target_i is the index of the
+        # target qudit
         target = self._qreg[target_i]
 
         # _from is the trigger condition for the CXGate
@@ -87,7 +84,7 @@ class CXGate(QuantumGate, ABC):
 
         rows = np.array([i for i in range(dim)])
 
-        # This creates the Truth Table that is used to index the rows & cols 
+        # This creates the Truth Table that is used to index the rows & cols
         index = ttg(self._qreg)
 
         _slice = rows[::dim // source]
@@ -104,13 +101,13 @@ class CXGate(QuantumGate, ABC):
         return csr_matrix(I)
 
     @staticmethod
-    
     def update(index, row, plus, target, target_i):
         src_index = np.where(row == 1)[0]
         src_in_truth_table = index[src_index][0]
 
         # apply transform
-        target_change_to = (src_in_truth_table[target_i] + abs(target-plus)) % target
+        target_change_to = (
+            src_in_truth_table[target_i] + abs(target - plus)) % target
 
         trgt_in_truth_table = src_in_truth_table.copy()
         trgt_in_truth_table[target_i] = target_change_to
@@ -124,8 +121,6 @@ class CXGate(QuantumGate, ABC):
         return res
 
     @property
-
-    
     def acting_on(self) -> Tuple[int, int]:
         """
         Gets the index of the acting qudit in the QuantumRegister

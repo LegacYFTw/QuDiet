@@ -3,14 +3,14 @@ from numba import njit
 
 
 def clip(qreg: list, start: int, end: int):
-    return qreg[start:end+1]
+    return qreg[start:end + 1]
 
 
 def ttg(qreg):
     '''
     qreg = [2, 3, 4]
 
-    return 
+    return
 
        j= 0 1 2
     i=0 [ 0 0 0 ]

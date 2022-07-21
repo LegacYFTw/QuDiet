@@ -11,8 +11,9 @@ from framework.core.init_states import InitState
 
 from scipy import sparse
 
+
 class Moment:
-    
+
     def __init__(self,
                  *args: Union[QuantumGate, InitState, IGate]
                  ):
@@ -55,7 +56,7 @@ class Moment:
     @next_pointer.setter
     def next_pointer(self, pointer):
         self._next_pointer = pointer
-    
+
     def __populate_list(self) -> bool:
         """
         This function takes a list of InitState and QuantumGate objects, and pushes them into the
@@ -73,7 +74,7 @@ class Moment:
                 return False
             _iteration += 1
         return True
-    
+
     def __push_list(self,
                     operation: Union[QuantumGate, InitState, IGate]
                     ) -> bool:
@@ -85,7 +86,8 @@ class Moment:
         self._moment_list.append(operation)
         return True
 
-    def check_igate_at_qreg(self, gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
+    def check_igate_at_qreg(
+            self, gate_obj: Union[HGate, XGate, ZGate, CXGate]) -> bool:
         """
         Checks if _moment_list has an IGate at gate_obj.qreg position. If yes, returns True, else False
 
@@ -97,10 +99,10 @@ class Moment:
             return True
         else:
             return False
-    
+
     def replace_igate(self, gate_obj: Union[HGate, XGate, ZGate]) -> bool:
         """
-        Checks if _moment_list has an IGate at qreg position. If yes, replaces it with the 
+        Checks if _moment_list has an IGate at qreg position. If yes, replaces it with the
         gate object provided in the parameter
 
         :param gate_obj: Gate object of either HGate, XGate or ZGate
@@ -112,7 +114,7 @@ class Moment:
             return True
         else:
             return False
-    
+
     def peek_list(self) -> list:
         """
         Function used to peek the list
@@ -120,7 +122,7 @@ class Moment:
         :return: Returns the list held in the Moment object
         """
         return self._moment_list
-    
+
     def __insert_placeholder_identity(self,
                                       qregs: int
                                       ) -> bool:
@@ -166,16 +168,21 @@ class Moment:
     def exec(self, ):
         """
         Executes the gates (kronecker product) and returns the result
-    
+
         :return: Returns the resultant layer state
         """
         _kron_product = self._moment_list[0].unitary
 
         for i, gate in enumerate(self._moment_list[1:]):
             # TODO : What is this ? Why this if statement ?
-            
+
             # gate is self._moment_list[i+1], i denotes the index of the previous gate...
             # Thus, self._moment_list[i] is the previous gate
-            if not (isinstance(self._moment_list[i], CXGate) and isinstance(gate, CXGate)):
+            if not (
+                isinstance(
+                    self._moment_list[i],
+                    CXGate) and isinstance(
+                    gate,
+                    CXGate)):
                 _kron_product = sparse.kron(_kron_product, gate.unitary)
         return _kron_product
