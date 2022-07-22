@@ -1,0 +1,22 @@
+
+# rev_tof_2 for two 3 qudit registers
+# developed by Amit Saha
+
+.qudit 3
+
+qubit x0
+qubit x1
+qutrit x2
+
+.begin
+CNOT x0 x1
+CX X1 X2
+CX X2 X0
+CX X1 X2
+RX x2 180
+CNOT x2 x1
+CNOT x0 x2
+CX X1 X2
+CX X2 X0
+CX X1 X2
+.end
