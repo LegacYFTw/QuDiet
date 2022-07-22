@@ -60,6 +60,20 @@ def test_qudit_reverse_cx():
 
     assert result.nonzero() == ([101], [0])
 
+
+def test_qudit_toffoli():
+    qc = QuantumCircuit(
+        qregs=[2, 3, 4, 3, 2],
+        init_states=[1, 2, 2, 0, 1 ],
+    )
+    qc.toffoli(([1, 2], 3))
+    qc.measure_all()
+    result = qc.run()
+
+    in_base = Nbase_to_bin(result.nonzero()[0][0], [2, 3, 4, 3, 2])
+
+    assert result.nonzero() == ([135], [0])
+
 # def test_qudit_width_depth():
 #     qc = QuantumCircuit(
 #         qregs=[2, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2],

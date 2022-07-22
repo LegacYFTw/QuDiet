@@ -177,6 +177,19 @@ class QuantumCircuit:
         _result = self.__add_moment_to_opflow(qreg, _zgate)
         return _result
 
+    def toffoli(self, qreg, plus:int = 1) -> bool:
+        controls, target = qreg
+    
+        for i in range(len(controls) - 1):
+            self.cx([controls[i], controls[i+1]], 1)
+
+        self.cx([controls[-1], target], plus)
+
+        for i in range(len(controls) - 1):
+            self.cx([controls[i], controls[i+1]], self.qregs[controls[i+1]] - 1 )
+    
+        return True
+
     def cx(
         self, acting_on: "tuple[int, int]", plus: int, dims: Optional[int] = None
     ) -> bool:
