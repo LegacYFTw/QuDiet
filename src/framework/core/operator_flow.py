@@ -111,7 +111,7 @@ class OperatorFlow:
                 # Checks if the current Moment's HGate, XGate or ZGate has been added to any earlier Moment.
                 # If no, takes the last Moment in OperatorFlow list and points it to the current Moment, thereby
                 # adding it to the OperatorFlow list.
-                if not _added_gate_to_earlier_moment:
+                else:
                     _prev_moment: Moment = self._opflow_list[-1]
                     _prev_moment.next_pointer = _curr_moment
                     _curr_moment.prev_pointer = _prev_moment
@@ -156,9 +156,6 @@ class OperatorFlow:
 
         # Creates a list _all_moments from all the passed Moments from args
         _all_moments = self._opflow_list
-
-        # Pops out the last Moment and stores it in _moment
-        # _moment = _all_moments.pop()
 
         # Sets _dot_product as None
         _dot_product = None
