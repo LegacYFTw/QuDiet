@@ -6,7 +6,7 @@ from framework.core.quantum_circuit import QuantumCircuit
 '''
 testcode = ''' 
 def test(): 
-    qc = QuantumCircuit(qregs=[2, 3, 3], init_states=[0, 1, 0])
+    qc = QuantumCircuit(qregs=[2, 2, 3], init_states=[0, 1, 0])
     qc.cx(0, 2)
     qc.cx(2, 1)
     qc.cx(1, 2)
