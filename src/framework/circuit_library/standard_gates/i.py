@@ -29,10 +29,11 @@ from typing import Union
 from scipy import sparse
 
 from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
+from framework.core.backend.core import Backend
 
 
 class IGate(QuantumGate, ABC):
-    def __init__(self, qreg: int, dims: int):
+    def __init__(self, qreg: int, dims: int, backend: Backend):
         """
         This generates the Identity Gate object for a given set of dimensions and a qreg number
         :param qreg: Integer representing the id of the quantum register
@@ -40,6 +41,7 @@ class IGate(QuantumGate, ABC):
         """
         self.qreg = qreg
         self.dims = dims
+        self.backend = backend
 
     @property
     def is_controlled(self) -> bool:
@@ -63,7 +65,7 @@ class IGate(QuantumGate, ABC):
         This is the gate unitary which shall be used to do any calculation
         :return: The gate unitary
         """
-        return sparse.eye(n=self.dims, m=self.dims)
+        return self.backend.eye(n=self.dims, m=self.dims)
 
     @property
     def acting_on(self) -> int:

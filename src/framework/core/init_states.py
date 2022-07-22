@@ -26,10 +26,11 @@
 import numpy as np
 from scipy import sparse
 from scipy.sparse import csr_matrix, dok_matrix
+from framework.core.backend.core import Backend
 
 
 class InitState:
-    def __init__(self, dim: int, state: int, qreg: int):
+    def __init__(self, dim: int, state: int, qreg: int, backend: Backend):
         """
         This is the InitState class which initializes the lines on the QuantumRegister object.
 
@@ -44,9 +45,12 @@ class InitState:
             self.dim = dim
             self.state = state
             self.qreg = qreg
-            self.init_state = dok_matrix(np.zeros((dim, 1)))
+            # self.init_state = dok_matrix(np.zeros((dim, 1)))
+            self.init_state = np.zeros((dim, 1))
             self.init_state[state] = 1
-            self.init_state = csr_matrix(self.init_state)
+            self.backend = backend
+
+            self.init_state = self.backend.matrix(self.init_state)
 
         # print("------------------------------------------------")
         # print(f"State {self.state} initialized \n")

@@ -33,6 +33,8 @@ from framework.circuit_library.standard_gates.x import XGate
 from framework.circuit_library.standard_gates.z import ZGate
 from framework.core.moment import Moment
 
+from framework.core.backend import DefaultBackend
+
 # Can be used to find dot product of more than two matrices
 
 
@@ -51,8 +53,10 @@ class OperatorFlow:
         self._measurement_count = [0]
 
         # Debugger
-        self.debug = True
+        self.debug = False
         self.debugger = []
+
+        self.debug_backend = DefaultBackend
 
     def peek(self) -> list:
         """
@@ -68,14 +72,15 @@ class OperatorFlow:
         :return: True if every register doesn't have a Measurement gate acting on it, else False
         """
         for _curr_moment in args:
-            if self.debug:
-                self.debugger += [(_curr_moment, _curr_moment.exec())]
             _curr_moment_list = _curr_moment.peek_list()
             if self._opflow_list:
                 # Checks if all the registers have a measurement. If yes,
                 # returns False
                 if all(self._measurement_count):
                     return False
+
+                # if self.debug:
+                #     self.debugger += [(_curr_moment, _curr_moment.exec(self.debug_backend))]
 
                 # Finds the register number of either of HGate, Xgate or ZGate
                 # present in the current moment
@@ -139,7 +144,7 @@ class OperatorFlow:
             if isinstance(_gate, Measurement):
                 self._measurement_count[_index] = 1
 
-    def exec(self):
+    def exec(self, backend):
         """
         This function takes multiple Moment objects, traverses them from last to first, performing kronecker product
         on each of the Gates of every Moment, then performs dot product on the resultant kronecker products of all
@@ -163,7 +168,7 @@ class OperatorFlow:
         # Run a loop while there is a Moment present in the _all_moments list
         for _moment in reversed(_all_moments):
             # Executable moments
-            _kron_product = _moment.exec()
+            _kron_product = _moment.exec(backend)
 
             # If _dot_product does not have a value, assigns the value of _kron_product to _dot_product
             # else, calculates the dot product of _dot_product and _kron_product and assigns it to _dot_product.
@@ -173,7 +178,7 @@ class OperatorFlow:
             if _dot_product is None:
                 _dot_product = _kron_product
             else:
-                _dot_product = sparse.csr_array.dot(_dot_product, _kron_product)
+                _dot_product = backend.dot(_dot_product, _kron_product)
 
         # Once the parent while loop ends, returns the final _dot_product
         return _dot_product

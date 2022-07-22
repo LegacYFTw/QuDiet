@@ -31,10 +31,11 @@ from scipy.linalg import circulant
 from scipy.sparse import csr_matrix
 
 from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
+from framework.core.backend.core import Backend
 
 
 class XGate(QuantumGate, ABC):
-    def __init__(self, qreg: int, dims: int):
+    def __init__(self, qreg: int, dims: int, backend: Backend):
         """
         This generates the Pauli-X Gate object for a given set of dimensions and a qreg number
         :param qreg: Integer representing the id of the quantum register
@@ -42,6 +43,7 @@ class XGate(QuantumGate, ABC):
         """
         self.qreg = qreg
         self.dims = dims
+        self.backend = backend
 
     @property
     def is_controlled(self) -> bool:
@@ -67,7 +69,7 @@ class XGate(QuantumGate, ABC):
         """
         _unitary_builder = np.zeros(shape=(self.dims, 1))
         _unitary_builder[1] = 1
-        _unitary = csr_matrix(circulant(_unitary_builder))
+        _unitary = self.backend.matrix(circulant(_unitary_builder))
 
         return _unitary
 

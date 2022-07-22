@@ -184,6 +184,7 @@ class Moment:
 
     def exec(
         self,
+        backend
     ):
         """
         Executes the gates (kronecker product) and returns the result
@@ -200,5 +201,5 @@ class Moment:
             if not (
                 isinstance(self._moment_list[i], CXGate) and isinstance(gate, CXGate)
             ):
-                _kron_product = sparse.kron(_kron_product, gate.unitary)
+                _kron_product = backend.kron(_kron_product, gate.unitary)
         return _kron_product

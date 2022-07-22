@@ -30,10 +30,11 @@ import numpy as np
 from scipy.sparse import csr_matrix
 
 from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
+from framework.core.backend.core import Backend
 
 
 class ZGate(QuantumGate, ABC):
-    def __init__(self, qreg: int, dims: int):
+    def __init__(self, qreg: int, dims: int, backend: Backend):
         """
         This generates the Z-Pauli Gate object for a given set of dimensions and a qreg number
         :param qreg: Integer representing the id of the quantum register
@@ -41,6 +42,7 @@ class ZGate(QuantumGate, ABC):
         """
         self.qreg = qreg
         self.dims = dims
+        self.backend = backend
 
     @property
     def is_controlled(self) -> bool:
@@ -72,7 +74,7 @@ class ZGate(QuantumGate, ABC):
         _roots_of_unity = np.flipud(_roots_of_unity)
         _unitary = np.diag(np.flipud(_roots_of_unity))
 
-        return csr_matrix(_unitary)
+        return self.backend.matrix(_unitary)
 
     @property
     def acting_on(self) -> Union[int, list]:
