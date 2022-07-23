@@ -32,10 +32,10 @@ from scipy.linalg import circulant
 from scipy.sparse import csr_matrix
 
 from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
-
+from framework.core.backend.core import Backend
 
 class HGate(QuantumGate, ABC):
-    def __init__(self, qreg: int, dims: int):
+    def __init__(self, qreg: int, dims: int, backend: Backend):
         """
         This generates the Hadamard Gate object for a given set of dimensions and a qreg number
         :param qreg: Integer representing the id of the quantum register
@@ -43,6 +43,7 @@ class HGate(QuantumGate, ABC):
         """
         self.qreg = qreg
         self.dims = dims
+        self.backend = backend
 
     @property
     def is_controlled(self) -> bool:
@@ -79,7 +80,7 @@ class HGate(QuantumGate, ABC):
         _unitary_unnormalized = np.c_[_unitary_first_column, _unitary_first]
         _unitary = 1 / (math.sqrt(self.dims)) * _unitary_unnormalized
 
-        return csr_matrix(_unitary)
+        return self.backend.matrix(_unitary)
 
     @property
     def acting_on(self) -> Union[int, list]:

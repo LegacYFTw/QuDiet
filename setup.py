@@ -23,14 +23,36 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os, warnings
 from setuptools import find_packages, setup
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+
+CUDA_HOME = any([
+    os.environ.get("CUDA_HOME"),
+    os.environ.get("CUDA_PATH"),
+    os.environ.get("CUDA_VERSION"),
+    os.environ.get("CUDNN_VERSION"),
+    os.environ.get("COLAB_GPU"),
+])
+
+install_requires=[
+    "numpy",
+    "scipy",
+    "numba",
+    "pytest",
+]
+
+if CUDA_HOME:
+    install_requires += ["cupy-cuda100"]
+else:
+    warnings.warn("CUDA not found. CUDA backends will be disabled.")
+
 setup(
     name="Framework",
-    version="0.1.0a",
+    version="0.1.0a0",
     description="A package to perform quantum circuit calculations",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -39,12 +61,7 @@ setup(
     license="LGPLv3",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    install_requires=[
-        "numpy",
-        "scipy",
-        "numba",
-        "pytest",
-    ],
+    install_requires=install_requires,
     classifiers=[
         # License
         "License :: OSI Approved :: GNU Affero General Public License v3",
