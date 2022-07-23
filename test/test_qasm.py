@@ -31,4 +31,4 @@ def test_qasm_1():
     filename = "test.qasm"  # "src/testbench/tof_qutrit/..."
     circuit = parse_qasm(filename)
     result = circuit.run()
-    assert result == [{'|120>': 1.0}]
+    assert result == [{"|120>": 1.0}]

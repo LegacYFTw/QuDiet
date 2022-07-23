@@ -140,6 +140,7 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
         _moment_data = []
+        gate_obj_added = False
         if isiterable(qreg):
             operation_action_space = list(
                 range(qreg[0], qreg[1] + 1)
@@ -150,7 +151,9 @@ class QuantumCircuit:
             operation_action_space = []
         for _reg in range(self._reg_length):
             if _reg in operation_action_space:
-                _moment_data.append(gate_obj)
+                if not gate_obj_added:
+                    _moment_data.append(gate_obj)
+                    gate_obj_added = True
             else:
                 _igate = IGate(
                     qreg=_reg, dims=self._reg_dims[_reg], backend=self.backend
