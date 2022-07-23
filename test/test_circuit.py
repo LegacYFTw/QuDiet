@@ -70,9 +70,8 @@ def test_qudit_hadamard():
     qc.cx([0, 1], 1)
     qc.measure_all()
     result = qc.run()
-    processed_result = Output([2, 3], OutputType.print, OutputMethod.amplitude)(result)
 
-    assert processed_result == [
+    assert result == [
         {"|00>": 0.7071067811865475},
         {"|11>": 0.7071067811865475},
     ]
