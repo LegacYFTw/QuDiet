@@ -23,6 +23,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+import warnings
 from typing import Literal, Optional, Union
 
 from framework.circuit_library.standard_gates.cx import CXGate
@@ -107,10 +108,22 @@ class QuantumCircuit:
         self.__initialize_states()
 
     def get_circuit_config(self):
-        # return {
-        #     "width": len(self.qregs) if isinstance(self.qregs, list) else self.qregs + len(self.cregs) if isinstance(self.cregs, list) else self.qregs,
-        #     "depth": len(self.op_flow._opflow_list),
-        # }
+        depth = len(self.op_flow._opflow_list) - 1  # For InitStates
+        final_moment_composition = [
+            m.__class__ for m in self.op_flow._opflow_list[-1]._moment_list
+        ]
+        if Measurement in final_moment_composition:
+            depth -= 1
+        else:
+            warnings.warn("Measurement has not been added to the circuit yet.")
+        return {
+            "width": len(self.qregs)
+            if isinstance(self.qregs, list)
+            else self.qregs + len(self.cregs)
+            if isinstance(self.cregs, list)
+            else self.qregs,
+            "depth": depth,
+        }
         raise NotImplementedError
 
     def __validate_gate_inputs(self, qreg: int, dims: Optional[int]):

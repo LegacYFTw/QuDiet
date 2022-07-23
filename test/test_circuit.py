@@ -23,6 +23,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+from framework.core.backend.NumpyBackend import NumpyBackend
 from framework.core.quantum_circuit import QuantumCircuit
 from framework.utils.numpy import Nbase_to_bin
 
@@ -62,9 +63,22 @@ def test_qudit_reverse_cx():
     assert result == [{"|12121>": 1.0}]
 
 
-def test_qudit_hadamard():
-    from framework.core.backend.NumpyBackend import NumpyBackend
+def test_circuit_config():
+    qc = QuantumCircuit(
+        qregs=[2, 3, 3, 3, 2],
+        init_states=[1, 1, 1, 2, 1],
+    )
+    qc.cx([3, 1], 1)
+    qc.h(0)
+    qc.cx([1, 2], 1)
+    qc.measure_all()
 
+    config = qc.get_circuit_config()
+    assert config["width"] == 5
+    assert config["depth"] == 2
+
+
+def test_qudit_hadamard():
     qc = QuantumCircuit(qregs=[2, 3], init_states=[0, 0], backend=NumpyBackend)
     qc.h(0)
     qc.cx([0, 1], 1)
