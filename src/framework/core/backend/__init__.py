@@ -23,6 +23,10 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os
+from framework.core.backend.core import Backend
 from framework.core.backend.SparseBackend import SparseBackend
 
 DefaultBackend = SparseBackend
+
+CUDA_HOME = os.environ.get("CUDA_HOME", os.environ.get("CUDA_PATH"))
