@@ -1,13 +1,15 @@
 from _typeshed import Incomplete
 from abc import ABC
 from framework.circuit_library.standard_gates.quantum_gate import QuantumGate as QuantumGate
-from scipy.sparse import csr_matrix
+from framework.core.backend.core import Backend as Backend
+from scipy.sparse import csr_matrix as csr_matrix
 from typing import Union
 
 class ZGate(QuantumGate, ABC):
     qreg: Incomplete
     dims: Incomplete
-    def __init__(self, qreg: int, dims: int) -> None: ...
+    backend: Incomplete
+    def __init__(self, qreg: int, dims: int, backend: Backend) -> None: ...
     @property
     def is_controlled(self) -> bool: ...
     @property

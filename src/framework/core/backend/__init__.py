@@ -24,15 +24,18 @@
 #
 
 import os
+
 from framework.core.backend.core import Backend
 from framework.core.backend.SparseBackend import SparseBackend
 
 DefaultBackend = SparseBackend
 
-CUDA_HOME = any([
-    os.environ.get("CUDA_HOME"),
-    os.environ.get("CUDA_PATH"),
-    os.environ.get("CUDA_VERSION"),
-    os.environ.get("CUDNN_VERSION"),
-    os.environ.get("COLAB_GPU"),
-])
+CUDA_HOME = any(
+    [
+        os.environ.get("CUDA_HOME"),
+        os.environ.get("CUDA_PATH"),
+        os.environ.get("CUDA_VERSION"),
+        os.environ.get("CUDNN_VERSION"),
+        os.environ.get("COLAB_GPU"),
+    ]
+)

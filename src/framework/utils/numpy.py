@@ -44,13 +44,15 @@ def bin_to_Nbase(target, base=2):
     return np.sum(scale[::-1] * np.array(target))
 
 
-def Nbase_to_bin(_repr, base=2):
-    if isinstance(base, int):
-        base = [base] * 998
+def Nbase_to_bin(_repr, base=[2]):
     base = base[::-1]
     digits = []
     while _repr:
         _base = base[len(digits)]
         digits += [int(_repr % _base)]
         _repr //= _base
+    if len(digits) < len(base):
+        digits += [
+            0,
+        ] * (len(base) - len(digits))
     return digits[::-1]

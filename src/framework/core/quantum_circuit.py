@@ -31,13 +31,15 @@ from framework.circuit_library.standard_gates.i import IGate
 from framework.circuit_library.standard_gates.measurement import Measurement
 from framework.circuit_library.standard_gates.x import XGate
 from framework.circuit_library.standard_gates.z import ZGate
+from framework.core.backend import DefaultBackend
+from framework.core.backend.core import Backend
+from framework.core.backend.SparseBackend import SparseBackend
 from framework.core.init_states import InitState
 from framework.core.moment import Moment
 from framework.core.operator_flow import OperatorFlow
-from framework.core.backend.core import Backend
-from framework.core.backend.SparseBackend import SparseBackend
+from framework.core.output import Output, OutputMethod, OutputType
 from framework.utils.linalg import isiterable
-from framework.core.backend import DefaultBackend
+
 
 class QuantumCircuit:
     def __init__(
@@ -47,7 +49,8 @@ class QuantumCircuit:
         name: Optional[str] = None,
         init_states: "Optional[list[int]]" = None,
         backend: Backend = None,
-        debug: bool = True
+        output: Output = None,
+        debug: bool = True,
     ):
         """
         x = QuantumCircuit((3,3))
@@ -68,6 +71,11 @@ class QuantumCircuit:
 
         self.backend = DefaultBackend if backend is None else backend
         self.debug_backend = self.backend
+
+        if output is None:
+            output = Output(qregs, OutputType.print, OutputMethod.amplitude)
+
+        self.output_processor = output
 
         if not isinstance(qregs, (tuple, list)):
             raise ValueError(
@@ -133,14 +141,20 @@ class QuantumCircuit:
         """
         _moment_data = []
         if isiterable(qreg):
-            operation_action_space = list(range(qreg[0], qreg[1] + 1) if qreg[0] < qreg[1] else range(qreg[1], qreg[0] + 1))
+            operation_action_space = list(
+                range(qreg[0], qreg[1] + 1)
+                if qreg[0] < qreg[1]
+                else range(qreg[1], qreg[0] + 1)
+            )
         else:
             operation_action_space = []
         for _reg in range(self._reg_length):
             if _reg in operation_action_space:
                 _moment_data.append(gate_obj)
             else:
-                _igate = IGate(qreg=_reg, dims=self._reg_dims[_reg], backend=self.backend)
+                _igate = IGate(
+                    qreg=_reg, dims=self._reg_dims[_reg], backend=self.backend
+                )
                 _moment_data.append(_igate)
                 if _reg == qreg:
                     _moment_data[_reg] = gate_obj
@@ -157,7 +171,9 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
         self.__validate_gate_inputs(qreg, dims)
-        _hgate = HGate(qreg=qreg, dims=dims or self._reg_dims[qreg], backend=self.backend)
+        _hgate = HGate(
+            qreg=qreg, dims=dims or self._reg_dims[qreg], backend=self.backend
+        )
         _result = self.__add_moment_to_opflow(qreg, _hgate)
         return _result
 
@@ -170,7 +186,9 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
         self.__validate_gate_inputs(qreg, dims)
-        _xgate = XGate(qreg=qreg, dims=dims or self._reg_dims[qreg], backend=self.backend)
+        _xgate = XGate(
+            qreg=qreg, dims=dims or self._reg_dims[qreg], backend=self.backend
+        )
         _result = self.__add_moment_to_opflow(qreg, _xgate)
         return _result
 
@@ -183,21 +201,23 @@ class QuantumCircuit:
         :return: True if everything goes well, else False
         """
         self.__validate_gate_inputs(qreg, dims)
-        _zgate = ZGate(qreg=qreg, dims=dims or self._reg_dims[qreg], backend=self.backend)
+        _zgate = ZGate(
+            qreg=qreg, dims=dims or self._reg_dims[qreg], backend=self.backend
+        )
         _result = self.__add_moment_to_opflow(qreg, _zgate)
         return _result
 
-    def toffoli(self, qreg, plus:int = 1) -> bool:
+    def toffoli(self, qreg, plus: int = 1) -> bool:
         controls, target = qreg
-    
+
         for i in range(len(controls) - 1):
-            self.cx([controls[i], controls[i+1]], 1)
+            self.cx([controls[i], controls[i + 1]], 1)
 
         self.cx([controls[-1], target], plus)
 
         for i in range(len(controls) - 1):
-            self.cx([controls[i], controls[i+1]], self.qregs[controls[i+1]] - 1 )
-    
+            self.cx([controls[i], controls[i + 1]], self.qregs[controls[i + 1]] - 1)
+
         return True
 
     def cx(
@@ -215,12 +235,13 @@ class QuantumCircuit:
         #     self._reg_dims[qreg] for qreg in [range(acting_on[0], acting_on[1] + 1) if acting_on[0] < acting_on[1] else range(acting_on[1], acting_on[0] + 1)]
         # ]
         if acting_on[0] < acting_on[1]:
-            active_qregs = self._reg_dims[acting_on[0]:acting_on[1] + 1]
+            active_qregs = self._reg_dims[acting_on[0] : acting_on[1] + 1]
         else:
-            active_qregs = self._reg_dims[acting_on[1]:acting_on[0] + 1]
+            active_qregs = self._reg_dims[acting_on[1] : acting_on[0] + 1]
 
-        _cxgate = CXGate(qreg=active_qregs, acting_on=acting_on, plus=plus, backend=self.backend)
-
+        _cxgate = CXGate(
+            qreg=active_qregs, acting_on=acting_on, plus=plus, backend=self.backend
+        )
 
         _result = self.__add_moment_to_opflow(acting_on, _cxgate)
         # print(_cxgate.unitary)
@@ -261,15 +282,22 @@ class QuantumCircuit:
         # Adds Operator flow object and push the init object into Operator Flow
         # stack
         _init_gates = [
-            InitState(dim=self._reg_dims[_index], state=_element, qreg=_index, backend=self.backend)
+            InitState(
+                dim=self._reg_dims[_index],
+                state=_element,
+                qreg=_index,
+                backend=self.backend,
+            )
             for _index, _element in enumerate(self.init_states)
         ]
 
         init_moment = Moment(*_init_gates)
         self.op_flow.populate_opflow(init_moment)
 
-    def run(self, ):
-        return self.op_flow.exec(self.backend)
+    def run(
+        self,
+    ):
+        return self.output_processor(self.op_flow.exec(self.backend))
 
     def print_opflow_list(self):
         for i in self.op_flow.peek():

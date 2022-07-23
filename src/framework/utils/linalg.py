@@ -29,8 +29,10 @@ import numpy as np
 def clip(qreg: list, start: int, end: int):
     return qreg[start : end + 1]
 
+
 def isiterable(a):
-    return hasattr(a, '__iter__')
+    return hasattr(a, "__iter__")
+
 
 def ttg(qreg):
     """

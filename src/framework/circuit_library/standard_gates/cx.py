@@ -31,14 +31,18 @@ from scipy import sparse
 from scipy.sparse import csr_matrix
 
 from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
+from framework.core.backend.core import Backend
 from framework.utils.linalg import ttg
 from framework.utils.numpy import get_index
-from framework.core.backend.core import Backend
 
 
 class CXGate(QuantumGate, ABC):
     def __init__(
-        self, qreg: "tuple[int, int]", acting_on: "tuple[int, int]", plus: int, backend: Backend
+        self,
+        qreg: "tuple[int, int]",
+        acting_on: "tuple[int, int]",
+        plus: int,
+        backend: Backend,
     ):
         """
         This generates the CX Gate object for a given set of dimension and a qreg tuple representing control and target.
@@ -96,7 +100,7 @@ class CXGate(QuantumGate, ABC):
         else:
             source_i = source_i - target_i
             target_i = 0
-            
+
         # source denotes the dim of control qudit, source_i is the index of the
         # control qudit
         source = self._qreg[source_i]
@@ -130,7 +134,7 @@ class CXGate(QuantumGate, ABC):
         # for x in range(_from, _to + 1):
         #     I[x] = self.update(index, I[x], self._plus, target, target_i)
 
-        # Transpose because the previous the actions were row 
+        # Transpose because the previous the actions were row
         # based weher as we needed column based approch.
         return self.backend.matrix(I).transpose()
 

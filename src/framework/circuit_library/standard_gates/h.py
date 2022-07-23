@@ -34,6 +34,7 @@ from scipy.sparse import csr_matrix
 from framework.circuit_library.standard_gates.quantum_gate import QuantumGate
 from framework.core.backend.core import Backend
 
+
 class HGate(QuantumGate, ABC):
     def __init__(self, qreg: int, dims: int, backend: Backend):
         """

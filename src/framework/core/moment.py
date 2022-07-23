@@ -182,10 +182,7 @@ class Moment:
 
         return True
 
-    def exec(
-        self,
-        backend
-    ):
+    def exec(self, backend):
         """
         Executes the gates (kronecker product) and returns the result
 

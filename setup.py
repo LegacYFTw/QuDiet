@@ -23,22 +23,26 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os, warnings
+import os
+import warnings
+
 from setuptools import find_packages, setup
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 
-CUDA_HOME = any([
-    os.environ.get("CUDA_HOME"),
-    os.environ.get("CUDA_PATH"),
-    os.environ.get("CUDA_VERSION"),
-    os.environ.get("CUDNN_VERSION"),
-    os.environ.get("COLAB_GPU"),
-])
+CUDA_HOME = any(
+    [
+        os.environ.get("CUDA_HOME"),
+        os.environ.get("CUDA_PATH"),
+        os.environ.get("CUDA_VERSION"),
+        os.environ.get("CUDNN_VERSION"),
+        os.environ.get("COLAB_GPU"),
+    ]
+)
 
-install_requires=[
+install_requires = [
     "numpy",
     "scipy",
     "numba",

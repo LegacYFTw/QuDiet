@@ -31,9 +31,8 @@ from framework.circuit_library.standard_gates.h import HGate
 from framework.circuit_library.standard_gates.measurement import Measurement
 from framework.circuit_library.standard_gates.x import XGate
 from framework.circuit_library.standard_gates.z import ZGate
-from framework.core.moment import Moment
-
 from framework.core.backend import DefaultBackend
+from framework.core.moment import Moment
 
 # Can be used to find dot product of more than two matrices
 
