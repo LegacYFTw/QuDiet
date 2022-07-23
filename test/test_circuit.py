@@ -26,6 +26,7 @@
 from framework.core.quantum_circuit import QuantumCircuit
 from framework.utils.numpy import Nbase_to_bin
 
+
 def test_qudit_init():
     qc = QuantumCircuit(
         qregs=[2, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2],
@@ -34,7 +35,8 @@ def test_qudit_init():
     qc.measure_all()
     result = qc.run()
 
-    assert result.nonzero() == ([23296], [0])
+    assert result == [{"|1110100000000>": 1.0}]
+
 
 def test_qudit_cx():
     qc = QuantumCircuit(
@@ -45,7 +47,8 @@ def test_qudit_cx():
     qc.measure_all()
     result = qc.run()
 
-    assert result.nonzero() == ([79], [0])
+    assert result == [{"|11101>": 1.0}]
+
 
 def test_qudit_reverse_cx():
     qc = QuantumCircuit(
@@ -56,30 +59,32 @@ def test_qudit_reverse_cx():
     qc.measure_all()
     result = qc.run()
 
-    in_base = Nbase_to_bin(result.nonzero()[0][0], [2, 3, 3, 3, 2])
+    assert result == [{"|12121>": 1.0}]
 
-    assert result.nonzero() == ([101], [0])
+
+def test_qudit_hadamard():
+    from framework.core.backend.NumpyBackend import NumpyBackend
+
+    qc = QuantumCircuit(qregs=[2, 3], init_states=[0, 0], backend=NumpyBackend)
+    qc.h(0)
+    qc.cx([0, 1], 1)
+    qc.measure_all()
+    result = qc.run()
+    processed_result = Output([2, 3], OutputType.print, OutputMethod.amplitude)(result)
+
+    assert processed_result == [
+        {"|00>": 0.7071067811865475},
+        {"|11>": 0.7071067811865475},
+    ]
 
 
 def test_qudit_toffoli():
     qc = QuantumCircuit(
         qregs=[2, 3, 4, 3, 2],
-        init_states=[1, 2, 2, 0, 1 ],
+        init_states=[1, 2, 2, 0, 1],
     )
     qc.toffoli(([1, 2], 3))
     qc.measure_all()
     result = qc.run()
 
-    in_base = Nbase_to_bin(result.nonzero()[0][0], [2, 3, 4, 3, 2])
-
-    assert result.nonzero() == ([135], [0])
-
-# def test_qudit_width_depth():
-#     qc = QuantumCircuit(
-#         qregs=[2, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2],
-#         init_states=[1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-#     )
-#     qc.cx([1, 3], 2)
-#     qc.measure_all()
-#     result = qc.run()
-#     qc.get_circuit_config()
+    assert result == [{"|12211>": 1.0}]

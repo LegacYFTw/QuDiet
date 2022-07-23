@@ -4,12 +4,15 @@ from framework.circuit_library.standard_gates.h import HGate as HGate
 from framework.circuit_library.standard_gates.measurement import Measurement as Measurement
 from framework.circuit_library.standard_gates.x import XGate as XGate
 from framework.circuit_library.standard_gates.z import ZGate as ZGate
+from framework.core.backend import DefaultBackend as DefaultBackend
 from framework.core.moment import Moment as Moment
+from scipy import sparse as sparse
 
 class OperatorFlow:
     debug: bool
     debugger: Incomplete
+    debug_backend: Incomplete
     def __init__(self, *args: Moment) -> None: ...
     def peek(self) -> list: ...
     def populate_opflow(self, *args: Moment) -> bool: ...
-    def exec(self): ...
+    def exec(self, backend): ...
