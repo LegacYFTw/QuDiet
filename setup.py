@@ -30,7 +30,13 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 
-CUDA_HOME = os.environ.get("CUDA_HOME", os.environ.get("CUDA_PATH"))
+CUDA_HOME = any([
+    os.environ.get("CUDA_HOME"),
+    os.environ.get("CUDA_PATH"),
+    os.environ.get("CUDA_VERSION"),
+    os.environ.get("CUDNN_VERSION"),
+    os.environ.get("COLAB_GPU"),
+])
 
 install_requires=[
     "numpy",
