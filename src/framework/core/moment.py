@@ -195,8 +195,5 @@ class Moment:
 
             # gate is self._moment_list[i+1], i denotes the index of the previous gate...
             # Thus, self._moment_list[i] is the previous gate
-            if not (
-                isinstance(self._moment_list[i], CXGate) and isinstance(gate, CXGate)
-            ):
-                _kron_product = backend.kron(_kron_product, gate.unitary)
+            _kron_product = backend.kron(_kron_product, gate.unitary)
         return _kron_product

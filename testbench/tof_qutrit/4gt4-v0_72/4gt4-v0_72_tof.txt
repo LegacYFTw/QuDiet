@@ -3,20 +3,20 @@
 # CV PLUS GATE for 6 qudits
 .qudit 6
 
-qubit x0
-qutrit x1
-qutrit x2
-qutrit x3
-qutrit x4
-qutrit x5
+qudit x0 (2)
+qudit x1 (3)
+qudit x2 (3)
+qudit x3 (3)
+qudit x4 (3)
+qudit x5 (3)
 
 
 .begin
-CNOT x4 x1
+CX x4 x1
 CX x2 x4
 CX x4 x0
 CX x2 x4
-RX x0 180
+X 0
 CX x0 x2
 CX x2 x1
 CX x0 x2

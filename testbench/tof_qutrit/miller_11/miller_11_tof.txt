@@ -3,12 +3,12 @@
 
 .qudit 3
 
-qubit x0
-qutrit x1
-qutrit x2
+qudit x0 (2)
+qudit x1 (3)
+qudit x2 (3)
 
 .begin
-CNOT x2 x1
+CX x2 x1
 CX x0 x1
 CX x1 x2
 CX x0 x1
@@ -18,5 +18,5 @@ CX x1 x2
 CX x0 x1
 CX x1 x2
 CX x0 x1
-CNOT x2 x1
+CX x2 x1
 .end

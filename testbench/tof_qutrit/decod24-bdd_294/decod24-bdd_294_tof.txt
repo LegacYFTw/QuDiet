@@ -3,12 +3,12 @@
 
 .qudit 6
 
-qubit x0
-qutrit x1
-qubit x2
-qubit x3
-qubit x4
-qubit x5
+qudit x0 (2)
+qudit x1 (3)
+qudit x2 (2)
+qudit x3 (2)
+qudit x4 (2)
+qudit x5 (2)
 
 .begin
 CX x0 x1
@@ -17,17 +17,17 @@ CX x0 x1
 CX x0 x1
 CX x1 x3
 CX x0 x1
-CNOT x0 x3
+CX x0 x3
 CX x0 x1
 CX x1 x4
 CX x0 x1
-CNOT x1 x4
-CNOT x0 x5
+CX x1 x4
+CX x0 x5
 CX x0 x1
 CX x1 x5
 CX x0 x1
-CNOT x1 x5
-RX x3 180
-RX x4 180
-RX x5 180
+CX x1 x5
+X 3
+X 4
+X 5
 .end
