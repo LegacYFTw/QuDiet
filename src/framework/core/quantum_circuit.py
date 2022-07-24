@@ -193,7 +193,7 @@ class QuantumCircuit:
         _result = self.__add_moment_to_opflow(qreg, _hgate)
         return _result
 
-    def x(self, qreg: int, dims: Optional[int] = None) -> bool:
+    def x(self, qreg: int, dims: Optional[int] = None, plus: Optional[int] = 1) -> bool:
         """
         Responsible for creating the XGate and adding it to OperatorFlow through another function call
 
@@ -203,7 +203,7 @@ class QuantumCircuit:
         """
         self.__validate_gate_inputs(qreg, dims)
         _xgate = XGate(
-            qreg=qreg, dims=dims or self._reg_dims[qreg], backend=self.backend
+            qreg=qreg, dims=dims or self._reg_dims[qreg], plus = plus, backend=self.backend
         )
         _result = self.__add_moment_to_opflow(qreg, _xgate)
         return _result

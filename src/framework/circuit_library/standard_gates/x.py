@@ -35,7 +35,7 @@ from framework.core.backend.core import Backend
 
 
 class XGate(QuantumGate, ABC):
-    def __init__(self, qreg: int, dims: int, backend: Backend):
+    def __init__(self, qreg: int, dims: int, plus: int, backend: Backend):
         """
         This generates the Pauli-X Gate object for a given set of dimensions and a qreg number
         :param qreg: Integer representing the id of the quantum register
@@ -44,6 +44,7 @@ class XGate(QuantumGate, ABC):
         self.qreg = qreg
         self.dims = dims
         self.backend = backend
+        self.plus = plus
 
     @property
     def is_controlled(self) -> bool:
@@ -68,7 +69,7 @@ class XGate(QuantumGate, ABC):
         :return: The gate unitary
         """
         _unitary_builder = np.zeros(shape=(self.dims, 1))
-        _unitary_builder[1] = 1
+        _unitary_builder[self.plus] = 1
         _unitary = self.backend.matrix(circulant(_unitary_builder))
 
         return _unitary
