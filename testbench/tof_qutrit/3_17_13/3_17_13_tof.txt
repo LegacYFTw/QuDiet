@@ -2,14 +2,13 @@
 # developed by Amit Saha
 .qudit 3 
 
-
 qudit x0 (2)
 qudit x1 (3)
 qudit x2 (3)
 
 
 .begin
-X 2
+X x2
 CX x0 x2
 CX x2 x1
 CX X1 X2

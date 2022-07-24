@@ -1,7 +1,5 @@
-
 # rev_tof_2 for two 3 qudit registers
 # developed by Amit Saha
-
 .qudit 3
 
 qudit x0 (2)
@@ -10,13 +8,13 @@ qudit x2 (3)
 
 .begin
 CX x0 x1
-CX X1 X2
-CX X2 X0
-CX X1 X2
-X 2
+CX x1 x2
+CX x2 x0
+CX x1 x2
+X x2
 CX x2 x1
 CX x0 x2
-CX X1 X2
-CX X2 X0
-CX X1 X2
+CX x1 x2
+CX x2 x0
+CX x1 x2
 .end
