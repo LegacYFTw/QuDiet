@@ -203,7 +203,10 @@ class QuantumCircuit:
         """
         self.__validate_gate_inputs(qreg, dims)
         _xgate = XGate(
-            qreg=qreg, dims=dims or self._reg_dims[qreg], plus = plus, backend=self.backend
+            qreg=qreg,
+            dims=dims or self._reg_dims[qreg],
+            plus=plus,
+            backend=self.backend,
         )
         _result = self.__add_moment_to_opflow(qreg, _xgate)
         return _result

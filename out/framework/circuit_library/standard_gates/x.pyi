@@ -9,7 +9,8 @@ class XGate(QuantumGate, ABC):
     qreg: Incomplete
     dims: Incomplete
     backend: Incomplete
-    def __init__(self, qreg: int, dims: int, backend: Backend) -> None: ...
+    plus: Incomplete
+    def __init__(self, qreg: int, dims: int, plus: int, backend: Backend) -> None: ...
     @property
     def is_controlled(self) -> bool: ...
     @property
