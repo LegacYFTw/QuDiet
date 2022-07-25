@@ -1,23 +1,25 @@
+from framework.core import backend
 from src.framework.qasm.qasm_parser import parse_qasm
 import argparse, glob, pickle, warnings, time
 
 def arguments():
     description = '''
-    Runs all the qasm circuit present in a file, and 
+    Runs all the qasm circuit present in a file, and
     saves a copy of the result in the same directory
     '''
     epilog = '''
-    Example : python3 experimental.py testbench/tof_qutrit/
+    Example : python3 experimental.py -b numpy testbench/tof_qutrit/
     '''
 
     # Initialize parser
     parser = argparse.ArgumentParser(description=description, epilog=epilog)
-    
+
     # Adding optional argument
     parser.add_argument("-m", "--mode", help = "Selects the mode of action. [pkl,txt]", default='txt')
+    parser.add_argument("-b", "--backend", help = "Selects the backend. [sparse, numpy, cuda, sparse-cuda]", default='sparse')
     parser.add_argument('-v', '--verbose', action='count', default=0)
     parser.add_argument("path", help = "path of files", default='./')
-    
+
     # Read arguments from command line
     args = parser.parse_args()
 
@@ -25,19 +27,38 @@ def arguments():
     path = args.path
     verbose = args.verbose
 
-    return operator, path, verbose
+    backend = args.backend
+
+    if backend == "sparse":
+        from src.framework.core.backend.SparseBackend import SparseBackend
+        print("[i] Using Sparse Backend")
+        backend = SparseBackend
+    elif backend == "numpy":
+        from src.framework.core.backend.NumpyBackend import NumpyBackend
+        print("[i] Using Numpy Backend")
+        backend = NumpyBackend
+    elif backend == "cuda":
+        from src.framework.core.backend.CUDABackend import CUDABackend
+        print("[i] Using Cuda Backend")
+        backend = CUDABackend
+    elif backend == "sparse-cuda":
+        from src.framework.core.backend.CUDASparseBackend import CUDASparseBackend
+        print("[i] Using Sparse Cuda Backend")
+        backend = CUDASparseBackend
+
+    return operator, path, verbose, backend
 
 def main():
-    operate_on, directory_path, verbose = arguments()
+    operate_on, directory_path, verbose, backend = arguments()
     directory_path += "/**/*."+operate_on
-    
+
     files = glob.glob(directory_path, recursive = True)
 
     if operate_on in ["txt", "qasm"]:
         for file in files:
             try:
                 start = time.time()
-                qc = parse_qasm(file)
+                qc = parse_qasm(file, backend=backend)
                 load = time.time()
                 result = qc.run()
                 end = time.time()
@@ -47,7 +68,7 @@ def main():
                     'loading-time': load-start,
                     'execution-time': end-load,
                 }
-                
+
                 output = file[:-3]+'pkl'
 
                 with open(output, "wb") as out_file:
