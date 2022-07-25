@@ -31,6 +31,7 @@ from framework.circuit_library.standard_gates.h import HGate
 from framework.circuit_library.standard_gates.measurement import Measurement
 from framework.circuit_library.standard_gates.x import XGate
 from framework.circuit_library.standard_gates.z import ZGate
+from framework.circuit_library.standard_gates.i import IGate
 from framework.core.backend import DefaultBackend
 from framework.core.moment import Moment
 
@@ -70,6 +71,7 @@ class OperatorFlow:
         :param args: These are Moment objects which need to be pushed in order into the _opflow_list
         :return: True if every register doesn't have a Measurement gate acting on it, else False
         """
+        return self.populate_opflow_test(*args)
         for _curr_moment in args:
             _curr_moment_list = _curr_moment.peek_list()
             if self._opflow_list:
@@ -100,12 +102,97 @@ class OperatorFlow:
                 _added_gate_to_earlier_moment = False
                 if _qreg is not None:
                     for _index, _curr_earlier_moment in enumerate(
-                        self._opflow_list[1:]
+                        self._opflow_list[1:][::-1]
+                        # self._opflow_list[1:]
                     ):
+                        # Why For loop? It should check only the last moment
                         _curr_earlier_moment: Moment = _curr_earlier_moment
-                        _added_gate_to_earlier_moment = (
-                            _curr_earlier_moment.replace_igate(_curr_moment_list[_qreg])
+                        i_gate_qreg_list = [gate.qreg for gate in _curr_earlier_moment._moment_list if isinstance(gate, IGate)]
+                        gate_qreg = _curr_moment_list[_qreg].acting_on
+                        if type(gate_qreg) is int:
+                            gate_qreg = [gate_qreg]
+                        if all([(reg in i_gate_qreg_list) for reg in gate_qreg ]):
+                            _added_gate_to_earlier_moment = (
+                                _curr_earlier_moment.replace_igate(_curr_moment_list[_qreg])
+                                # TODO : replace_igate replaces all the IGates. It needs to replace only the nth IGate (positional IGate)
+                            )
+                        if _added_gate_to_earlier_moment:
+                            break
+
+                if _added_gate_to_earlier_moment:
+                    self._opflow_list[_index + 1] = _curr_earlier_moment
+
+                # Checks if the current Moment's HGate, XGate or ZGate has been added to any earlier Moment.
+                # If no, takes the last Moment in OperatorFlow list and points it to the current Moment, thereby
+                # adding it to the OperatorFlow list.
+                else:
+                    _prev_moment: Moment = self._opflow_list[-1]
+                    _prev_moment.next_pointer = _curr_moment
+                    _curr_moment.prev_pointer = _prev_moment
+                    self._opflow_list.append(_curr_moment)
+
+            else:
+                # If OperatorFlow list is empty, initiate _measurement_count list with register length times 0.
+                # Also, append the current moment to OperatorFlow list.
+                self._measurement_count = len(_curr_moment_list) * [0]
+                self._opflow_list.append(_curr_moment)
+
+            self.__detect_measurement_and_add_count(_curr_moment)
+
+        return True
+
+    def populate_opflow_test(self, *args: Moment) -> bool:
+        """
+        Responsible for populating the Opflow list
+        :param args: These are Moment objects which need to be pushed in order into the _opflow_list
+        :return: True if every register doesn't have a Measurement gate acting on it, else False
+        """
+        for _curr_moment in args:
+            _curr_moment_list = _curr_moment.peek_list()
+            if self._opflow_list:
+                # Checks if all the registers have a measurement. If yes,
+                # returns False
+                if all(self._measurement_count):
+                    return False
+
+                # if self.debug:
+                #     self.debugger += [(_curr_moment, _curr_moment.exec(self.debug_backend))]
+
+                # Finds the register number of either of HGate, Xgate or ZGate
+                # present in the current moment
+                try:
+                    _qreg = _curr_moment_list.index(
+                        next(
+                            _gate
+                            for _gate in _curr_moment_list
+                            if isinstance(_gate, (HGate, XGate, ZGate))
                         )
+                    )
+                except StopIteration:
+                    _qreg = None
+
+                # Loops through the OperatorFlow list, checks if any of the earlier Moment(s) have an IGate.
+                # If yes, replaces it with HGate, XGate or ZGate of the current
+                # Moment.
+                _added_gate_to_earlier_moment = False
+                if _qreg is not None:
+                    # for _index, _curr_earlier_moment in enumerate(
+                    #     self._opflow_list[1:][::-1]
+                    #     # self._opflow_list[1:]
+                    # ):
+                        _curr_earlier_moment =  self._opflow_list[-1]
+                        _index = len(self._opflow_list) - 1
+                        # Why For loop? It should check only the last moment
+                        _curr_earlier_moment: Moment = _curr_earlier_moment
+                        i_gate_qreg_list = [gate.qreg for gate in _curr_earlier_moment._moment_list if isinstance(gate, IGate)]
+                        gate_qreg = _curr_moment_list[_qreg].acting_on
+                        if type(gate_qreg) is int:
+                            gate_qreg = [gate_qreg]
+                        if all([(reg in i_gate_qreg_list) for reg in gate_qreg ]):
+                            _added_gate_to_earlier_moment = (
+                                _curr_earlier_moment.replace_igate(_curr_moment_list[_qreg])
+                                # TODO : replace_igate replaces all the IGates. It needs to replace only the nth IGate (positional IGate)
+                            )
                         if _added_gate_to_earlier_moment:
                             break
 

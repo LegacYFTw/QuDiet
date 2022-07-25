@@ -45,7 +45,7 @@ CUDA_HOME = any(
 install_requires = [
     "numpy",
     "scipy",
-    "numba",
+    # "numba",
     "pytest",
 ]
 
