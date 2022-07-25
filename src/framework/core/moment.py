@@ -74,6 +74,19 @@ class Moment:
     def next_pointer(self):
         return self._next_pointer
 
+    def get_qreg_moment(self, qreg, index=False):
+        _reg = 0
+        _return = []
+        for i, gate in enumerate(self._moment_list):
+            _qregs = gate.acting_on
+            if type(_qregs) is int:
+                _qregs = [_qregs]
+            if qreg in _qregs:
+                if index:
+                    return gate, i
+                return gate
+
+
     @next_pointer.setter
     def next_pointer(self, pointer):
         self._next_pointer = pointer
@@ -128,8 +141,9 @@ class Moment:
         :return: True if replacement occurs, else False
         """
         _qreg = gate_obj.qreg
-        if isinstance(self._moment_list[_qreg], IGate):
-            self._moment_list[_qreg] = gate_obj
+        gate, index = self.get_qreg_moment(_qreg, True)
+        if isinstance(gate, IGate):
+            self._moment_list[index] = gate_obj
             return True
         else:
             return False
