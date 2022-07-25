@@ -28,6 +28,10 @@ def arguments():
     verbose = args.verbose
 
     backend = args.backend
+    suffix = "" + args.backend + ""
+
+    if backend not in ["sparse", "numpy", "cuda", "sparse-cuda"]:
+        raise Exception(f"Backend {backend} not found.")
 
     if backend == "sparse":
         from src.framework.core.backend.SparseBackend import SparseBackend
@@ -46,10 +50,10 @@ def arguments():
         print("[i] Using Sparse Cuda Backend")
         backend = CUDASparseBackend
 
-    return operator, path, verbose, backend
+    return operator, path, verbose, backend, suffix
 
 def main():
-    operate_on, directory_path, verbose, backend = arguments()
+    operate_on, directory_path, verbose, backend, suffix = arguments()
     directory_path += "/**/*."+operate_on
 
     files = glob.glob(directory_path, recursive = True)
@@ -69,7 +73,7 @@ def main():
                     'execution-time': end-load,
                 }
 
-                output = file[:-3]+'pkl'
+                output = file[:-3]+suffix+'.pkl'
 
                 with open(output, "wb") as out_file:
                     pickle.dump(result, out_file)
