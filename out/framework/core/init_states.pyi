@@ -1,4 +1,4 @@
-from framework.core.backend.core import Backend as Backend
+from qudiet.core.backend.core import Backend as Backend
 from scipy import sparse as sparse
 from scipy.sparse import csr_matrix as csr_matrix, dok_matrix as dok_matrix
 from typing import Any

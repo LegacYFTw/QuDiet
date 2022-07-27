@@ -23,12 +23,28 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from qudiet.qasm.qasm_parser import parse_qasm
-from qudiet.utils.numpy import Nbase_to_bin
+from scipy import sparse
+
+from qudiet.core.backend.core import Backend
 
 
-def test_qasm_1():
-    filename = "test.qasm"  # "src/testbench/tof_qutrit/..."
-    circuit = parse_qasm(filename)
-    result = circuit.run()
-    assert result == [{"|120>": 1.0}]
+class SparseBackend(Backend):
+    @staticmethod
+    def kron(a, b):
+        return sparse.kron(a, b)
+
+    @staticmethod
+    def dot(a, b):
+        return sparse.csr_matrix.dot(a, b)
+
+    @staticmethod
+    def eye(n, m):
+        return sparse.eye(n=n, m=m)
+
+    @staticmethod
+    def matrix(a):
+        return sparse.csr_matrix(a)
+
+    @staticmethod
+    def nonzero(a):
+        return a.nonzero()

@@ -23,12 +23,19 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from qudiet.qasm.qasm_parser import parse_qasm
-from qudiet.utils.numpy import Nbase_to_bin
+import os
 
+from qudiet.core.backend.core import Backend
+from qudiet.core.backend.SparseBackend import SparseBackend
 
-def test_qasm_1():
-    filename = "test.qasm"  # "src/testbench/tof_qutrit/..."
-    circuit = parse_qasm(filename)
-    result = circuit.run()
-    assert result == [{"|120>": 1.0}]
+DefaultBackend = SparseBackend
+
+CUDA_HOME = any(
+    [
+        os.environ.get("CUDA_HOME"),
+        os.environ.get("CUDA_PATH"),
+        os.environ.get("CUDA_VERSION"),
+        os.environ.get("CUDNN_VERSION"),
+        os.environ.get("COLAB_GPU"),
+    ]
+)

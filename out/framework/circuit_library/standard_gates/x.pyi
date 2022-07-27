@@ -1,6 +1,6 @@
 from abc import ABC
-from framework.circuit_library.standard_gates.quantum_gate import QuantumGate as QuantumGate
-from framework.core.backend.core import Backend as Backend
+from qudiet.circuit_library.standard_gates.quantum_gate import QuantumGate as QuantumGate
+from qudiet.core.backend.core import Backend as Backend
 from scipy.sparse import csr_matrix as csr_matrix
 from typing import Any, Union
 

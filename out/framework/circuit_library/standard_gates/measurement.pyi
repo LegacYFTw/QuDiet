@@ -1,5 +1,5 @@
 from abc import ABC
-from framework.circuit_library.standard_gates.quantum_gate import QuantumGate as QuantumGate
+from qudiet.circuit_library.standard_gates.quantum_gate import QuantumGate as QuantumGate
 
 class Measurement(QuantumGate, ABC):
     def __init__(self, qreg: int) -> None: ...

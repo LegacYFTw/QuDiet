@@ -23,12 +23,44 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from qudiet.qasm.qasm_parser import parse_qasm
-from qudiet.utils.numpy import Nbase_to_bin
+from qudiet.core.backend import CUDA_HOME, Backend
+
+if CUDA_HOME:
+    import cupy as cp
+    from cupyx.scipy import sparse
+else:
+    assert False
+    raise Exception("CUDA Backend is disabled.")
+
+import os
+
+import numpy as np
 
 
-def test_qasm_1():
-    filename = "test.qasm"  # "src/testbench/tof_qutrit/..."
-    circuit = parse_qasm(filename)
-    result = circuit.run()
-    assert result == [{"|120>": 1.0}]
+class CUDASparseBackend(Backend):
+    def __getattribute__(self, name):
+        if not CUDA_HOME:
+            raise Exception("CUDA Backend is disabled.")
+        super().__getattribute__(name)
+
+    @staticmethod
+    def kron(a, b):
+        return sparse.kron(a, b)
+
+    @staticmethod
+    def dot(a, b):
+        return sparse.csr_matrix.dot(a, b)
+
+    @staticmethod
+    def eye(n, m):
+        return sparse.eye(n=n, m=m)
+
+    @staticmethod
+    def matrix(a):
+        if isinstance(a, np.ndarray):
+            a = cp.array(a)
+        return sparse.csr_matrix(a)
+
+    @staticmethod
+    def nonzero(a):
+        return a.nonzero()

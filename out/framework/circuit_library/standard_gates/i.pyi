@@ -1,6 +1,6 @@
 from abc import ABC
-from framework.circuit_library.standard_gates.quantum_gate import QuantumGate as QuantumGate
-from framework.core.backend.core import Backend as Backend
+from qudiet.circuit_library.standard_gates.quantum_gate import QuantumGate as QuantumGate
+from qudiet.core.backend.core import Backend as Backend
 from scipy import sparse as sparse
 from typing import Any
 

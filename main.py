@@ -1,7 +1,7 @@
 import time
-from framework.core.quantum_circuit import QuantumCircuit
-from framework.core.backend.SparseBackend import SparseBackend
-from framework.core.backend.NumpyBackend import NumpyBackend
+from qudiet.core.quantum_circuit import QuantumCircuit
+from qudiet.core.backend.SparseBackend import SparseBackend
+from qudiet.core.backend.NumpyBackend import NumpyBackend
 
 start_time = time.time()
 
@@ -9,7 +9,7 @@ start_time = time.time()
 backend = NumpyBackend
 
 qc = QuantumCircuit(
-    qregs=[2, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2], 
+    qregs=[2, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2],
     init_states=[1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
     backend=backend
 )

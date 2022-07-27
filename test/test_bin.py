@@ -1,4 +1,4 @@
-#               This file is part of the Framework package.
+#               This file is part of the QuDiet package.
 #              https://github.com/LegacYFTw/qubit-qudit-sim
 #
 #                      Copyright (c) 2022.
@@ -23,7 +23,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from framework.utils.numpy import Nbase_to_bin, bin_to_Nbase
+from qudiet.utils.numpy import Nbase_to_bin, bin_to_Nbase
 
 
 def test_bin_to_Nbase():

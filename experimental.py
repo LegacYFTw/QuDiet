@@ -1,5 +1,5 @@
-from framework.core import backend
-from src.framework.qasm.qasm_parser import parse_qasm
+from qudiet.core import backend
+from src.qudiet.qasm.qasm_parser import parse_qasm
 import argparse, glob, pickle, warnings, time
 
 def arguments():
@@ -34,19 +34,19 @@ def arguments():
         raise Exception(f"Backend {backend} not found.")
 
     if backend == "sparse":
-        from src.framework.core.backend.SparseBackend import SparseBackend
+        from src.qudiet.core.backend.SparseBackend import SparseBackend
         print("[i] Using Sparse Backend")
         backend = SparseBackend
     elif backend == "numpy":
-        from src.framework.core.backend.NumpyBackend import NumpyBackend
+        from src.qudiet.core.backend.NumpyBackend import NumpyBackend
         print("[i] Using Numpy Backend")
         backend = NumpyBackend
     elif backend == "cuda":
-        from src.framework.core.backend.CUDABackend import CUDABackend
+        from src.qudiet.core.backend.CUDABackend import CUDABackend
         print("[i] Using Cuda Backend")
         backend = CUDABackend
     elif backend == "sparse-cuda":
-        from src.framework.core.backend.CUDASparseBackend import CUDASparseBackend
+        from src.qudiet.core.backend.CUDASparseBackend import CUDASparseBackend
         print("[i] Using Sparse Cuda Backend")
         backend = CUDASparseBackend
 

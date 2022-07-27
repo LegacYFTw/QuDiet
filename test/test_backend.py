@@ -1,4 +1,4 @@
-#               This file is part of the Framework package.
+#               This file is part of the QuDiet package.
 #              https://github.com/LegacYFTw/qubit-qudit-sim
 #
 #                      Copyright (c) 2022.
@@ -26,9 +26,9 @@
 import time
 import warnings
 
-from framework.core.backend import CUDA_HOME
-from framework.core.backend.NumpyBackend import NumpyBackend
-from framework.core.quantum_circuit import QuantumCircuit
+from qudiet.core.backend import CUDA_HOME
+from qudiet.core.backend.NumpyBackend import NumpyBackend
+from qudiet.core.quantum_circuit import QuantumCircuit
 
 
 def test_Numpy_backend():
@@ -87,7 +87,7 @@ def test_Numpy_backend():
     assert True
 
 
-from framework.core.backend.SparseBackend import SparseBackend
+from qudiet.core.backend.SparseBackend import SparseBackend
 
 
 def test_Sparse_backend():
@@ -147,7 +147,7 @@ def test_Sparse_backend():
 
 
 if CUDA_HOME:
-    from framework.core.backend.CUDABackend import CUDABackend
+    from qudiet.core.backend.CUDABackend import CUDABackend
 
     def test_CUDA_backend():
         backend = CUDABackend  # 1.21 sec
@@ -204,7 +204,7 @@ if CUDA_HOME:
         warnings.warn(f"Time elapsed for cuda backend: {end_time - start_time}s")
         assert True
 
-    from framework.core.backend.CUDASparseBackend import CUDASparseBackend
+    from qudiet.core.backend.CUDASparseBackend import CUDASparseBackend
 
     def test_CUDASparse_backend():
         backend = CUDASparseBackend  # 0.43 sec

@@ -1,4 +1,4 @@
-#               This file is part of the Framework package.
+#               This file is part of the QuDiet package.
 #              https://github.com/LegacYFTw/qubit-qudit-sim
 #
 #                      Copyright (c) 2022.

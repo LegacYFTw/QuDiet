@@ -1,5 +1,5 @@
 from cupyx.scipy import sparse as sparse
-from framework.core.backend import Backend as Backend, CUDA_HOME as CUDA_HOME
+from qudiet.core.backend import Backend as Backend, CUDA_HOME as CUDA_HOME
 
 class CUDABackend(Backend):
     def __getattribute__(self, name) -> None: ...
