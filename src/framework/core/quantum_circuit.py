@@ -24,7 +24,13 @@
 #
 
 import warnings
-from typing import Literal, Optional, Union
+
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
+from typing import Optional, Union
 
 from framework.circuit_library.standard_gates.cx import CXGate
 from framework.circuit_library.standard_gates.h import HGate
