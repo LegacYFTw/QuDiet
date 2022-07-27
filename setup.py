@@ -60,7 +60,7 @@ else:
     warnings.warn("CUDA not found. CUDA backends will be disabled.")
 
 setup(
-    name="Framework",
+    name="QuDiet",
     version="0.1.0a0",
     description="A package to perform quantum circuit calculations",
     long_description=long_description,
