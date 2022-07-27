@@ -9,6 +9,8 @@ def arguments():
     '''
     epilog = '''
     Example : python3 experimental.py -b numpy testbench/tof_qutrit/
+      [OR]
+    Example : python3 experimental.py -b sparse testbench/tof_full/
     '''
 
     # Initialize parser
