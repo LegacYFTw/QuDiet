@@ -69,6 +69,7 @@ def main():
 
                 result = {
                     'value': result,
+                    'config': qc.get_circuit_config(),
                     'loading-time': load-start,
                     'execution-time': end-load,
                 }
