@@ -1,4 +1,3 @@
-from _typeshed import Incomplete
 from abc import ABC
 from framework.circuit_library.standard_gates.quantum_gate import QuantumGate as QuantumGate
 from framework.core.backend.core import Backend as Backend
@@ -6,10 +5,10 @@ from framework.utils.linalg import ttg as ttg
 from framework.utils.numpy import get_index as get_index
 from scipy import sparse as sparse
 from scipy.sparse import csr_matrix as csr_matrix
-from typing import Tuple
+from typing import Any, Tuple
 
 class CXGate(QuantumGate, ABC):
-    backend: Incomplete
+    backend: Any
     def __init__(self, qreg: tuple[int, int], acting_on: tuple[int, int], plus: int, backend: Backend) -> None: ...
     @property
     def dims(self) -> int: ...

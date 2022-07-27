@@ -3,59 +3,59 @@
 # CVPLUS GATE for 5 qudits
 .qudit 5
 
-qubit q0
-qutrit q1
-qutrit q2
-qutrit q3
-qutrit q4
+qudit q0 (2)
+qudit q1 (3)
+qudit q2 (3)
+qudit q3 (3)
+qudit q4 (3)
 
 .begin
-CX q0 q2
-CX q2 q4
-CX q0 q2
-CX q3 q4
-CX q4 q1
-CX q3 q4
-CX q0 q2
-CX q2 q4
-CX q0 q2
-CX q3 q4
-CX q4 q1
-CX q3 q4
-CNOT q2 q0
-CX q0 q3
-CX q3 q2
-CX q0 q3
-CNOT q2 q0
-CX q0 q1
-CX q1 q4
-CX q0 q1
-CX q2 q4
-CX q4 q3
-CX q2 q4 
-CX q0 q1
-CX q1 q4
-CX q0 q1
-CX q2 q4
-CX q4 q3
-CX q2 q4
-CX q0 q2
-CX q2 q3
-CX q0 q2
-CX q0 q3
-CX q3 q1
-CX q0 q3
-CX q0 q1
-CX q1 q3
-CX q0 q1
-CNOT q2 q3
-CNOT q1 q3
-CX q1 q3
-CX q3 q0
-CX q1 q3
-CNOT q0 q3
-RX q3 180
-CNOT q3 q2
-CNOT q3 q1
-CNOT q2 q0
+CX x0 x2
+CX x2 x4
+CX x0 x2
+CX x3 x4
+CX x4 x1
+CX x3 x4
+CX x0 x2
+CX x2 x4
+CX x0 x2
+CX x3 x4
+CX x4 x1
+CX x3 x4
+CX x2 x0
+CX x0 x3
+CX x3 x2
+CX x0 x3
+CX x2 x0
+CX x0 x1
+CX x1 x4
+CX x0 x1
+CX x2 x4
+CX x4 x3
+CX x2 x4 
+CX x0 x1
+CX x1 x4
+CX x0 x1
+CX x2 x4
+CX x4 x3
+CX x2 x4
+CX x0 x2
+CX x2 x3
+CX x0 x2
+CX x0 x3
+CX x3 x1
+CX x0 x3
+CX x0 x1
+CX x1 x3
+CX x0 x1
+CX x2 x3
+CX x1 x3
+CX x1 x3
+CX x3 x0
+CX x1 x3
+CX x0 x3
+X 3
+CX x3 x2
+CX x3 x1
+CX x2 x0
 .end

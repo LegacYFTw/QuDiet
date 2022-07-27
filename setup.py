@@ -24,6 +24,7 @@
 #
 
 import os
+import sys
 import warnings
 
 from setuptools import find_packages, setup
@@ -31,6 +32,7 @@ from setuptools import find_packages, setup
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+PY_VERSION = (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
 
 CUDA_HOME = any(
     [
@@ -45,9 +47,12 @@ CUDA_HOME = any(
 install_requires = [
     "numpy",
     "scipy",
-    "numba",
+    # "numba",
     "pytest",
 ]
+
+if PY_VERSION <= (3, 7):
+    install_requires += ["typing-extensions"]
 
 if CUDA_HOME:
     install_requires += ["cupy-cuda100"]

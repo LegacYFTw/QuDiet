@@ -2,21 +2,20 @@
 # developed by Amit Saha
 .qudit 3 
 
-
-qubit x0
-qutrit x1
-qutrit x2
+qudit x0 (2)
+qudit x1 (3)
+qudit x2 (3)
 
 
 .begin
-RX x2 180
-CNOT x0 x2
-CNOT x2 x1
+X x2
+CX x0 x2
+CX x2 x1
 CX X1 X2
 CX X2 X0
 CX X1 X2
 CX X0 X1
 CX X1 X2
 CX X0 X1
-CNOT x1 x2
+CX x1 x2
 .end

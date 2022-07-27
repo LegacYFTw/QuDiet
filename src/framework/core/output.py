@@ -52,9 +52,9 @@ class Output:
         self.output_method = method
 
     def __call__(self, result):
-        value = result.nonzero()[0]
         if "sparse" in str(type(result)).lower() or hasattr(result, "toarray"):
             result = result.toarray()
+        value = result.nonzero()[0]
         distribution = result[value, 0]
         qoutput = []
         for (v, d) in zip(value, distribution):

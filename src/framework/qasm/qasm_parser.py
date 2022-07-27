@@ -25,12 +25,14 @@
 
 import re
 from unittest import result
+from framework.core.backend.core import Backend
 
 from framework.core.quantum_circuit import QuantumCircuit
 from framework.utils.numpy import Nbase_to_bin
+from framework.core.backend.core import Backend
+from framework.core.backend import DefaultBackend
 
-
-def parse_qasm(filename: str):
+def parse_qasm(filename: str, backend: Backend = None):
     # TODO : Need to create a proper reader.
     with open(filename, "r") as f:
         # _data = list(filter(None, f.read().split("\n")))
@@ -44,7 +46,9 @@ def parse_qasm(filename: str):
     _qregs = [
         int(re.findall("\d+", _dims)[0]) for _dims in re.findall("\d+\)", _data[0])
     ]
-    qc = QuantumCircuit(qregs=_qregs)
+    if backend is None:
+        backend = DefaultBackend
+    qc = QuantumCircuit(qregs=_qregs, backend=backend)
 
     _gates = list(filter(None, _data[1].split("\n")))
 

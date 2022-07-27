@@ -24,7 +24,13 @@
 #
 
 import warnings
-from typing import Literal, Optional, Union
+
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
+from typing import Optional, Union
 
 from framework.circuit_library.standard_gates.cx import CXGate
 from framework.circuit_library.standard_gates.h import HGate
@@ -203,7 +209,10 @@ class QuantumCircuit:
         """
         self.__validate_gate_inputs(qreg, dims)
         _xgate = XGate(
-            qreg=qreg, dims=dims or self._reg_dims[qreg], plus = plus, backend=self.backend
+            qreg=qreg,
+            dims=dims or self._reg_dims[qreg],
+            plus=plus,
+            backend=self.backend,
         )
         _result = self.__add_moment_to_opflow(qreg, _xgate)
         return _result

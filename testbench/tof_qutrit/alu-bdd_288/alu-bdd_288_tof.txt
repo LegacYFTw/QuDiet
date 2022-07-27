@@ -3,32 +3,32 @@
 
 .qudit 7
 
-qubit x0
-qubit x1
-qubit x2
-qutrit x3
-qubit x4
-qutrit x5
-qubit x6
+qudit x0 (2)
+qudit x1 (2)
+qudit x2 (2)
+qudit x3 (3)
+qudit x4 (2)
+qudit x5 (3)
+qudit x6 (2)
 
 .begin
-CNOT x0 x5
+CX x0 x5
 CX x1 x3
 CX x3 x5
 CX x1 x3
 CX x0 x3
 CX x3 x5
 CX x0 x3
-CNOT x2 x6
+CX x2 x6
 CX x0 x3
 CX x3 x6
 CX x0 x3
 CX x2 x3
 CX x3 x6
 CX x2 x3
-CNOT x6 x5
+CX x6 x5
 CX x4 x5
 CX x5 x6
 CX x4 x5
-RX x6 180
+X 6
 .end
