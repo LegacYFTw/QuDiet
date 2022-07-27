@@ -1,4 +1,4 @@
-from framework.core.backend.core import Backend as Backend
+from qudiet.core.backend.core import Backend as Backend
 
 class NumpyBackend(Backend):
     @staticmethod

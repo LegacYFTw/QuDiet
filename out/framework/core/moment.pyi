@@ -1,10 +1,10 @@
-from framework.circuit_library.standard_gates.cx import CXGate as CXGate
-from framework.circuit_library.standard_gates.h import HGate as HGate
-from framework.circuit_library.standard_gates.i import IGate as IGate
-from framework.circuit_library.standard_gates.quantum_gate import QuantumGate as QuantumGate
-from framework.circuit_library.standard_gates.x import XGate as XGate
-from framework.circuit_library.standard_gates.z import ZGate as ZGate
-from framework.core.init_states import InitState as InitState
+from qudiet.circuit_library.standard_gates.cx import CXGate as CXGate
+from qudiet.circuit_library.standard_gates.h import HGate as HGate
+from qudiet.circuit_library.standard_gates.i import IGate as IGate
+from qudiet.circuit_library.standard_gates.quantum_gate import QuantumGate as QuantumGate
+from qudiet.circuit_library.standard_gates.x import XGate as XGate
+from qudiet.circuit_library.standard_gates.z import ZGate as ZGate
+from qudiet.core.init_states import InitState as InitState
 from scipy import sparse as sparse
 from typing import Union
 

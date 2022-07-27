@@ -23,12 +23,36 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from qudiet.qasm.qasm_parser import parse_qasm
-from qudiet.utils.numpy import Nbase_to_bin
+import numpy as np
 
 
-def test_qasm_1():
-    filename = "test.qasm"  # "src/testbench/tof_qutrit/..."
-    circuit = parse_qasm(filename)
-    result = circuit.run()
-    assert result == [{"|120>": 1.0}]
+def get_index(src, trgt):
+    for i, v in enumerate(src):
+        if np.all(v == trgt):
+            return i
+
+
+def bin_to_Nbase(target, base=2):
+    if isinstance(base, int):
+        base = [base] * len(target)
+    else:
+        assert len(target) == len(base)
+
+    # base[0] = 1 # Anything to the power of 0 is 1
+    scale = np.array(base[::-1]).cumprod()
+    scale = [1, *scale[:-1]]
+    return np.sum(scale[::-1] * np.array(target))
+
+
+def Nbase_to_bin(_repr, base=[2]):
+    base = base[::-1]
+    digits = []
+    while _repr:
+        _base = base[len(digits)]
+        digits += [int(_repr % _base)]
+        _repr //= _base
+    if len(digits) < len(base):
+        digits += [
+            0,
+        ] * (len(base) - len(digits))
+    return digits[::-1]

@@ -1,4 +1,4 @@
-#               This file is part of the Framework package.
+#               This file is part of the QuDiet package.
 #              https://github.com/LegacYFTw/qubit-qudit-sim
 #
 #                      Copyright (c) 2022.
@@ -30,8 +30,9 @@ PYTHON_ENV = python = ["3.6", "3.7", "3.8", "3.9", "3.10"]
 SOURCE_FILES = (
     "setup.py",
     "noxfile.py",
-    "src/framework/",
+    "src/qudiet/",
     "test/",
+    "scripts/license-headers.py",
 )
 
 
@@ -52,7 +53,7 @@ def lint(session):
 
     session.run("isort", "--check", "--profile=black", *SOURCE_FILES)
     session.run("black", "--target-version=py39", "--check", *SOURCE_FILES)
-    session.run("python", "license-headers.py", "check", *SOURCE_FILES)
+    session.run("python", "scripts/license-headers.py", "check", *SOURCE_FILES)
 
 
 @nox.session(python=PYTHON_ENV)
@@ -65,4 +66,4 @@ def formatting(session):
     session.run("isort", "--profile=black", *SOURCE_FILES)
     session.run("black", "--target-version=py39", *SOURCE_FILES)
     session.run("stubgen", "-p", "framework", external=True)
-    session.run("python", "license-headers.py", "fix", *SOURCE_FILES)
+    session.run("python", "scripts/license-headers.py", "fix", *SOURCE_FILES)

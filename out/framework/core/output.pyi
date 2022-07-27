@@ -1,5 +1,5 @@
 from enum import Enum
-from framework.utils.numpy import Nbase_to_bin as Nbase_to_bin
+from qudiet.utils.numpy import Nbase_to_bin as Nbase_to_bin
 from typing import Any
 
 class OutputType(Enum):

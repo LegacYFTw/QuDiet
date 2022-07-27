@@ -22,13 +22,3 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-
-from qudiet.qasm.qasm_parser import parse_qasm
-from qudiet.utils.numpy import Nbase_to_bin
-
-
-def test_qasm_1():
-    filename = "test.qasm"  # "src/testbench/tof_qutrit/..."
-    circuit = parse_qasm(filename)
-    result = circuit.run()
-    assert result == [{"|120>": 1.0}]

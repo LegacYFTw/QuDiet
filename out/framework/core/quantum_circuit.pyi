@@ -1,17 +1,17 @@
-from framework.circuit_library.standard_gates.cx import CXGate as CXGate
-from framework.circuit_library.standard_gates.h import HGate as HGate
-from framework.circuit_library.standard_gates.i import IGate as IGate
-from framework.circuit_library.standard_gates.measurement import Measurement as Measurement
-from framework.circuit_library.standard_gates.x import XGate as XGate
-from framework.circuit_library.standard_gates.z import ZGate as ZGate
-from framework.core.backend import DefaultBackend as DefaultBackend
-from framework.core.backend.SparseBackend import SparseBackend as SparseBackend
-from framework.core.backend.core import Backend as Backend
-from framework.core.init_states import InitState as InitState
-from framework.core.moment import Moment as Moment
-from framework.core.operator_flow import OperatorFlow as OperatorFlow
-from framework.core.output import Output as Output, OutputMethod as OutputMethod, OutputType as OutputType
-from framework.utils.linalg import isiterable as isiterable
+from qudiet.circuit_library.standard_gates.cx import CXGate as CXGate
+from qudiet.circuit_library.standard_gates.h import HGate as HGate
+from qudiet.circuit_library.standard_gates.i import IGate as IGate
+from qudiet.circuit_library.standard_gates.measurement import Measurement as Measurement
+from qudiet.circuit_library.standard_gates.x import XGate as XGate
+from qudiet.circuit_library.standard_gates.z import ZGate as ZGate
+from qudiet.core.backend import DefaultBackend as DefaultBackend
+from qudiet.core.backend.SparseBackend import SparseBackend as SparseBackend
+from qudiet.core.backend.core import Backend as Backend
+from qudiet.core.init_states import InitState as InitState
+from qudiet.core.moment import Moment as Moment
+from qudiet.core.operator_flow import OperatorFlow as OperatorFlow
+from qudiet.core.output import Output as Output, OutputMethod as OutputMethod, OutputType as OutputType
+from qudiet.utils.linalg import isiterable as isiterable
 from typing import Any, Optional, Union
 from typing_extensions import Literal
 

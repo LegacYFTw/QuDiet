@@ -1,4 +1,4 @@
-#               This file is part of the Framework package.
+#               This file is part of the QuDiet package.
 #              https://github.com/LegacYFTw/qubit-qudit-sim
 #
 #                      Copyright (c) 2022.
@@ -23,9 +23,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from framework.core.backend.NumpyBackend import NumpyBackend
-from framework.core.quantum_circuit import QuantumCircuit
-from framework.utils.numpy import Nbase_to_bin
+from qudiet.core.backend.NumpyBackend import NumpyBackend
+from qudiet.core.quantum_circuit import QuantumCircuit
+from qudiet.utils.numpy import Nbase_to_bin
 
 
 def test_qudit_init():

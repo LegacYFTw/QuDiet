@@ -23,12 +23,30 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from qudiet.qasm.qasm_parser import parse_qasm
-from qudiet.utils.numpy import Nbase_to_bin
 
+class Backend:
+    def __init__(self):
+        pass
 
-def test_qasm_1():
-    filename = "test.qasm"  # "src/testbench/tof_qutrit/..."
-    circuit = parse_qasm(filename)
-    result = circuit.run()
-    assert result == [{"|120>": 1.0}]
+    def __call__(self):
+        pass
+
+    @staticmethod
+    def kron(self, a, b):
+        raise NotImplemented()
+
+    @staticmethod
+    def dot(self, a, b):
+        raise NotImplemented()
+
+    @staticmethod
+    def eye(self, n, m):
+        raise NotImplemented()
+
+    @staticmethod
+    def matrix(self, a):
+        raise NotImplemented()
+
+    @staticmethod
+    def nonzero(self, a):
+        raise NotImplemented()
