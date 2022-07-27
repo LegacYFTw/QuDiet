@@ -65,7 +65,7 @@ def parse_qasm(filename: str, backend: Backend = None):
             _gate_qreg = int(re.findall("\d+", _gate.split()[1])[0])
             qc.z(qreg=_gate_qreg)
 
-        elif re.search("^CX", _gate):
+        elif re.search("^CX", _gate) or re.search("^CNOT", _gate):
             _gate_qreg = (
                 int(re.findall("\d+", _gate.split()[1])[0]),
                 int(re.findall("\d+", _gate.split()[2])[0]),
