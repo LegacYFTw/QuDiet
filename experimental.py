@@ -17,7 +17,7 @@ def arguments():
     parser = argparse.ArgumentParser(description=description, epilog=epilog)
 
     # Adding optional argument
-    parser.add_argument("-m", "--mode", help = "Selects the mode of action. [pkl,txt]", default='txt')
+    parser.add_argument("-m", "--mode", help = "Selects the mode of action. [pkl,txt,qasm]", default='txt')
     parser.add_argument("-b", "--backend", help = "Selects the backend. [sparse, numpy, cuda, sparse-cuda]", default='sparse')
     parser.add_argument('-v', '--verbose', action='count', default=0)
     parser.add_argument("path", help = "path of files", default='./')
@@ -76,7 +76,7 @@ def main():
                     'execution-time': end-load,
                 }
 
-                output = file[:-3]+suffix+'.pkl'
+                output = ".".join(file.split(".")[:-1])+suffix+'.pkl'
 
                 with open(output, "wb") as out_file:
                     pickle.dump(result, out_file)

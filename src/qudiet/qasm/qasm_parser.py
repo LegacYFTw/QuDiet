@@ -36,7 +36,8 @@ def parse_qasm(filename: str, backend: Backend = None):
     # TODO : Need to create a proper reader.
     with open(filename, "r") as f:
         # _data = list(filter(None, f.read().split("\n")))
-        _data = re.split("\n\.(qudit\s\d+|begin|end)", f.read())
+        _data = re.split("\n\.(qu[db]it\s\d+|begin|end)", f.read())
+        print((_data))
         _data.pop(6)
         _data.pop(5)
         _data.pop(3)
@@ -53,15 +54,15 @@ def parse_qasm(filename: str, backend: Backend = None):
     _gates = list(filter(None, _data[1].split("\n")))
 
     for _gate in _gates:
-        if re.search("^X", _gate):
+        if re.search("^X", _gate) or (re.search("^RX", _gate) and re.search("180$", _gate)):
             _gate_qreg = int(re.findall("\d+", _gate.split()[1])[0])
             qc.x(qreg=_gate_qreg)
 
-        if re.search("^H", _gate):
+        elif re.search("^H", _gate):
             _gate_qreg = int(re.findall("\d+", _gate.split()[1])[0])
             qc.h(qreg=_gate_qreg)
 
-        if re.search("^Z", _gate):
+        elif re.search("^Z", _gate):
             _gate_qreg = int(re.findall("\d+", _gate.split()[1])[0])
             qc.z(qreg=_gate_qreg)
 
@@ -75,6 +76,12 @@ def parse_qasm(filename: str, backend: Backend = None):
             else:
                 _plus = 1
             qc.cx(acting_on=_gate_qreg, plus=_plus)
+
+        elif re.search("^Toffoli", _gate):
+            ints = list(map(int,re.findall("\d+", _gate)))
+            _gate_qreg = (ints[:-1], ints[-1])
+            _plus = 1
+            qc.toffoli(_gate_qreg, _plus)
 
     qc.measure_all()
 
