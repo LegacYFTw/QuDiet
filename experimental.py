@@ -1,6 +1,10 @@
+from rich.console import Console
 from qudiet.core import backend
 from src.qudiet.qasm.qasm_parser import parse_qasm
 import argparse, glob, pickle, warnings, time
+
+console = Console()
+
 
 def arguments():
     description = '''
@@ -62,34 +66,35 @@ def main():
 
     if operate_on in ["txt", "qasm"]:
         for file in files:
-            try:
-                start = time.time()
-                qc = parse_qasm(file, backend=backend)
-                load = time.time()
-                result = qc.run()
-                end = time.time()
+            with console.status(f"[bold green]Working on {file}...") as status:
+                try:
+                    start = time.time()
+                    qc = parse_qasm(file, backend=backend)
+                    load = time.time()
+                    result = qc.run()
+                    end = time.time()
 
-                result = {
-                    'value': result,
-                    'config': qc.get_circuit_config(),
-                    'loading-time': load-start,
-                    'execution-time': end-load,
-                }
+                    result = {
+                        'value': result,
+                        'config': qc.get_circuit_config(),
+                        'loading-time': load-start,
+                        'execution-time': end-load,
+                    }
 
-                output = ".".join(file.split(".")[:-1])+suffix+'.pkl'
+                    output = ".".join(file.split(".")[:-1])+"-"+suffix+'.pkl'
 
-                with open(output, "wb") as out_file:
-                    pickle.dump(result, out_file)
+                    with open(output, "wb") as out_file:
+                        pickle.dump(result, out_file)
 
-                if verbose:
-                    print(f"[o] File '{file}' ran successfully. Result saved in {output}...")
+                    console.log(f"[bold yellow]---->[white] Result for file [bold green]'{file}': ", result)
 
-                print(f"[o] Result for file '{file}' \n[o]\t{result}\n[o]")
+                    if verbose:
+                        console.log(f"[bold]saved in [purple]{output}\n")
 
-            except Exception as e: #IndexError as ie:
-                # result = ie.args
-                # warnings.warn(f"[x] File '{file}' got exception '{e}'...")
-                print(f"[x] File '{file}' got exception '{e}'...\n[x]")
+                except Exception as e: #IndexError as ie:
+                    # result = ie.args
+                    # warnings.warn(f"[x] File '{file}' got exception '{e}'...")
+                    print(f"[x] File '{file}' got exception '{e}'...\n[x]")
     elif operate_on in ["pkl", "pickle"]:
         for file in files:
             with open(file, "rb") as out_file:
