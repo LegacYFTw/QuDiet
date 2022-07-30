@@ -33,16 +33,20 @@ from qudiet.utils.numpy import Nbase_to_bin
 
 
 def parse_qasm(filename: str, backend: Backend = None):
-    # TODO : Need to create a proper reader.
     with open(filename, "r") as f:
-        # _data = list(filter(None, f.read().split("\n")))
-        _data = re.split("\n\.(qu[db]it\s\d+|begin|end)", f.read())
-        print((_data))
-        _data.pop(6)
-        _data.pop(5)
-        _data.pop(3)
-        _data.pop(1)
-        _data.pop(0)
+        _data = f.read()
+    
+    _data = re.sub(r"\.qubit (\d+)", r".qudit \1", _data)
+    _data = re.sub(r"\.qutrit (\d+)", r".qudit \1", _data)
+    _data = re.split("\n\.(qudit\s\d+|begin|end)", _data)
+    _data.pop(6)
+    _data.pop(5)
+    _data.pop(3)
+    _data.pop(1)
+    _data.pop(0)
+    
+    _data[0] = re.sub(r"qubit x(\d+)", r"qudit x\1 (2)", _data[0])
+    _data[0] = re.sub(r"qutrit x(\d+)", r"qudit x\1 (3)", _data[0])
 
     _qregs = [
         int(re.findall("\d+", _dims)[0]) for _dims in re.findall("\d+\)", _data[0])
