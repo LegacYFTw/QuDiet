@@ -49,6 +49,7 @@ install_requires = [
     "scipy",
     # "numba",
     "pytest",
+    "rich",
 ]
 
 if PY_VERSION <= (3, 7):
@@ -65,7 +66,7 @@ setup(
     description="A package to perform quantum circuit calculations",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/LegacYFTw/qubit-qudit-sim",
+    url="https://github.com/LegacYFTw/QuDiet",
     keywords="quantum sdk",
     license="LGPLv3",
     package_dir={"": "src"},
