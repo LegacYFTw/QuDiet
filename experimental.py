@@ -73,10 +73,10 @@ def main():
             display = f"[bold green]Working on {file}..."
             if terminal:
                 with console.status(display) as status:
-                    routine(file, backend)
+                    routine(file, backend, suffix, verbose)
             else:
                 console.print(display)
-                routine(file, backend)
+                routine(file, backend, suffix, verbose)
 
 
     elif operate_on in ["pkl", "pickle"]:
@@ -86,7 +86,7 @@ def main():
                 console.log(f"[o] Result '{file}' found. \n[o]\t{result}\n[o]")
     pass
 
-def routine(file, backend):
+def routine(file, backend, suffix, verbose):
     try:
         start = time.time()
         qc = parse_qasm(file, backend=backend)
