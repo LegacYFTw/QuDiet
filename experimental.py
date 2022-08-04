@@ -113,7 +113,8 @@ def routine(file, backend):
 
     except Exception as e: #IndexError as ie:
         # result = ie.args
-        # warnings.warn(f"[x] File '{file}' got exception '{e}'...")
+        # print(f"[x] File '{file}' got exception '{e}'...")
+        warnings.warn(f"[x] File '{file}' got exception '{e}'...")
         console.log(f"[bold red][x][white] File [bold green]'{file}'[white] got exception '{e}'...\n[x]")
 
 # operate_on = "pkl"
