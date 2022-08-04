@@ -1,10 +1,10 @@
 # Created by Arnav Das
-# Grover's with 2 qubits.
+# Grover's with 2 qudits.
 
-.qubit 2
+.qudit 2
 
-qubit x0
-qubit x1
+qudit x0
+qudit x1
 
 .begin
 H x0
