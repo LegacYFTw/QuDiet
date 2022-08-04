@@ -295,7 +295,7 @@ class QuantumCircuit:
         _measurement_moment = [
             Measurement(qreg=_index) for _index in range(self._reg_length)
         ]
-        _m = Moment(*_measurement_moment)
+        _m = Moment(f"Moment{len(self.op_flow._opflow_list)}", *_measurement_moment)
         self.op_flow.populate_opflow(_m)
 
         return True
@@ -316,7 +316,7 @@ class QuantumCircuit:
             for _index, _element in enumerate(self.init_states)
         ]
 
-        init_moment = Moment(*_init_gates)
+        init_moment = Moment(f"Moment{len(self.op_flow._opflow_list)}", *_init_gates)
         self.op_flow.populate_opflow(init_moment)
 
     def run(
