@@ -3,19 +3,19 @@
 # Created by Arnav Das
 
 # Declare all needed (qu)dits
-.qudit 11
+.qubit 11
 
-qudit x0
-qudit x1
-qudit x2
-qudit x3
-qudit x4
-qudit x5
-qudit x6
-qudit x7
-qudit x8
-qudit x9
-qudit x10
+qubit x0
+qubit x1
+qubit x2
+qubit x3
+qubit x4
+qubit x5
+qubit x6
+qubit x7
+qubit x8
+qubit x9
+qubit x10
 
 .begin
 # Prepare uniform superposition

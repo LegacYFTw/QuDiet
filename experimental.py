@@ -1,3 +1,4 @@
+from xmlrpc.client import boolean
 from rich.console import Console
 from qudiet.core import backend
 from src.qudiet.qasm.qasm_parser import parse_qasm
@@ -24,6 +25,7 @@ def arguments():
     parser.add_argument("-m", "--mode", help = "Selects the mode of action. [pkl,txt,qasm]", default='txt')
     parser.add_argument("-b", "--backend", help = "Selects the backend. [sparse, numpy, cuda, sparse-cuda]", default='sparse')
     parser.add_argument('-v', '--verbose', action='count', default=0)
+    parser.add_argument('-t', '--terminal', type=boolean, default=False)
     parser.add_argument("path", help = "path of files", default='./')
 
     # Read arguments from command line
@@ -32,6 +34,7 @@ def arguments():
     operator = args.mode
     path = args.path
     verbose = args.verbose
+    terminal = args.terminal
 
     backend = args.backend
     suffix = "" + args.backend + ""
@@ -56,52 +59,62 @@ def arguments():
         print("[i] Using Sparse Cuda Backend")
         backend = CUDASparseBackend
 
-    return operator, path, verbose, backend, suffix
+    return operator, path, verbose, backend, suffix, terminal
 
 def main():
-    operate_on, directory_path, verbose, backend, suffix = arguments()
+    operate_on, directory_path, verbose, backend, suffix, terminal = arguments()
     directory_path += "/**/*."+operate_on
 
     files = glob.glob(directory_path, recursive = True)
+    console.print(f"Analyzing {files} files...")
 
     if operate_on in ["txt", "qasm"]:
         for file in files:
-                # with console.status(f"[bold green]Working on {file}...") as status:
-                console.print(f"[bold green]Working on {file}...")
-                try:
-                    start = time.time()
-                    qc = parse_qasm(file, backend=backend)
-                    load = time.time()
-                    result = qc.run()
-                    end = time.time()
+            display = f"[bold green]Working on {file}..."
+            if terminal:
+                with console.status(display) as status:
+                    routine(file, backend)
+            else:
+                console.print(display)
+                routine(file, backend)
 
-                    result = {
-                        'value': result,
-                        'config': qc.get_circuit_config(),
-                        'loading-time': load-start,
-                        'execution-time': end-load,
-                    }
 
-                    output = ".".join(file.split(".")[:-1])+"-"+suffix+'.pkl'
-
-                    with open(output, "wb") as out_file:
-                        pickle.dump(result, out_file)
-
-                    console.log(f"[bold yellow]---->[white] Result for file [bold green]'{file}': ", result)
-
-                    if verbose:
-                        console.log(f"[bold]saved in [purple]{output}\n")
-
-                except Exception as e: #IndexError as ie:
-                    # result = ie.args
-                    # warnings.warn(f"[x] File '{file}' got exception '{e}'...")
-                    print(f"[x] File '{file}' got exception '{e}'...\n[x]")
     elif operate_on in ["pkl", "pickle"]:
         for file in files:
             with open(file, "rb") as out_file:
                 result = pickle.load(out_file)
-                print(f"[o] Result '{file}' found. \n[o]\t{result}\n[o]")
+                console.log(f"[o] Result '{file}' found. \n[o]\t{result}\n[o]")
     pass
+
+def routine(file, backend):
+    try:
+        start = time.time()
+        qc = parse_qasm(file, backend=backend)
+        load = time.time()
+        result = qc.run()
+        end = time.time()
+
+        result = {
+            'value': result,
+            'config': qc.get_circuit_config(),
+            'loading-time': load-start,
+            'execution-time': end-load,
+        }
+
+        output = ".".join(file.split(".")[:-1])+"-"+suffix+'.pkl'
+
+        with open(output, "wb") as out_file:
+            pickle.dump(result, out_file)
+
+        console.log(f"[bold yellow]---->[white] Result for file [bold green]'{file}': ", result)
+
+        if verbose:
+            console.log(f"[bold]saved in [purple]{output}\n")
+
+    except Exception as e: #IndexError as ie:
+        # result = ie.args
+        # warnings.warn(f"[x] File '{file}' got exception '{e}'...")
+        console.log(f"[bold red][x][white] File [bold green]'{file}'[white] got exception '{e}'...\n[x]")
 
 # operate_on = "pkl"
 # directory_path = "testbench/tof_qutrit" + "/**/*."+operate_on

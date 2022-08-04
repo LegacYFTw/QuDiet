@@ -1,23 +1,23 @@
 # Created by Arnav Das
-# Bernstein-Vazirani witH 14 qudits.
+# Bernstein-Vazirani witH 14 qubits.
 # Hidden string is 1111111111111
 
-.qudit 14
+.qubit 14
 
-qudit x0
-qudit x1
-qudit x2
-qudit x3
-qudit x4
-qudit x5
-qudit x6
-qudit x7
-qudit x8
-qudit x9
-qudit x10
-qudit x11
-qudit x12
-qudit x13
+qubit x0
+qubit x1
+qubit x2
+qubit x3
+qubit x4
+qubit x5
+qubit x6
+qubit x7
+qubit x8
+qubit x9
+qubit x10
+qubit x11
+qubit x12
+qubit x13
 
 .begin
 H x0
