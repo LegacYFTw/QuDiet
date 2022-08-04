@@ -37,7 +37,7 @@ from qudiet.core.init_states import InitState
 
 
 class Moment:
-    def __init__(self, *args: Union[QuantumGate, InitState, IGate]):
+    def __init__(self, name:str, *args: Union[QuantumGate, InitState, IGate]):
         """
         This is the Moment class. This is essentially a list of quantum gates that spans across quantum registers.
         For eg., consider the following poorly drawn quantum circuit
@@ -52,6 +52,7 @@ class Moment:
         functions. The lists can be peeked to allow for reading without disturbing the alignment of the elements.
 
         """
+        self.name = name
         self._prev_pointer = None
         self._next_pointer = None
         self._number_of_operations = len(args)

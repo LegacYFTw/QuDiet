@@ -250,13 +250,15 @@ class OperatorFlow:
         :return: ndarray
         """
 
+        actionable_oplist = self._opflow_list.copy()
+
         if all(self._measurement_count):
-            _last_moment = self._opflow_list.pop()
+            _last_moment = actionable_oplist.pop()
         else:
             raise AssertionError("Measurement not present in all registers!")
 
         # Creates a list _all_moments from all the passed Moments from args
-        _all_moments = self._opflow_list
+        _all_moments = actionable_oplist
 
         # Sets _dot_product as None
         _dot_product = None

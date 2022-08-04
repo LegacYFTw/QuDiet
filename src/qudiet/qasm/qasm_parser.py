@@ -35,7 +35,9 @@ from qudiet.utils.numpy import Nbase_to_bin
 def parse_qasm(filename: str, backend: Backend = None):
     with open(filename, "r") as f:
         _data = f.read()
-    
+    return circuit_from_qasm(_data, backend)
+
+def circuit_from_qasm(_data, backend: Backend = None):
     _data = re.sub(r"\.qubit (\d+)", r".qudit \1", _data)
     _data = re.sub(r"\.qutrit (\d+)", r".qudit \1", _data)
     _data = re.split("\n\.(qudit\s\d+|begin|end)", _data)
@@ -44,7 +46,7 @@ def parse_qasm(filename: str, backend: Backend = None):
     _data.pop(3)
     _data.pop(1)
     _data.pop(0)
-    
+
     _data[0] = re.sub(r"qubit x(\d+)", r"qudit x\1 (2)", _data[0])
     _data[0] = re.sub(r"qutrit x(\d+)", r"qudit x\1 (3)", _data[0])
 

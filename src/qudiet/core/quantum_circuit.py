@@ -180,7 +180,7 @@ class QuantumCircuit:
                 _moment_data.append(_igate)
                 if _reg == qreg:
                     _moment_data[_reg] = gate_obj
-        _curr_moment = Moment(*_moment_data)
+        _curr_moment = Moment(f"Moment{len(self.op_flow._opflow_list)}", *_moment_data)
         _result = self.op_flow.populate_opflow(_curr_moment)
         return _result
 
@@ -322,6 +322,8 @@ class QuantumCircuit:
     def run(
         self,
     ):
+        # FIXIT:  Every time i run `self.op_flow.exec(self.backend)`, the answer changes.
+        # FIXED
         return self.output_processor(self.op_flow.exec(self.backend))
 
     def print_opflow_list(self):
