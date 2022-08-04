@@ -66,7 +66,8 @@ def main():
 
     if operate_on in ["txt", "qasm"]:
         for file in files:
-            with console.status(f"[bold green]Working on {file}...") as status:
+                # with console.status(f"[bold green]Working on {file}...") as status:
+                console.print(f"[bold green]Working on {file}...")
                 try:
                     start = time.time()
                     qc = parse_qasm(file, backend=backend)
