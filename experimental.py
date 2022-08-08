@@ -2,7 +2,7 @@ from xmlrpc.client import boolean
 from rich.console import Console
 from qudiet.core import backend
 from src.qudiet.qasm.qasm_parser import parse_qasm
-import argparse, glob, pickle, warnings, time
+import argparse, glob, pickle, warnings, time, json
 import pprint
 
 console = Console()
@@ -23,7 +23,7 @@ def arguments():
     parser = argparse.ArgumentParser(description=description, epilog=epilog)
 
     # Adding optional argument
-    parser.add_argument("-m", "--mode", help = "Selects the mode of action. [pkl,txt,qasm]", default='txt')
+    parser.add_argument("-m", "--mode", help = "Selects the mode of action. [pkl, txt, qasm, json]", default='txt')
     parser.add_argument("-b", "--backend", help = "Selects the backend. [sparse, numpy, cuda, sparse-cuda]", default='sparse')
     parser.add_argument('-v', '--verbose', action='count', default=0)
     parser.add_argument('-t', '--terminal', type=boolean, default=False)
@@ -87,6 +87,14 @@ def main():
                 result = pickle.load(out_file)
                 console.print(f"Result for [yellow]'{file.split('/')[-1]}'[white] found:")
                 console.print(f"\t{result}\n[o]")
+    
+    elif operate_on in ["json"]:
+        for file in files:
+            with open(file, "r") as out_file:
+                result = json.load(out_file)
+                console.print(f"Result for [yellow]'{file.split('/')[-1]}'[white] found:")
+                console.print(f"\t{result}\n[o]")
+    
     pass
 
 def routine(file, backend, suffix, verbose):
@@ -104,10 +112,10 @@ def routine(file, backend, suffix, verbose):
             'execution-time': end-load,
         }
 
-        output = ".".join(file.split(".")[:-1])+"-"+suffix+'.pkl'
+        output = ".".join(file.split(".")[:-1])+"-"+suffix+'.json'
 
-        with open(output, "wb") as out_file:
-            pickle.dump(result, out_file)
+        with open(output, "w") as out_file:
+            json.dump(result, out_file)
 
         console.print(f"[bold yellow]---->[white] Result for file [bold green]'{file}': ", result)
 
