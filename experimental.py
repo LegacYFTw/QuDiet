@@ -68,7 +68,7 @@ def main():
 
     files = glob.glob(directory_path, recursive = True)
     console.print(f"File count: [green]{len(files)}[white]")
-    console.print(f"Analyzing files: {'[white], [green]'.join(files)}\n\n")
+    console.print(f"Analyzing files: [green]{'[white], [green]'.join(files)}[white]\n\n")
 
     if operate_on in ["txt", "qasm"]:
         for file in files:
@@ -81,12 +81,12 @@ def main():
                 routine(file, backend, suffix, verbose)
 
 
-    elif operate_on in ["pklm", "pickle"]:
+    elif operate_on in ["pkl", "pickle"]:
         for file in files:
             with open(file, "rb") as out_file:
                 result = pickle.load(out_file)
-                console.print(f"[o] Result [yellow]'{file}'[white] found.")
-                console.print(f"[o]\t{result}\n[o]")
+                console.print(f"Result for [yellow]'{file}'[white] found:")
+                console.print(f"\t{result}\n[o]")
     pass
 
 def routine(file, backend, suffix, verbose):
