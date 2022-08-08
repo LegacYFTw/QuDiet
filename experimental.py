@@ -3,6 +3,7 @@ from rich.console import Console
 from qudiet.core import backend
 from src.qudiet.qasm.qasm_parser import parse_qasm
 import argparse, glob, pickle, warnings, time
+import pprint
 
 console = Console()
 
@@ -83,7 +84,7 @@ def main():
         for file in files:
             with open(file, "rb") as out_file:
                 result = pickle.load(out_file)
-                console.log(f"[o] Result '{file}' found. \n[o]\t{result}\n[o]")
+                console.print(f"[o] Result '{file}' found. \n[o]\t{result}\n[o]")
     pass
 
 def routine(file, backend, suffix, verbose):
@@ -106,16 +107,16 @@ def routine(file, backend, suffix, verbose):
         with open(output, "wb") as out_file:
             pickle.dump(result, out_file)
 
-        console.log(f"[bold yellow]---->[white] Result for file [bold green]'{file}': ", result)
+        console.print(f"[bold yellow]---->[white] Result for file [bold green]'{file}': ", result)
 
         if verbose:
-            console.log(f"[bold]saved in [purple]{output}\n")
+            console.print(f"[bold]saved in [purple]{output}\n")
 
     except Exception as e: #IndexError as ie:
         # result = ie.args
         # print(f"[x] File '{file}' got exception '{e}'...")
         warnings.warn(f"[x] File '{file}' got exception '{e}'...")
-        console.log(f"[bold red][x][white] File [bold green]'{file}'[white] got exception '{e}'...\n[x]")
+        console.print(f"[bold red][x][white] File [bold green]'{file}'[white] got exception '{e}'...\n[x]")
 
 # operate_on = "pkl"
 # directory_path = "testbench/tof_qutrit" + "/**/*."+operate_on
