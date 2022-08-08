@@ -88,13 +88,6 @@ def main():
                 console.print(f"Result for [yellow]'{file.split('/')[-1]}'[white] found:")
                 console.print(f"\t{result}\n[o]")
     
-    elif operate_on in ["json"]:
-        for file in files:
-            with open(file, "r") as out_file:
-                result = json.load(out_file)
-                console.print(f"Result for [yellow]'{file.split('/')[-1]}'[white] found:")
-                console.print(f"\t{result}\n[o]")
-    
     pass
 
 def routine(file, backend, suffix, verbose):
@@ -112,10 +105,10 @@ def routine(file, backend, suffix, verbose):
             'execution-time': end-load,
         }
 
-        output = ".".join(file.split(".")[:-1])+"-"+suffix+'.json'
+        output = ".".join(file.split(".")[:-1])+"-"+suffix+'.pkl'
 
-        with open(output, "w") as out_file:
-            json.dump(result, out_file)
+        with open(output, "wb") as out_file:
+            pickle.dump(result, out_file)
 
         console.print(f"[bold yellow]---->[white] Result for file [bold green]'{file}': ", result)
 
