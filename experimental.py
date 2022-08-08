@@ -84,7 +84,8 @@ def main():
         for file in files:
             with open(file, "rb") as out_file:
                 result = pickle.load(out_file)
-                console.print(f"[o] Result [bold yellow]'{file}'[white] found. \n[o]\t{result}\n[o]")
+                console.print(f"[o] Result [yellow]'{file}'[white] found.")
+                console.print(f"[o]\t{result}\n[o]")
     pass
 
 def routine(file, backend, suffix, verbose):
