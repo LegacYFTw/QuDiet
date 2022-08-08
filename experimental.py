@@ -67,7 +67,7 @@ def main():
     directory_path += "/**/*."+operate_on
 
     files = glob.glob(directory_path, recursive = True)
-    console.print(f"Analyzing {files} files...")
+    console.print(f"Analyzing {files} files...\n\n")
 
     if operate_on in ["txt", "qasm"]:
         for file in files:
