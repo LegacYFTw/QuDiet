@@ -85,7 +85,7 @@ def main():
         for file in files:
             with open(file, "rb") as out_file:
                 result = pickle.load(out_file)
-                console.print(f"Result for [yellow]'{file}'[white] found:")
+                console.print(f"Result for [yellow]'{file.split('/')[-1]}'[white] found:")
                 console.print(f"\t{result}\n[o]")
     pass
 
