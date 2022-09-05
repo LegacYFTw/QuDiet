@@ -241,7 +241,7 @@ class QuantumCircuit:
         self.cx([controls[-1], target], plus)
 
         for i in range(len(controls) - 1):
-            self.cx([controls[i], controls[i + 1]], self.qregs[controls[i + 1]] - 1)
+            self.cx([controls[i], controls[i + 1]], self.qregs[controls[i + 1]])
 
         return True
 

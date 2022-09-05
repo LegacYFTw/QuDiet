@@ -57,9 +57,11 @@ def circuit_from_qasm(_data, backend: Backend = None):
         backend = DefaultBackend
 
     _gates = list(filter(None, _data[1].split("\n")))
-    _toffolis = list(map(int, set((re.sub(r"Toffoli\sx\d+,\sx(\d+),\sx\d+", r"\1", ";".join(list(filter(lambda s: re.match("^Toffoli", s), _gates))))).split(";"))))
-    
-    _qregs = [ _element + 1 if _index in _toffolis else _element for _index, _element in enumerate(_qregs)]
+    _found_tofs = list(filter(lambda s: re.match("^Toffoli", s), _gates))
+    if _found_tofs:
+        _toffolis = list(map(int, set((re.sub(r"Toffoli\sx\d+,\sx(\d+),\sx\d+", r"\1", ";".join(_found_tofs))).split(";"))))
+
+        _qregs = [ _element + 1 if _index in _toffolis else _element for _index, _element in enumerate(_qregs) ]
     qc = QuantumCircuit(qregs=_qregs, backend=backend)
 
     for _gate in _gates:
