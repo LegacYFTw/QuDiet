@@ -37,6 +37,7 @@ def parse_qasm(filename: str, backend: Backend = None):
         _data = f.read()
     return circuit_from_qasm(_data, backend)
 
+
 def circuit_from_qasm(_data, backend: Backend = None):
     _data = re.sub(r"\.qubit (\d+)", r".qudit \1", _data)
     _data = re.sub(r"\.qutrit (\d+)", r".qudit \1", _data)
@@ -59,13 +60,31 @@ def circuit_from_qasm(_data, backend: Backend = None):
     _gates = list(filter(None, _data[1].split("\n")))
     _found_tofs = list(filter(lambda s: re.match("^Toffoli", s), _gates))
     if _found_tofs:
-        _toffolis = list(map(int, set((re.sub(r"Toffoli\sx\d+,\sx(\d+),\sx\d+", r"\1", ";".join(_found_tofs))).split(";"))))
+        _toffolis = list(
+            map(
+                int,
+                set(
+                    (
+                        re.sub(
+                            r"Toffoli\sx\d+,\sx(\d+),\sx\d+",
+                            r"\1",
+                            ";".join(_found_tofs),
+                        )
+                    ).split(";")
+                ),
+            )
+        )
 
-        _qregs = [ _element + 1 if _index in _toffolis else _element for _index, _element in enumerate(_qregs) ]
+        _qregs = [
+            _element + 1 if _index in _toffolis else _element
+            for _index, _element in enumerate(_qregs)
+        ]
     qc = QuantumCircuit(qregs=_qregs, backend=backend)
 
     for _gate in _gates:
-        if re.search("^X", _gate) or (re.search("^RX", _gate) and re.search("180$", _gate)):
+        if re.search("^X", _gate) or (
+            re.search("^RX", _gate) and re.search("180$", _gate)
+        ):
             _gate_qreg = int(re.findall("\d+", _gate.split()[1])[0])
             qc.x(qreg=_gate_qreg)
 
@@ -89,7 +108,7 @@ def circuit_from_qasm(_data, backend: Backend = None):
             qc.cx(acting_on=_gate_qreg, plus=_plus)
 
         elif re.search("^Toffoli", _gate):
-            ints = list(map(int,re.findall("\d+", _gate)))
+            ints = list(map(int, re.findall("\d+", _gate)))
             _gate_qreg = (ints[:-1], ints[-1])
             _plus = 1
             qc.toffoli(_gate_qreg, _plus)

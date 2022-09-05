@@ -1,3 +1,4 @@
+from _typeshed import Incomplete
 from qudiet.circuit_library.standard_gates.cx import CXGate as CXGate
 from qudiet.circuit_library.standard_gates.h import HGate as HGate
 from qudiet.circuit_library.standard_gates.i import IGate as IGate
@@ -9,7 +10,8 @@ from scipy import sparse as sparse
 from typing import Union
 
 class Moment:
-    def __init__(self, *args: Union[QuantumGate, InitState, IGate]) -> None: ...
+    name: Incomplete
+    def __init__(self, name: str, *args: Union[QuantumGate, InitState, IGate]) -> None: ...
     @property
     def prev_pointer(self): ...
     @prev_pointer.setter

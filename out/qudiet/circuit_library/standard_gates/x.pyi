@@ -1,14 +1,15 @@
+from _typeshed import Incomplete
 from abc import ABC
 from qudiet.circuit_library.standard_gates.quantum_gate import QuantumGate as QuantumGate
 from qudiet.core.backend.core import Backend as Backend
 from scipy.sparse import csr_matrix as csr_matrix
-from typing import Any, Union
+from typing import Union
 
 class XGate(QuantumGate, ABC):
-    qreg: Any
-    dims: Any
-    backend: Any
-    plus: Any
+    qreg: Incomplete
+    dims: Incomplete
+    backend: Incomplete
+    plus: Incomplete
     def __init__(self, qreg: int, dims: int, plus: int, backend: Backend) -> None: ...
     @property
     def is_controlled(self) -> bool: ...

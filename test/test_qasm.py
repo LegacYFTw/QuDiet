@@ -24,7 +24,7 @@
 #
 
 from qudiet.core.quantum_circuit import QuantumCircuit
-from qudiet.qasm.qasm_parser import parse_qasm, circuit_from_qasm
+from qudiet.qasm.qasm_parser import circuit_from_qasm, parse_qasm
 from qudiet.utils.numpy import Nbase_to_bin
 
 
@@ -34,8 +34,10 @@ def test_qasm_1():
     result = circuit.run()
     assert result == [{"|120>": 1.0}]
 
+
 def test_parser_1():
-    qc_1 = circuit_from_qasm('''
+    qc_1 = circuit_from_qasm(
+        """
 # Created by Arnav Das
 # Grover's with 2 qubits.
 
@@ -65,8 +67,9 @@ x x1
 H x0
 H x1
 .end
-    ''')
-    qc_2=QuantumCircuit([2, 2])
+    """
+    )
+    qc_2 = QuantumCircuit([2, 2])
     qc_2.h(0)
     qc_2.h(1)
 
