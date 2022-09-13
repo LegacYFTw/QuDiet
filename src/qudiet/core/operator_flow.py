@@ -161,8 +161,8 @@ class OperatorFlow:
                 if all(self._measurement_count):
                     return False
 
-                if self.debug:
-                    self.debugger += [(_curr_moment, _curr_moment.exec(self.debug_backend))]
+                # if self.debug:
+                #     self.debugger += [(_curr_moment, _curr_moment.exec(self.debug_backend))]
 
                 # Finds the register number of either of HGate, Xgate or ZGate
                 # present in the current moment
