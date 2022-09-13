@@ -100,4 +100,4 @@ def test_qudit_toffoli():
     qc.measure_all()
     result = qc.run()
 
-    assert result == [{"|12311>": 1.0}]
+    assert result == [{"|12211>": 1.0}]
