@@ -59,6 +59,7 @@ def circuit_from_qasm(_data, backend: Backend = None):
 
     _gates = list(filter(None, _data[1].split("\n")))
     _found_tofs = list(filter(lambda s: re.match("^Toffoli", s), _gates))
+
     if _found_tofs:
         _toffolis = list(
             map(
@@ -66,7 +67,7 @@ def circuit_from_qasm(_data, backend: Backend = None):
                 set(
                     (
                         re.sub(
-                            r"Toffoli\sx\d+,\sx(\d+),\sx\d+",
+                            r"Toffoli x\d+[, ]+x(\d+)[, ]+x\d+",
                             r"\1",
                             ";".join(_found_tofs),
                         )
@@ -111,7 +112,8 @@ def circuit_from_qasm(_data, backend: Backend = None):
             ints = list(map(int, re.findall("\d+", _gate)))
             _gate_qreg = (ints[:-1], ints[-1])
             _plus = 1
-            qc.toffoli(_gate_qreg, _plus)
+            # qc.toffoli(_gate_qreg, _plus)
+            qc.toffoli(_gate_qreg)
 
     qc.measure_all()
 
