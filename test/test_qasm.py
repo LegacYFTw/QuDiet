@@ -120,7 +120,7 @@ def test_parser_2():
         "X x1",
         "X x2",
         "X x2",
-        "# X x3",
+        "X x3",
         "X x4",
         "",
         "Toffoli x1, x2, x3",
