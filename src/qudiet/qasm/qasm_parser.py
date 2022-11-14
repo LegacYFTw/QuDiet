@@ -86,8 +86,11 @@ def circuit_from_qasm(_data, backend: Backend = None):
         if re.search("^X", _gate) or (
             re.search("^RX", _gate) and re.search("180$", _gate)
         ):
+            plus = 1
+            if len(_gate.split()) == 3:
+                plus = int(_gate.split()[2])
             _gate_qreg = int(re.findall("\d+", _gate.split()[1])[0])
-            qc.x(qreg=_gate_qreg)
+            qc.x(qreg=_gate_qreg, plus=plus)
 
         elif re.search("^H", _gate):
             _gate_qreg = int(re.findall("\d+", _gate.split()[1])[0])
