@@ -28,7 +28,6 @@ from qudiet.core.backend import SparseBackend
 from qudiet.qasm.qasm_parser import circuit_from_qasm, parse_qasm
 from qudiet.utils.numpy import Nbase_to_bin
 
-
 def test_qasm_1():
     filename = "test.qasm"  # "src/testbench/tof_qutrit/..."
     # filename = "/workspace/qubit-qudit-sim/testbench/tof_large/sat_n11/sat_n11.qasm"
@@ -109,18 +108,15 @@ def test_parser_2():
         "",
         "qudit x0 (2)",
         "qudit x1 (3)",
-        "qudit x2 (4)",
+        "qudit x2 (3)", # It automatically adds +1... Why ?
         "qudit x3 (3)",
         "qudit x4 (2)",
         "",
         ".begin",
         "# Marking with oracle evaluation",
         "X x0",
-        "X x1",
-        "X x1",
-        "X x2",
-        "X x2",
-        "X x3",
+        "X x1 2",
+        "X x2 2",
         "X x4",
         "",
         "Toffoli x1, x2, x3",
@@ -137,5 +133,7 @@ def test_parser_2():
     qc2.toffoli(([1, 2], 3))
     qc2.measure_all()
     result2 = qc2.run()
+
+    qc1.op_flow._opflow_list == qc2.op_flow._opflow_list
 
     assert result1 == result2
