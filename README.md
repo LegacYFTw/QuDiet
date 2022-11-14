@@ -91,6 +91,8 @@ These Backends can be declared when initializing the circuit with the class `qud
 qc = QuantumCircuit(
     qregs=[2, 3, 3],
     init_states=[0, 0, 0],
+
+    # Here goes the backend specification
     backend=NumpyBackend,
 )
 ```
@@ -100,14 +102,17 @@ qc = QuantumCircuit(
 
 A typical qasm looks like  
 ```qasm
-# Qasm File Header is compulsory
+# This is the File Header
+# The File Header section is compulsory
 
+# Defining a 3 Qudit circuit
 .qubit 3
-
 qudit x0 (2)
 qudit x1 (3)
 qudit x2 (3)
 
+# The Gate composition will go in this
+# section, between the .begin and the .end
 .begin
 
 # Your Gates Here ...
@@ -116,6 +121,42 @@ Toffoli x0, x1, x2
 .end
 ```
 
+To run a circuit from qasm, we need to import a few definitions,
+
 ```python
 from qudiet.qasm.qasm_parser import circuit_from_qasm, parse_qasm
 ```
+
+The `circuit_from_qasm` definition creates the circuit from the qasm `str`. Whereas, the `parse_qasm` definition creates the circuit directly from the qasm file definition.
+
+```python
+# Loading the circuit from the qasm string
+circuit = circuit_from_qasm(
+    '''
+    # This is the File Header
+    
+    .qubit 3
+    qudit x0 (2)
+    qudit x1 (3)
+    qudit x2 (3)
+
+    .begin
+    Toffoli x0, x1, x2
+    .end
+    '''
+)
+
+# Now we can run the circuit however we want.
+circuit.run()
+```
+
+The `parse_qasm` definition can be used as such.
+```python
+# Loading the circuit from a qasm file
+filename = "test.qasm"
+circuit = parse_qasm(filename, SparseBackend)
+
+# Now we can run the circuit however we want.
+result = circuit.run()
+```
+
