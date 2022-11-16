@@ -4,14 +4,14 @@
 A high performance simulator that scales and eats qudits for lunch.
 
 # Installation
-A simple pip install from the github repository will install the package in your system.
+A simple `pip` install from the github repository will install the package in your system.
 
 ## Install with pip
 ```bash
 $ pip install git+https://github.com/LegacYFTw/QuDiet
 
 ```
-## Install wrom source
+## Install from source
 ```bash
 $ git clone https://github.com/LegacYFTw/QuDiet && cd QuDiet
 $ pip3 install .
