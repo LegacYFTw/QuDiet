@@ -67,3 +67,7 @@ class CUDABackend(Backend):
     @staticmethod
     def nonzero(a):
         return a.nonzero()
+
+    @staticmethod
+    def is_unitary(a):
+        return cp.allclose(cp.eye(len(a)), a.dot(a.T.conj()))

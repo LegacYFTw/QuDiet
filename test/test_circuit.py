@@ -23,8 +23,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+import numpy as np
+
 from qudiet.core.backend.NumpyBackend import NumpyBackend
+from qudiet.core.backend.SparseBackend import SparseBackend
 from qudiet.core.quantum_circuit import QuantumCircuit
+from qudiet.circuit_library import ArbitaryGate
+from qudiet.circuit_library.standard_gates.i import IGate
 from qudiet.utils.numpy import Nbase_to_bin
 
 
@@ -101,3 +106,22 @@ def test_qudit_toffoli():
     result = qc.run()
 
     assert result == [{"|12211>": 1.0}]
+
+
+def test_arbitary_gate():
+    class GateXYZ(ArbitaryGate):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            k = 1
+            self._unitary = np.array([[k, 0, 0], [0, k, 0], [0, 0, k], ])
+
+    qc = QuantumCircuit(
+        qregs=[2, 3, 4, 3, 2],
+        init_states=[1, 2, 2, 0, 1],
+        backend=SparseBackend,
+    )
+    qc.gate(GateXYZ, 3)
+    qc.measure_all()
+    result = qc.run()
+
+    assert result == [{'|12201>': 1.0}]

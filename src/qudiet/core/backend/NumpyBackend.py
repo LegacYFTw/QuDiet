@@ -52,3 +52,7 @@ class NumpyBackend(Backend):
     @staticmethod
     def nonzero(a):
         return a.nonzero()
+
+    @staticmethod
+    def is_unitary(a):
+        return np.allclose(np.eye(len(a)), a.dot(a.T.conj()))

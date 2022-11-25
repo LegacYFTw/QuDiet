@@ -38,6 +38,7 @@ from qudiet.circuit_library.standard_gates.i import IGate
 from qudiet.circuit_library.standard_gates.measurement import Measurement
 from qudiet.circuit_library.standard_gates.x import XGate
 from qudiet.circuit_library.standard_gates.z import ZGate
+from qudiet.circuit_library.standard_gates.quantum_gate import QuantumGate
 from qudiet.core.backend import DefaultBackend
 from qudiet.core.backend.core import Backend
 from qudiet.core.backend.SparseBackend import SparseBackend
@@ -139,6 +140,9 @@ class QuantumCircuit:
         :param qreg: The quantum register number for putting the gate
         :param dims: The dimension of the gate
         """
+        if type(qreg) is list:
+            return [self.__validate_gate_inputs(qreg_i, dims) for qreg_i in qreg]
+
         if qreg > self._reg_length - 1:
             raise ValueError(
                 "Illegal placement of gate. Register specified is out of circuit bounds."
@@ -269,7 +273,28 @@ class QuantumCircuit:
         )
 
         _result = self.__add_moment_to_opflow(acting_on, _cxgate)
-        # print(_cxgate.unitary)
+
+        return _result
+    
+    def gate(self, gate: QuantumGate, qreg: int, dims: Optional[int] = None) -> bool:
+        """
+        Responsible for creating any arbitary gate and adding it to OperatorFlow through another function call
+
+        :param gate: The quantum register number for putting the gate
+        :param qreg: The quantum register number for putting the gate
+        :param dims: The dimension of the gate
+        :return: True if everything goes well, else False
+        """
+        self.__validate_gate_inputs(qreg, dims)
+        if type(qreg) is int:
+            _gate = gate(
+                qreg=qreg, dims=dims or self._reg_dims[qreg], backend=self.backend
+            )
+        elif type(qreg) is list:
+            _gate = gate(
+                qreg=qreg, dims=dims or [ self._reg_dims[qreg_i] for qreg_i in qreg ], backend=self.backend
+            )
+        _result = self.__add_moment_to_opflow(qreg, _gate)
         return _result
 
     def measure(self, qreg: int) -> NotImplementedError:
