@@ -160,3 +160,31 @@ circuit = parse_qasm(filename, SparseBackend)
 result = circuit.run()
 ```
 
+## Adding Arbitary Gates
+Custom arbitary gates can be defined as a child class of `qudiet.circuit_library.ArbitaryGate`.
+```python
+from qudiet.circuit_library import ArbitaryGate
+
+class GateXYZ(ArbitaryGate):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._unitary = np.array(
+            [
+                [1, 0, 0], 
+                [0, 1, 0], 
+                [0, 0, 1], 
+            ]
+        )
+
+
+```
+
+## Bibliography
+```
+@article{chatterjee2022qudiet,
+  title={QuDiet: A Classical Simulation Platform for Qubit-Qudit Hybrid Quantum Systems},
+  author={Chatterjee, Turbasu and Das, Arnav and Bala, Subhayu Kumar and Saha, Amit and Chattopadhyay, Anupam and Chakrabarti, Amlan},
+  journal={arXiv preprint arXiv:2211.07918},
+  year={2022}
+}
+```
