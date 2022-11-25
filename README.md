@@ -175,7 +175,21 @@ class GateXYZ(ArbitaryGate):
                 [0, 0, 1], 
             ]
         )
+```
 
+Once the gate id defined, it can be applied to a circuit as such,
+
+```python
+
+# Defining a Quantum Circuit
+qc = QuantumCircuit(
+    qregs=[2, 3, 4, 3, 2],
+    init_states=[1, 2, 2, 0, 1],
+)
+
+# The definition QuantumCircuit.gate() applies an Arbitary gate 
+# QuantumCircuit.gate( ArbitaryGate , Register/s )
+qc.gate(GateXYZ, 3) # Here, we are applying the gate `GateXYZ` to the fourth register, i.e. qreg-3
 
 ```
 
