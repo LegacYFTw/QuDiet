@@ -1,7 +1,12 @@
 # quDiet
 [![Python application](https://github.com/LegacYFTw/QuDiet/actions/workflows/python-app.yml/badge.svg?branch=main)](https://github.com/LegacYFTw/QuDiet/actions/workflows/python-app.yml)
+![GitHub repo size](https://img.shields.io/github/repo-size/LegacYFTw/QuDiet)
+[![License](https://img.shields.io/github/license/LegacYFTw/QuDiet)](https://github.com/LegacYFTw/QuDiet/blob/main/LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![arXiv](https://img.shields.io/badge/arXiv-2211.07918-b31b1b.svg)](https://arxiv.org/abs/2211.07918)
 
-A high performance simulator that scales and eats qudits for lunch.
+
+A high performance simulator that scales and eats qudits for lunch. [Read More](https://arxiv.org/abs/2211.07918)
 
 # Installation
 A simple `pip` install from the github repository will install the package in your system.
