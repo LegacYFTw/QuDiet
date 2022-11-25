@@ -108,7 +108,7 @@ def test_parser_2():
         "",
         "qudit x0 (2)",
         "qudit x1 (3)",
-        "qudit x2 (3)", # It automatically adds +1... Why ?
+        "qudit x2 (3)", # It automatically adds +1... For each Toffoli in qasm setting
         "qudit x3 (3)",
         "qudit x4 (2)",
         "",
