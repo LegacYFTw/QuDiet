@@ -245,9 +245,13 @@ class QuantumCircuit:
         self.cx([controls[-1], target], plus)
 
         for i in range(len(controls) - 1):
-            self.cx([controls[i], controls[i + 1]], self.qregs[controls[i + 1]] - 1)
+            e = len(controls) - i - 1
+            self.cx([controls[e - 1], controls[e]], self.qregs[controls[e]] - 1)
 
         return True
+
+    def multi_controlled_toffoli(self, qreg: "tuple[list[int], int]", plus: int = 1) -> bool:
+        return self.toffoli(qreg, plus)
 
     def cx(
         self, acting_on: "tuple[int, int]", plus: int, dims: Optional[int] = None

@@ -44,6 +44,17 @@ def test_qudit_init():
     assert result == [{"|1110100000000>": 1.0}]
 
 
+def test_qudit_test():
+    qc = QuantumCircuit(
+        qregs=[ 4, ],
+        init_states=[ 3, ],
+    )
+    qc.h(0)
+    qc.measure_all()
+    result = qc.run()
+
+    assert result
+
 def test_qudit_cx():
     qc = QuantumCircuit(
         qregs=[2, 3, 3, 3, 2],
@@ -106,6 +117,20 @@ def test_qudit_toffoli():
     result = qc.run()
 
     assert result == [{"|12211>": 1.0}]
+
+
+def test_qudit_multi_controlled_toffoli():
+    qc = QuantumCircuit(
+        qregs=[2, 3, 4, 3, 2],
+        # init_states=[1, 2, 2, 0, 1],
+        init_states=[1, 2, 3, 0, 1],
+    )
+    qc.toffoli(([0, 1, 2], 3))
+    # qc.multi_controlled_toffoli(([0, 1, 2], 3))
+    qc.measure_all()
+    result = qc.run()
+
+    assert result == [{"|12311>": 1.0}] # 12311
 
 
 def test_arbitary_gate():
