@@ -32,6 +32,9 @@ except ImportError:
 
 from typing import Optional, Union
 
+from collections import Counter
+import warnings
+
 from qudiet.circuit_library.standard_gates.cx import CXGate
 from qudiet.circuit_library.standard_gates.h import HGate
 from qudiet.circuit_library.standard_gates.i import IGate
@@ -251,7 +254,58 @@ class QuantumCircuit:
         return True
 
     def multi_controlled_toffoli(self, qreg: "tuple[list[int], int]", plus: int = 1) -> bool:
-        return self.toffoli(qreg, plus)
+        multi_control, target = qreg
+        registry_pool_to_use = multi_control.copy()
+        targetted = []
+        stack = []
+        while len(multi_control):
+            if len(multi_control) >= 3:
+                c1, t, c2 = multi_control.pop(0), multi_control.pop(0), multi_control.pop(0)
+
+                # These 2 if statement, makes a cleaner Toffoli placement
+                if t in targetted and c1 not in targetted:
+                    c1, t = t, c1
+                if t in targetted and c2 not in targetted:
+                    c2, t = t, c2
+
+                self.toffoli( ( [c1, c2], t ), 1 )
+                targetted.append(t)
+                multi_control.append(t) # Multi - Level
+                stack.append( ('toffoli', ( [c1, c2], t )) )
+            if len(multi_control) == 2:
+                c1, t = multi_control.pop(0), multi_control.pop(0)
+                # The if statement, makes a cleaner Toffoli placement
+                if t in targetted and c1 not in targetted:
+                    c1, t = t, c1
+                self.cx((c1, t), 1)
+                targetted.append(t)
+                multi_control.append(t)  # Multi - Level
+                stack.append( ('cx', (c1, t)) )
+            if len(multi_control) == 1:
+                c1, t = multi_control.pop(0), target
+                self.cx((c1, t), 1)
+
+        qreg_incr = []        
+        for _, mapping in stack:
+            con, tar = mapping
+            qreg_incr += [con[-1], tar]
+        c = Counter(qreg_incr)
+        new_qregs = self.qregs.copy()
+        for qreg, freq in Counter(qreg_incr).items():
+            new_qregs[qreg] += freq
+        warnings.warn("If the q-registers have not be accounted for the multi-dimensional " \
+        f"gate's use, set `qregs = {new_qregs}` to account for them.")
+
+
+        while len(stack):
+            gate, mapping = stack.pop()
+            target = mapping[-1]
+            if gate == "toffoli":
+                self.toffoli(mapping, self.qregs[target] - 1)
+            if gate == "cx":
+                self.cx(mapping, self.qregs[target] - 1)
+        
+        return True
 
     def cx(
         self, acting_on: "tuple[int, int]", plus: int, dims: Optional[int] = None
