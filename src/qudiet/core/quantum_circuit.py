@@ -42,6 +42,7 @@ from qudiet.circuit_library.standard_gates.measurement import Measurement
 from qudiet.circuit_library.standard_gates.x import XGate
 from qudiet.circuit_library.standard_gates.z import ZGate
 from qudiet.circuit_library.standard_gates.quantum_gate import QuantumGate
+from qudiet.circuit_library.standard_gates.toffoli_utility import Toffoli
 from qudiet.core.backend import DefaultBackend
 from qudiet.core.backend.core import Backend
 from qudiet.core.backend.SparseBackend import SparseBackend
@@ -168,10 +169,9 @@ class QuantumCircuit:
         _moment_data = []
         gate_obj_added = False
         if isiterable(qreg):
+            lb, ub = min(qreg), max(qreg)
             operation_action_space = list(
-                range(qreg[0], qreg[1] + 1)
-                if qreg[0] < qreg[1]
-                else range(qreg[1], qreg[0] + 1)
+                range(lb, ub+1)
             )
         else:
             operation_action_space = []
@@ -240,71 +240,43 @@ class QuantumCircuit:
         return _result
 
     def toffoli(self, qreg: "tuple[list[int], int]", plus: int = 1) -> bool:
-        controls, target = qreg
+        # Cx decomposition based
+        # controls, target = qreg
 
-        for i in range(len(controls) - 1):
-            self.cx([controls[i], controls[i + 1]], 1)
+        # # incr_qreg_index = controls[-1]
+        # # self.qregs[incr_qreg_index] += 1
 
-        self.cx([controls[-1], target], plus)
-
-        for i in range(len(controls) - 1):
-            e = len(controls) - i - 1
-            self.cx([controls[e - 1], controls[e]], self.qregs[controls[e]] - 1)
-
-        return True
-
-    def multi_controlled_toffoli(self, qreg: "tuple[list[int], int]", plus: int = 1) -> bool:
-        multi_control, target = qreg
-        registry_pool_to_use = multi_control.copy()
-        targetted = []
-        stack = []
-        while len(multi_control):
-            if len(multi_control) >= 3:
-                c1, t, c2 = multi_control.pop(0), multi_control.pop(0), multi_control.pop(0)
-
-                # These 2 if statement, makes a cleaner Toffoli placement
-                if t in targetted and c1 not in targetted:
-                    c1, t = t, c1
-                if t in targetted and c2 not in targetted:
-                    c2, t = t, c2
-
-                self.toffoli( ( [c1, c2], t ), 1 )
-                targetted.append(t)
-                multi_control.append(t) # Multi - Level
-                stack.append( ('toffoli', ( [c1, c2], t )) )
-            if len(multi_control) == 2:
-                c1, t = multi_control.pop(0), multi_control.pop(0)
-                # The if statement, makes a cleaner Toffoli placement
-                if t in targetted and c1 not in targetted:
-                    c1, t = t, c1
-                self.cx((c1, t), 1)
-                targetted.append(t)
-                multi_control.append(t)  # Multi - Level
-                stack.append( ('cx', (c1, t)) )
-            if len(multi_control) == 1:
-                c1, t = multi_control.pop(0), target
-                self.cx((c1, t), 1)
-
-        qreg_incr = []        
-        for _, mapping in stack:
-            con, tar = mapping
-            qreg_incr += [con[-1], tar]
-        c = Counter(qreg_incr)
-        new_qregs = self.qregs.copy()
-        for qreg, freq in Counter(qreg_incr).items():
-            new_qregs[qreg] += freq
-        warnings.warn("If the q-registers have not be accounted for the multi-dimensional " \
-        f"gate's use, set `qregs = {new_qregs}` to account for them.")
+        # # class IncrMoment(Moment):
+        # #     def exec(cls, backend):
+        # #         self.qregs[incr_qreg_index] += 1
+        # #         return None
+        # # self.op_flow.populate_opflow(IncrMoment("IncrMoment_for_Toffoli", []))
 
 
-        while len(stack):
-            gate, mapping = stack.pop()
-            target = mapping[-1]
-            if gate == "toffoli":
-                self.toffoli(mapping, self.qregs[target] - 1)
-            if gate == "cx":
-                self.cx(mapping, self.qregs[target] - 1)
+        # for i in range(len(controls) - 1):
+        #     self.cx([controls[i], controls[i + 1]], 1)
+
+        # self.cx([controls[-1], target], plus)
+
+        # for i in range(len(controls) - 1):
+        #     e = len(controls) - i - 1
+        #     self.cx([controls[e - 1], controls[e]], self.qregs[controls[e]] - 1)
         
+        # # self.qregs[incr_qreg_index] -= 1
+        
+        # # class DecrMoment(Moment):
+        # #     def exec(cls, backend):
+        # #         self.qregs[incr_qreg_index] += 1
+        # #         return None
+        # # self.op_flow.populate_opflow(DecrMoment("DecrMoment_for_Toffoli", []))
+
+        # Density Matrix Based
+        _toffoligate = Toffoli(
+            dims=self.qregs, qreg=qreg, plus=plus, backend=self.backend
+        )
+
+        _result = self.__add_moment_to_opflow(_toffoligate._acting_on, _toffoligate)
+
         return True
 
     def cx(
@@ -407,7 +379,8 @@ class QuantumCircuit:
     ):
         # FIXIT:  Every time i run `self.op_flow.exec(self.backend)`, the answer changes.
         # FIXED
-        return self.output_processor(self.op_flow.exec(self.backend))
+        result = self.op_flow.exec(self.backend)
+        return self.output_processor(result)
 
     def print_opflow_list(self):
         for i in self.op_flow.peek():

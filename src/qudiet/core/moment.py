@@ -211,3 +211,9 @@ class Moment:
             # Thus, self._moment_list[i] is the previous gate
             _kron_product = backend.kron(_kron_product, gate.unitary)
         return _kron_product
+
+    def preprocess(self, ):
+        pass
+
+    def postprocess(self, ):
+        pass

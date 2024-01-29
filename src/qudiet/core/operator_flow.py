@@ -265,6 +265,7 @@ class OperatorFlow:
 
         # Run a loop while there is a Moment present in the _all_moments list
         for _moment in reversed(_all_moments):
+            _moment.preprocess()
             # Executable moments
             _kron_product = _moment.exec(backend)
 
@@ -277,6 +278,7 @@ class OperatorFlow:
                 _dot_product = _kron_product
             else:
                 _dot_product = backend.dot(_dot_product, _kron_product)
+            _moment.postprocess()
 
         # Once the parent while loop ends, returns the final _dot_product
         return _dot_product
