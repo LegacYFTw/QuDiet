@@ -10,9 +10,9 @@ def RUN_CIRC(n, input_states=None):
     qutrits = {circ.actual_mapping.get(item) for item in circ.qutrits}
     ququads = {circ.actual_mapping.get(item) for item in circ.ququads}
 
-    print("qubits", qubits)
-    print("qutrits", qutrits)
-    print("ququads", ququads)
+    # print("qubits", qubits)
+    # print("qutrits", qutrits)
+    # print("ququads", ququads)
 
     qregs = [2] * n
     init_states = input_states if input_states is not None else [1] * n  # all 1 unless specified
@@ -29,7 +29,7 @@ def RUN_CIRC(n, input_states=None):
         elif index in qutrits:
             qregs[index] = 3
 
-    print("reg is ", qregs)
+    # print("reg is ", qregs)
 
     qc = QuantumCircuit(qregs=qregs, init_states=init_states)
 
