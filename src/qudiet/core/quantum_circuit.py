@@ -386,3 +386,88 @@ class QuantumCircuit:
         for i in self.op_flow.peek():
             i: Moment = i
             print(i.peek_list(), "\n")
+
+    def draw(self):
+        """
+        Prints the circuit in the terminal. It does not look pretty but does the job of visualizing circuits. It relies on the operator flow list of the circuit for visualizing the circuit. In the current implementation of this function, use it with caution if dimensionality of qudits are more than 9 because it may not correctly display in such cases.
+
+        E.g.
+
+        (2)|0>--*----Z---------M--
+        (2)|1>--|---X(1)-------M--
+        (3)|0>-X(2)-------*----M--
+        (2)|0>--|---------|----M--
+        (2)|0>--|--------X(1)--M--
+        (2)|0>--*--------------M--
+
+        depth: 3, width: 6
+
+
+        1. Those numbers inside parenthesis on the left of the initial states denotes the dimension of that particular qudit.
+        2. Controls are represented by the '*' sign and the number inside parenthesis after 'X' denotes how much it increments.
+        3. The symbol 'M' is used for measurement.
+        4. '|' these symbols are used to denote that the control lines are passing through.
+        """
+        print(self)
+
+    def __str__(self):
+        n_qudits = len(self.qregs)
+        depth = self.get_circuit_config()['depth']
+        draw_matrix = [[None for i in range(depth+2)] for i in range(n_qudits)]     # this matrix is to represent the entire operator flow list in a "drawable" manner as the raw operator flow is not
+        circuit_drawing = ""
+            
+        for j, moment in enumerate(self.op_flow.peek()):
+            operators = moment.peek_list()
+            # print(operators)
+            for i, op in enumerate(operators):
+                # TODO: Instead of writing the symbols of standard gates directly, it would be more flexible if they are defined in the __str__ method of their own class.
+                if isinstance(op, InitState):
+                    draw_matrix[op.qreg][j] = f'({op.dim})|{op.state}>'
+                if isinstance(op, XGate):
+                    draw_matrix[op.qreg][j] = f'X({op.plus})'
+                if isinstance(op, HGate):
+                    draw_matrix[op.qreg][j] = 'H'
+                if isinstance(op, ZGate):
+                    draw_matrix[op.qreg][j] = 'Z'
+                if isinstance(op, Measurement):
+                    draw_matrix[op._qreg][j] = 'M'
+                if isinstance(op, CXGate):
+                    control, target = op._acting_on
+                    draw_matrix[control][j] = '*'
+                    draw_matrix[target][j] = f'X({op._plus})'
+
+                    end = control if control > target else target
+                    start = control if control < target else target
+                    for x in range(start+1, end):
+                        draw_matrix[x][j] = '|'
+                if isinstance(op, Toffoli):
+                    controls, target = op.qreg[0], op.qreg[1]
+                    # print(op._acting_on)
+                    for dit in op._acting_on:
+                        if dit in controls:
+                            draw_matrix[dit][j] = '*'
+                        elif dit == target:
+                            draw_matrix[dit][j] = f'X({op._plus})'
+                        else:
+                            draw_matrix[dit][j] = "|"
+            
+        for i in range(len(draw_matrix)):
+            for j in range(len(draw_matrix[i])):
+                ch = draw_matrix[i][j]
+                if ch != None:
+                    # Adding a little padding on both left and right sides before adding to the circuit drawing looks nicer
+                    side = 'left'
+                    if len(ch) < 5:
+                        while len(ch) != 5:
+                            if side == 'right':
+                                ch += '-'
+                                side = 'left'
+                            else:
+                                ch = '-'+ch
+                                side = 'right'
+                else:
+                    ch = '-----'
+                circuit_drawing += ch
+            circuit_drawing += '\n'
+        circuit_drawing += f"\ndepth: {self.get_circuit_config()['depth']}, width: {self.get_circuit_config()['width']}"
+        return circuit_drawing
