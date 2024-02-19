@@ -82,3 +82,4 @@ class Toffoli(ArbitaryGate):
         self._acting_on = list(range(lb, ub+1)) 
         super().__init__(qreg, [dims[a] for a in self._acting_on], backend)
         self._unitary = _unitary
+        self._plus = plus
