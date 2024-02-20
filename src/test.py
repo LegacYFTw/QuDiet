@@ -1,34 +1,42 @@
 from qudiet.core.quantum_circuit import QuantumCircuit
+from qudiet.circuit_library.standard_gates.toffoli_utility import Toffoli
 
 n = 4
-qc = QuantumCircuit(qregs=[4 for i in range(n)], init_states=[3, 0, 0, 0])
+qc = QuantumCircuit(qregs=[4 for i in range(n)])
+ctrls, target = [], n-1
 
-# qc.cx((1, 1), 1)
-# qc.toffoli(([0, 1, 2], 2), 1)
-# qc.z(4)
+# ctrls.append(0)
+# qc.toffoli((ctrls, target), 1)
+# ctrls = []
+# ctrls.append(0)
+# ctrls.append(1)
+# qc.toffoli((ctrls, target), 2)
 
-ctrls, tgt = [[0], [0, 2], [0, 1, 2]], n-1
 
 for i in range(n-1):
-	# ctrls.append(i)
-	print(ctrls[i])
-	qc.toffoli((ctrls[i], tgt), 1)
-	qc.measure_all()
-	# print(qc)
-	# qc = QuantumCircuit(qregs=[4 for i in range(n)], init_states=[0, 3, 0])
+	ctrls.append(i)
+	print(f"({tuple(ctrls)}, {target})")
+	qc.toffoli([ctrls, target], i)
 
 qc.measure_all()
 print(qc)
 
-# try:
-# 	print(qc.run())
-# except Exception as e:
-# 	print(f'failure\n{e}')
 
-# for moment in qc.op_flow.peek():
-# 	print(moment.peek_list()[1])
-# qc.toffoli(([0], 3), 1)
-# qc.toffoli(([0, 1], 3), 1)
-# qc.toffoli(([0, 1, 2], 3), 1)
-# print(qc)
-# print(qc.op_flow.peek()[1].peek_list()[0].qreg)
+for index, moment in enumerate(qc.op_flow.peek()):
+	print(f"{index+1}th moment")
+	for op in moment.peek_list():
+		print('\t', op)
+		if isinstance(op, Toffoli):
+			print(f'\t\t[got a Toffoli] {op.qreg}')
+	print()
+
+# class A:
+# 	def __init__(self, x: list):
+# 		self.x = x.copy()
+# 	def __str__(self) -> str:
+# 		return f"{self.x}"
+
+# l1 = [[0], 1]
+# a = A(l1)
+# l1.append('bummer')
+# print(a)

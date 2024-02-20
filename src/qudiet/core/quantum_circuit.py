@@ -271,6 +271,7 @@ class QuantumCircuit:
         # # self.op_flow.populate_opflow(DecrMoment("DecrMoment_for_Toffoli", []))
 
         # Density Matrix Based
+        qreg = (qreg[0].copy(), qreg[1])
         _toffoligate = Toffoli(
             dims=self.qregs, qreg=qreg, plus=plus, backend=self.backend
         )
@@ -442,11 +443,11 @@ class QuantumCircuit:
                         draw_matrix[x][j] = '|'
                 if isinstance(op, Toffoli):
                     # controls, target = op.qreg[0], op.qreg[1]
-                    print(f'[debug] inside draw(Toffoli) function: controls={op.controls} target={op.target}')
+                    print(f'[debug] inside draw(Toffoli) function: controls={op._controls} target={op._target}')
                     for dit in op._acting_on:
-                        if dit in op.controls:
+                        if dit in op._controls:
                             draw_matrix[dit][j] = '*'
-                        elif dit == op.target:
+                        elif dit == op._target:
                             draw_matrix[dit][j] = f'X({op._plus})'
                         else:
                             draw_matrix[dit][j] = "|"
