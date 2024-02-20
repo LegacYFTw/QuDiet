@@ -442,12 +442,12 @@ class QuantumCircuit:
                     for x in range(start+1, end):
                         draw_matrix[x][j] = '|'
                 if isinstance(op, Toffoli):
-                    # controls, target = op.qreg[0], op.qreg[1]
-                    print(f'[debug] inside draw(Toffoli) function: controls={op._controls} target={op._target}')
+                    controls, target = op.qreg[0], op.qreg[1]
+                    # print(op._acting_on)
                     for dit in op._acting_on:
-                        if dit in op._controls:
+                        if dit in controls:
                             draw_matrix[dit][j] = '*'
-                        elif dit == op._target:
+                        elif dit == target:
                             draw_matrix[dit][j] = f'X({op._plus})'
                         else:
                             draw_matrix[dit][j] = "|"

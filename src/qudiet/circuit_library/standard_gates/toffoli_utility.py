@@ -83,6 +83,3 @@ class Toffoli(ArbitaryGate):
         super().__init__(qreg, [dims[a] for a in self._acting_on], backend)
         self._unitary = _unitary
         self._plus = plus
-        self._controls = qreg[0]
-        self._target = qreg[1]
-        print(f"[debug] inside Toffoli constructor: {self.qreg}")
