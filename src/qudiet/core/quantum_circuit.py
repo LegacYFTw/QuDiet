@@ -271,6 +271,7 @@ class QuantumCircuit:
         # # self.op_flow.populate_opflow(DecrMoment("DecrMoment_for_Toffoli", []))
 
         # Density Matrix Based
+        qreg = (qreg[0].copy(), qreg[1])
         _toffoligate = Toffoli(
             dims=self.qregs, qreg=qreg, plus=plus, backend=self.backend
         )
