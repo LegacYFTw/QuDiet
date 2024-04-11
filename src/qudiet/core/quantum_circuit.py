@@ -43,6 +43,8 @@ from qudiet.circuit_library.standard_gates.x import XGate
 from qudiet.circuit_library.standard_gates.z import ZGate
 from qudiet.circuit_library.standard_gates.quantum_gate import QuantumGate
 from qudiet.circuit_library.standard_gates.toffoli_utility import Toffoli
+from qudiet.circuit_library import ArbitaryGate
+from qudiet.circuit_library.standard_gates.measurement import Measurement
 from qudiet.core.backend import DefaultBackend
 from qudiet.core.backend.core import Backend
 from qudiet.core.backend.SparseBackend import SparseBackend
@@ -52,6 +54,7 @@ from qudiet.core.operator_flow import OperatorFlow
 from qudiet.core.output import Output, OutputMethod, OutputType
 from qudiet.utils.linalg import isiterable
 
+from qudiet.utility.circuit_draw import draw_circuit_mpl
 
 class QuantumCircuit:
     def __init__(
@@ -97,6 +100,7 @@ class QuantumCircuit:
         self.cregs = cregs or 0
         self.name = name or ""
         self.init_states = init_states or []
+        self.circuit_output = None
 
         self.op_flow = OperatorFlow()
         self.op_flow.debug_backend = self.debug_backend
@@ -117,6 +121,7 @@ class QuantumCircuit:
             self.init_states.extend((self._reg_length - len(self.init_states)) * [0])
 
         self.__initialize_states()
+
 
     def get_circuit_config(self):
         depth = len(self.op_flow._opflow_list) - 1  # For InitStates
@@ -380,16 +385,48 @@ class QuantumCircuit:
         # FIXIT:  Every time i run `self.op_flow.exec(self.backend)`, the answer changes.
         # FIXED
         result = self.op_flow.exec(self.backend)
-        return self.output_processor(result)
+        self.circuit_output = self.output_processor(result)
+        return self.circuit_output
 
     def print_opflow_list(self):
         for i in self.op_flow.peek():
             i: Moment = i
             print(i.peek_list(), "\n")
 
-    def draw(self):
+    def draw(self,style=None,compress=1):
         """
-        Prints the circuit in the terminal. It does not look pretty but does the job of visualizing circuits. It relies on the operator flow list of the circuit for visualizing the circuit. In the current implementation of this function, use it with caution if dimensionality of qudits are more than 9 because it may not correctly display in such cases.
+        This function draws the circuit.
+        
+        'style' parameter is used to choose between Matplotlib and Default Circuit Drawing.
+                By default it is set to 'None' which uses the Default Circuit Drawing.
+                
+        'compress' is used in Matplotlib Circuit Drawing.
+                   By default it is set to 1.
+        """
+    
+    
+        """
+        Draws the circuit using Matplotlib library.
+        
+        'compress' parameter is used to compress the drawn circuit. By Default it is set to 1.
+                   In case of complex and large circuits multiple figures are drawn, a higher value of 'compress' will give less number of figures.
+                   
+        |Q0 Q1 Q2 Q3> -> It represents a state where Q0, Q1, Q2, Q3 represents each qudit,
+                         And Q0 is the MSB, and Q3 is the LSB.
+                         
+        Circuit is drawn based on this representation.
+        """
+        
+        if 'mpl' == style:
+            draw_circuit_mpl(self,compress=compress) # Matplotlib Circuit Drawing
+            
+        else:
+            print(self)                         # Default Circuit Drawing    
+        """
+        Prints the circuit in the terminal.
+        It does not look pretty but does the job of visualizing circuits.
+        It relies on the operator flow list of the circuit for visualizing the circuit.
+        In the current implementation of this function, use it with caution if dimensionality of qudits are more than 9 because it may not correctly display in such cases.
 
         E.g.
 
@@ -408,7 +445,6 @@ class QuantumCircuit:
         3. The symbol 'M' is used for measurement.
         4. '|' these symbols are used to denote that the control lines are passing through.
         """
-        print(self)
 
     def __str__(self):
         n_qudits = len(self.qregs)
@@ -471,3 +507,56 @@ class QuantumCircuit:
             circuit_drawing += '\n'
         circuit_drawing += f"\ndepth: {self.get_circuit_config()['depth']}, width: {self.get_circuit_config()['width']}"
         return circuit_drawing
+
+    def get_circuit_info(self):
+        info ={
+        'depth':0,
+        'gate_count':0,
+        'details':{},
+        'qudit':len(self.qregs)
+        }
+
+        details={
+        'h':0,
+        'x':0,
+        'z':0,
+        'cx':0,
+        'toffoli':0,
+        'arbitary':0
+        }
+
+        moments=self.op_flow.peek()
+        info['depth']=len(moments)-1
+        for moment in moments:
+            gates=moment.peek_list()
+            flag=0
+            for gate in gates:
+                if isinstance(gate,XGate):
+                    details['x']+=1
+                elif isinstance(gate,HGate):
+                    details['h']+=1
+                elif isinstance(gate,ZGate):
+                    details['z']+=1
+                elif isinstance(gate,CXGate):
+                    details['cx']+=1
+                elif isinstance(gate,Toffoli):
+                        details['toffoli']+=1
+                elif isinstance(gate,ArbitaryGate):
+                    details['arbitary']+=1
+                elif isinstance(gate,Measurement):
+                    flag+=1
+                    if flag==info['qudit']:
+                        info['depth']-=1
+            
+
+
+        
+
+        keys=list(details.keys())
+        for key in keys:
+            if details[key]==0:
+                details.pop(key)
+
+        info['gate_count']=sum(details.values())
+        info['details']=details
+        return info

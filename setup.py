@@ -50,6 +50,7 @@ install_requires = [
     # "numba",
     "pytest",
     "rich",
+    "matplotlib",
 ]
 
 if PY_VERSION <= (3, 7):
