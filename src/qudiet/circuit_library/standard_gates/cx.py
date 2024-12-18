@@ -6,7 +6,7 @@
 #
 # Turbasu Chatterjee, Subhayu Kumar Bala, Arnav Das
 # Dr. Amit Saha, Prof. Anupam Chattopadhyay, Prof. Amlan Chakrabarti
-#
+# Tushti Patel
 #
 # SPDX-License-Identifier: AGPL-3.0
 #
