@@ -39,17 +39,18 @@ class OutputMethod(Enum):
     probability = 0
     amplitude = 1
 
-
 class Output:
     def __init__(
         self,
         base,
         type: OutputType = OutputType.print,
         method: OutputMethod = OutputMethod.probability,
+        append_braket: bool = True,
     ):
         self.base = base
         self.output_type = type
         self.output_method = method
+        self.append_braket = append_braket
 
     def __call__(self, result):
         if "sparse" in str(type(result)).lower() or hasattr(result, "toarray"):
@@ -64,10 +65,11 @@ class Output:
             #     "value" : Nbase_to_bin(v, self.base)
             # }]
             state = Nbase_to_bin(v, self.base)
+
             qoutput += [
                 {
                     (
-                        f"|{''.join([str(s) for s in state])}>"
+                        f"|{''.join([str(s) for s in state])}>" if self.append_braket else f"{''.join([str(s) for s in state])}"
                         if self.output_type == OutputType.print
                         else tuple(state)
                     ): (d**2 if self.output_method == OutputMethod.probability else d)

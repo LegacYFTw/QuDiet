@@ -56,6 +56,9 @@ from qudiet.utils.linalg import isiterable
 
 from qudiet.utility.circuit_draw import draw_circuit_mpl
 
+from functools import reduce
+import numpy as np
+
 class QuantumCircuit:
     def __init__(
         self,
@@ -66,6 +69,8 @@ class QuantumCircuit:
         backend: Backend = None,
         output: Output = None,
         debug: bool = True,
+        seed: int = 2536,
+        shots: int = -1
     ):
         """
         x = QuantumCircuit((3,3))
@@ -119,6 +124,9 @@ class QuantumCircuit:
 
         if self._reg_length > len(self.init_states):
             self.init_states.extend((self._reg_length - len(self.init_states)) * [0])
+
+        self.shots = shots
+        self.seed = seed
 
         self.__initialize_states()
 
@@ -385,7 +393,28 @@ class QuantumCircuit:
         # FIXIT:  Every time i run `self.op_flow.exec(self.backend)`, the answer changes.
         # FIXED
         result = self.op_flow.exec(self.backend)
+        if self.shots > 0:
+            self.output_processor.append_braket = False
+        else:
+            self.output_processor.append_braket = True
+
         self.circuit_output = self.output_processor(result)
+        self.circuit_output = reduce(lambda a, b: {**a, **b}, self.circuit_output)
+        # print(self.circuit_output)
+        if self.shots > 0:
+            prob = np.array(list(self.circuit_output.values())) 
+            if self.output_processor.output_method == OutputMethod.amplitude:
+                prob = prob ** 2
+            prob = prob.real
+            
+            choices = np.random.choice(
+                a = len(self.circuit_output), 
+                size = self.shots, 
+                p = prob
+            )
+            values = np.array(list(self.circuit_output.keys()))
+            self.circuit_output = values[choices]
+            self.circuit_output = self.circuit_output.tolist()
         return self.circuit_output
 
     def print_opflow_list(self):

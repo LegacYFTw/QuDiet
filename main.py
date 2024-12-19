@@ -41,10 +41,10 @@ backend = NumpyBackend
 
 
 qc = QuantumCircuit(
-    qregs=[2, ],
+    qregs=[3, ],
     init_states=[0, ],
     backend=backend,
-    shots=1
+    shots=1024
 )
 qc.h(0)
 
